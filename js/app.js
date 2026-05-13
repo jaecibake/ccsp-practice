@@ -1202,14 +1202,7 @@ function initApp() {
 }
 
 // ── Custom Test Builder ────────────────────────────────────────────────────────
-const DOMAIN_NAMES = [
-  'Cloud Concepts, Architecture & Design',
-  'Cloud Data Security',
-  'Cloud Platform & Infrastructure Security',
-  'Cloud Application Security',
-  'Cloud Security Operations',
-  'Legal, Risk & Compliance'
-];
+// Note: DOMAIN_NAMES is already declared as an object {1:..., 6:...} in questions.js
 
 let ctInitDone = false;
 const ctConfig = {
@@ -1230,8 +1223,8 @@ function renderCustomTest() {
   domainList.innerHTML = '';
   const qs = STATE.questionStats;
 
-  DOMAIN_NAMES.forEach((name, i) => {
-    const d = i + 1;
+  [1,2,3,4,5,6].forEach(d => {
+    const name = DOMAIN_NAMES[d];
     const dqs = QUESTIONS.filter(q => q.domain === d);
     const attempts = dqs.reduce((a, q) => a + (qs[q.id]?.attempts || 0), 0);
     const correct  = dqs.reduce((a, q) => a + (qs[q.id]?.correct  || 0), 0);
