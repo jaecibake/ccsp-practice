@@ -717,6 +717,19 @@ select:focus, input:focus { outline: none; border-color: var(--accent); }
   margin-top: 16px;
   opacity: 0.6;
 }
+.lock-reset-wrap { margin-top: 10px; }
+.lock-reset-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  opacity: 0.55;
+  transition: opacity 0.15s, color 0.15s;
+}
+.lock-reset-btn:hover { opacity: 1; color: var(--danger); }
 
 /* ── Acronyms / Glossary (Reference Screens) ─────────────────────────────── */
 .ref-toolbar {

@@ -1402,35 +1402,38 @@ document.addEventListener('DOMContentLoaded', async () => {
   const lockBtn    = document.getElementById('lock-submit-btn');
   const lockErr    = document.getElementById('lock-error');
   const lockToggle = document.getElementById('lock-toggle-vis');
-  const lockSpinner= document.getElementById('lock-spinner');
+
+  function setLockBtnLoading(on) {
+    lockBtn.disabled = on;
+    if (on) {
+      lockBtn.innerHTML =
+        '<span style="display:inline-block;width:14px;height:14px;border:2px solid #fff;' +
+        'border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite;' +
+        'vertical-align:middle;margin-right:8px"></span>Unlocking…';
+    } else {
+      lockBtn.textContent = 'Unlock →';
+    }
+  }
 
   async function attemptUnlock(passphrase) {
-    if (!passphrase) {
-      lockInput.focus();
-      return;
-    }
-    lockBtn.disabled = true;
-    lockBtn.textContent = '';
-    lockSpinner.style.display = 'inline-block';
+    if (!passphrase) { lockInput.focus(); return; }
+    setLockBtnLoading(true);
     lockErr.style.display = 'none';
 
-    const valid = await validateKey(passphrase);
+    let valid = false;
+    try { valid = await validateKey(passphrase); } catch (e) { console.error('Unlock error:', e); }
 
-    lockSpinner.style.display = 'none';
-    lockBtn.textContent = 'Unlock →';
-    lockBtn.disabled = false;
+    setLockBtnLoading(false);
 
     if (valid) {
-      // Store passphrase permanently in localStorage (per device)
       localStorage.setItem(CCSP_PASS_LKEY, passphrase);
       await loadState();
-      // Animate out
       lockScreen.style.animation = 'lockFadeOut 0.4s ease forwards';
       setTimeout(() => { lockScreen.style.display = 'none'; initApp(); }, 380);
     } else {
       lockErr.style.display = 'block';
       lockErr.style.animation = 'none';
-      void lockErr.offsetWidth; // reflow to restart animation
+      void lockErr.offsetWidth;
       lockErr.style.animation = 'shake 0.35s ease';
       lockInput.value = '';
       lockInput.focus();
@@ -1444,24 +1447,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     lockToggle.textContent = lockInput.type === 'password' ? '👁' : '🙈';
   });
 
+  // Reset button — clears all stored keys so user can set a new one
+  const lockResetBtn = document.getElementById('lock-reset-btn');
+  if (lockResetBtn) {
+    lockResetBtn.addEventListener('click', () => {
+      if (confirm('Reset this device?\n\nThis will erase your stored key and ALL saved progress on this device.')) {
+        [CCSP_SALT_KEY, CCSP_VALID_KEY, CCSP_DATA_KEY, CCSP_PASS_LKEY, 'ccsp_state'].forEach(k => localStorage.removeItem(k));
+        location.reload();
+      }
+    });
+  }
+
   // Auto-unlock if this device has unlocked before
   const savedPass = localStorage.getItem(CCSP_PASS_LKEY);
   if (savedPass) {
-    lockBtn.disabled = true;
-    lockBtn.textContent = '';
-    lockSpinner.style.display = 'inline-block';
-    const valid = await validateKey(savedPass);
+    setLockBtnLoading(true);
+    let valid = false;
+    try { valid = await validateKey(savedPass); } catch (e) {}
     if (valid) {
       await loadState();
       lockScreen.style.display = 'none';
       initApp();
       return;
     }
-    // Stored key no longer valid — clear it and show lock screen
     localStorage.removeItem(CCSP_PASS_LKEY);
-    lockSpinner.style.display = 'none';
-    lockBtn.textContent = 'Unlock →';
-    lockBtn.disabled = false;
+    setLockBtnLoading(false);
   }
 
   lockInput.focus();
