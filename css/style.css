@@ -108,6 +108,23 @@ body {
   font-size: 0.72rem;
   color: var(--text-muted);
 }
+.lock-device-btn {
+  width: 100%;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  padding: 7px 10px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.lock-device-btn:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: rgba(231,76,60,0.08);
+}
 
 /* ── Main Content ────────────────────────────────────────────────────────── */
 .main-wrap {

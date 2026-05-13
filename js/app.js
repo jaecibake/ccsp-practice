@@ -4,8 +4,7 @@
 const CCSP_SALT_KEY  = 'ccsp_salt';
 const CCSP_VALID_KEY = 'ccsp_validator';
 const CCSP_DATA_KEY  = 'ccsp_state_enc';
-const CCSP_COOKIE    = 'ccsp_session';
-const CCSP_PASS_SKEY = 'ccsp_pass'; // sessionStorage key
+const CCSP_PASS_LKEY = 'ccsp_pass_local'; // localStorage — persists forever per device
 
 let cryptoKey = null;
 
@@ -62,16 +61,6 @@ async function validateKey(passphrase) {
     if (plain === 'CCSP_UNLOCKED') { cryptoKey = key; return true; }
     return false;
   } catch (e) { return false; }
-}
-
-function setCookie(name, value, hours) {
-  const d = new Date();
-  d.setTime(d.getTime() + hours * 3600000);
-  document.cookie = `${name}=${value};expires=${d.toUTCString()};path=/;SameSite=Strict`;
-}
-function getCookie(name) {
-  const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-  return m ? m.pop() : null;
 }
 
 // ── State ──────────────────────────────────────────────────────────────────────
@@ -1187,6 +1176,15 @@ function initApp() {
   // History controls
   document.getElementById('clear-history-btn').addEventListener('click', clearHistory);
 
+  // Lock Device button — clears stored passphrase and reloads
+  const lockDeviceBtn = document.getElementById('lock-device-btn');
+  if (lockDeviceBtn) lockDeviceBtn.addEventListener('click', () => {
+    if (confirm('Lock this device? You\'ll need to enter the secret key next time.')) {
+      localStorage.removeItem(CCSP_PASS_LKEY);
+      location.reload();
+    }
+  });
+
   // Restore active quiz if page was refreshed mid-quiz
   if (STATE.currentSession && STATE.currentSession.answers.some(a => a === null)) {
     showScreen('quiz');
@@ -1227,9 +1225,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     lockBtn.disabled = false;
 
     if (valid) {
-      // Store session (8-hour cookie + tab-scoped sessionStorage)
-      sessionStorage.setItem(CCSP_PASS_SKEY, passphrase);
-      setCookie(CCSP_COOKIE, '1', 8);
+      // Store passphrase permanently in localStorage (per device)
+      localStorage.setItem(CCSP_PASS_LKEY, passphrase);
       await loadState();
       // Animate out
       lockScreen.style.animation = 'lockFadeOut 0.4s ease forwards';
@@ -1251,10 +1248,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     lockToggle.textContent = lockInput.type === 'password' ? '👁' : '🙈';
   });
 
-  // Auto-unlock if valid session exists
-  const savedPass  = sessionStorage.getItem(CCSP_PASS_SKEY);
-  const hasCookie  = getCookie(CCSP_COOKIE);
-  if (savedPass && hasCookie) {
+  // Auto-unlock if this device has unlocked before
+  const savedPass = localStorage.getItem(CCSP_PASS_LKEY);
+  if (savedPass) {
     lockBtn.disabled = true;
     lockBtn.textContent = '';
     lockSpinner.style.display = 'inline-block';
@@ -1265,7 +1261,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       initApp();
       return;
     }
-    // Session was invalid — fall through to show lock screen
+    // Stored key no longer valid — clear it and show lock screen
+    localStorage.removeItem(CCSP_PASS_LKEY);
     lockSpinner.style.display = 'none';
     lockBtn.textContent = 'Unlock →';
     lockBtn.disabled = false;
