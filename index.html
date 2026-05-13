@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CCSP Exam Practice</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ── Lock Screen ────────────────────────────────────────────────────────── -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-logo">🔒</div>
+    <div class="lock-title">CCSP Practice</div>
+    <div class="lock-sub">Certified Cloud Security Professional</div>
+    <div class="lock-divider"></div>
+    <div class="lock-desc">Enter your secret key to access the platform</div>
+    <div class="lock-input-wrap">
+      <input type="password" id="lock-key-input" class="lock-input"
+             placeholder="Secret key…" autocomplete="off" spellcheck="false" />
+      <button class="lock-toggle-btn" id="lock-toggle-vis" title="Show / hide key">👁</button>
+    </div>
+    <div id="lock-error" class="lock-error">Incorrect key. Please try again.</div>
+    <button class="btn btn-success lock-btn" id="lock-submit-btn">
+      <span id="lock-spinner" class="lock-spinner" style="display:none"></span>
+      Unlock →
+    </button>
+    <div class="lock-footer">Session is remembered for 8 hours</div>
+  </div>
+</div>
+
+<!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-title">CCSP Practice</div>
+    <div class="logo-sub">Certified Cloud Security Professional</div>
+  </div>
+
+  <div class="sidebar-section-label">Main</div>
+  <button class="nav-btn" data-screen="home">
+    <span class="nav-icon">🏠</span> Home
+  </button>
+  <button class="nav-btn" data-screen="dashboard">
+    <span class="nav-icon">📊</span> Dashboard
+  </button>
+
+  <div class="sidebar-section-label">Study Tools</div>
+  <button class="nav-btn" data-screen="setup">
+    <span class="nav-icon">▶️</span> Study Questions
+    <span class="nav-badge" id="nav-total">1000</span>
+  </button>
+  <button class="nav-btn" data-screen="bookmarks">
+    <span class="nav-icon">⭐</span> Bookmarks
+    <span class="nav-badge" id="nav-bk-count">0</span>
+  </button>
+  <button class="nav-btn" data-screen="history">
+    <span class="nav-icon">🕐</span> History
+    <span class="nav-badge" id="nav-sess-count">0</span>
+  </button>
+
+  <div class="sidebar-section-label">Reference</div>
+  <button class="nav-btn" data-screen="acronyms">
+    <span class="nav-icon">🔤</span> Acronyms
+  </button>
+  <button class="nav-btn" data-screen="glossary">
+    <span class="nav-icon">📖</span> Glossary
+  </button>
+
+  <div class="sidebar-bottom">
+    v1.0 &nbsp;·&nbsp; 1,000 Questions
+  </div>
+</aside>
+
+<!-- ── Main Content ────────────────────────────────────────────────────── -->
+<div class="main-wrap">
+<main>
+
+  <!-- ── HOME ─────────────────────────────────────────────────────────── -->
+  <div id="screen-home" class="screen">
+    <div class="banner">
+      <div class="banner-title">Welcome back! 👋</div>
+      <div class="banner-sub">Ready to continue your certification journey? Let's make today count!</div>
+      <div class="banner-quote">— Great things never come from comfort zones</div>
+      <div class="banner-score">
+        <div class="gauge-wrap">
+          <svg id="home-gauge" width="110" height="70" viewBox="0 0 110 70"></svg>
+          <div id="home-gauge-pct" style="color:#fff;font-size:1.3rem;font-weight:800;margin-top:-6px">—</div>
+          <div class="gauge-label">Overall Readiness</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question of the Day -->
+    <div class="qotd-card">
+      <div class="qotd-header">
+        <span class="qotd-title">📅 Question of the Day</span>
+        <span class="qotd-streak" id="qotd-date"></span>
+      </div>
+      <div class="qotd-q" id="qotd-text">Loading…</div>
+      <div class="qotd-actions">
+        <button class="btn btn-sm" id="qotd-answer-btn">Answer Now →</button>
+      </div>
+    </div>
+
+    <!-- Study Tools Grid -->
+    <div class="tools-grid">
+      <div class="tool-card" data-screen="setup">
+        <div class="tool-badge" id="home-total-badge">1000</div>
+        <div class="tool-icon">📝</div>
+        <div class="tool-name">Study Questions</div>
+        <div class="tool-desc">Master exam concepts across all 6 domains by level</div>
+      </div>
+      <div class="tool-card" data-screen="history">
+        <div class="tool-badge" id="home-sess-badge">0</div>
+        <div class="tool-icon">📋</div>
+        <div class="tool-name">Practice Tests</div>
+        <div class="tool-desc">Review past sessions and track performance over time</div>
+      </div>
+      <div class="tool-card" data-screen="bookmarks">
+        <div class="tool-badge" id="home-bk-badge">0</div>
+        <div class="tool-icon">⭐</div>
+        <div class="tool-name">Bookmarks</div>
+        <div class="tool-desc">Revisit starred questions for focused review</div>
+      </div>
+      <div class="tool-card" data-screen="dashboard">
+        <div class="tool-icon">📊</div>
+        <div class="tool-name">Analytics</div>
+        <div class="tool-desc">Track readiness score and domain-level progress</div>
+      </div>
+      <div class="tool-card" id="quick-10-card">
+        <div class="tool-icon">⚡</div>
+        <div class="tool-name">Quick 10</div>
+        <div class="tool-desc">Launch a fast 10-question mixed drill right now</div>
+      </div>
+      <div class="tool-card" id="domain-drill-card">
+        <div class="tool-icon">🎯</div>
+        <div class="tool-name">Weakest Domain</div>
+        <div class="tool-desc">Focus on your lowest-scoring domain automatically</div>
+      </div>
+      <div class="tool-card" data-screen="acronyms">
+        <div class="tool-badge" id="home-acr-badge">300+</div>
+        <div class="tool-icon">🔤</div>
+        <div class="tool-name">Acronyms</div>
+        <div class="tool-desc">Quick reference guide for certification abbreviations</div>
+      </div>
+      <div class="tool-card" data-screen="glossary">
+        <div class="tool-badge" id="home-gls-badge">140+</div>
+        <div class="tool-icon">📖</div>
+        <div class="tool-name">Glossary</div>
+        <div class="tool-desc">Comprehensive dictionary of certification terms</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DASHBOARD ─────────────────────────────────────────────────────── -->
+  <div id="screen-dashboard" class="screen">
+    <div class="banner" style="padding:22px 28px">
+      <div class="banner-title">Dashboard</div>
+      <div class="banner-sub">Track your progress and optimize your learning journey</div>
+      <div class="banner-score">
+        <div class="gauge-wrap">
+          <svg id="dash-gauge" width="110" height="70" viewBox="0 0 110 70"></svg>
+          <div id="dash-gauge-pct" style="color:#fff;font-size:1.3rem;font-weight:800;margin-top:-6px">—</div>
+          <div class="gauge-label">Overall Readiness</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">📈</div>
+        <div>
+          <div class="stat-value" id="stat-accuracy">—</div>
+          <div class="stat-label">Overall Accuracy</div>
+          <div class="stat-sub" id="stat-accuracy-sub"></div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">❓</div>
+        <div>
+          <div class="stat-value" id="stat-seen">—</div>
+          <div class="stat-label">Questions Answered</div>
+          <div class="stat-sub" id="stat-seen-sub"></div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">⏱</div>
+        <div>
+          <div class="stat-value" id="stat-sessions">—</div>
+          <div class="stat-label">Tests Completed</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple">⭐</div>
+        <div>
+          <div class="stat-value" id="stat-bookmarks">—</div>
+          <div class="stat-label">Bookmarks</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">Overall Readiness Score
+          <span class="card-title-tag">based on attempts</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:24px">
+          <div>
+            <svg id="big-gauge" width="160" height="100" viewBox="0 0 160 100"></svg>
+            <div id="big-gauge-pct" style="text-align:center;font-size:2rem;font-weight:800;margin-top:-8px;color:var(--accent)">—</div>
+            <div style="text-align:center;font-size:0.72rem;color:var(--text-muted);margin-top:2px">Overall Readiness Score</div>
+          </div>
+          <div style="flex:1">
+            <div style="background:var(--surface2);border-radius:8px;padding:12px">
+              <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px">Next Milestone</div>
+              <div style="font-size:0.88rem;font-weight:700;color:var(--accent)" id="next-milestone">50%</div>
+              <div style="height:6px;background:var(--border);border-radius:3px;margin-top:8px;overflow:hidden">
+                <div id="milestone-bar" style="height:6px;background:var(--accent);border-radius:3px;width:0%;transition:width 0.5s"></div>
+              </div>
+              <div style="font-size:0.72rem;color:var(--text-muted);margin-top:6px" id="milestone-sub">Keep going!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">Readiness Progress History</div>
+        <canvas id="progress-chart"></canvas>
+      </div>
+    </div>
+
+    <div style="margin-top:18px" class="card">
+      <div class="card-title">Domain Readiness Score
+        <span class="card-title-tag">Track your progress across all domains</span>
+      </div>
+      <div id="domain-progress"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Recent Sessions</div>
+      <div id="recent-sessions"></div>
+    </div>
+
+    <button class="btn" onclick="document.querySelector('[data-screen=setup]').click()">▶ Start a New Quiz</button>
+  </div>
+
+  <!-- ── SETUP ──────────────────────────────────────────────────────────── -->
+  <div id="screen-setup" class="screen">
+    <div class="banner" style="padding:22px 28px">
+      <div class="banner-title">Study Questions</div>
+      <div class="banner-sub">Configure your practice session — choose domains, difficulty, and duration</div>
+    </div>
+
+    <div class="setup-grid">
+      <div class="card">
+        <div class="section-title">Domains</div>
+        <div class="btn-group">
+          <button class="btn btn-outline btn-sm" id="select-all-domains">All</button>
+          <button class="btn btn-outline btn-sm" id="deselect-all-domains">None</button>
+        </div>
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input type="checkbox" class="domain-cb" value="1" checked /><label>D1: Cloud Concepts, Architecture &amp; Design</label></label>
+          <label class="checkbox-item"><input type="checkbox" class="domain-cb" value="2" checked /><label>D2: Cloud Data Security</label></label>
+          <label class="checkbox-item"><input type="checkbox" class="domain-cb" value="3" checked /><label>D3: Cloud Platform &amp; Infrastructure Security</label></label>
+          <label class="checkbox-item"><input type="checkbox" class="domain-cb" value="4" checked /><label>D4: Cloud Application Security</label></label>
+          <label class="checkbox-item"><input type="checkbox" class="domain-cb" value="5" checked /><label>D5: Cloud Security Operations</label></label>
+          <label class="checkbox-item"><input type="checkbox" class="domain-cb" value="6" checked /><label>D6: Legal, Risk &amp; Compliance</label></label>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="section-title">Difficulty Level</div>
+          <div class="checkbox-group">
+            <label class="checkbox-item"><input type="checkbox" class="level-cb" value="1" checked /><label><span class="level-badge badge-foundation">Foundation</span> — Core concepts &amp; definitions</label></label>
+            <label class="checkbox-item"><input type="checkbox" class="level-cb" value="2" checked /><label><span class="level-badge badge-intermediate">Intermediate</span> — Applied knowledge</label></label>
+            <label class="checkbox-item"><input type="checkbox" class="level-cb" value="3" checked /><label><span class="level-badge badge-advanced">Advanced</span> — Exam-level scenarios</label></label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Number of Questions</div>
+          <select id="q-count">
+            <option value="10">10 — Quick drill</option>
+            <option value="25">25 — Short session</option>
+            <option value="50" selected>50 — Standard session</option>
+            <option value="75">75 — Extended session</option>
+            <option value="125">125 — Full exam simulation</option>
+            <option value="all">All available</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Timer Mode</div>
+          <div class="radio-group" style="margin-bottom:14px">
+            <label class="radio-item"><input type="radio" name="quiz-mode" value="untimed" checked /> Untimed</label>
+            <label class="radio-item"><input type="radio" name="quiz-mode" value="timed" /> Timed</label>
+          </div>
+          <div id="timer-options" style="display:none">
+            <div class="radio-group" style="margin-bottom:12px">
+              <label class="radio-item"><input type="radio" name="timer-mode" value="full" checked /> Exam countdown</label>
+              <label class="radio-item"><input type="radio" name="timer-mode" value="per-q" /> Per question</label>
+            </div>
+            <div class="timer-sub">
+              <div style="flex:1">
+                <label class="form-label">Exam duration (minutes)</label>
+                <input type="number" id="full-exam-minutes" value="240" min="10" max="600" />
+              </div>
+              <div style="flex:1">
+                <label class="form-label">Seconds per question</label>
+                <input type="number" id="per-q-seconds" value="90" min="15" max="300" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-success" id="start-quiz-btn" style="padding:12px 32px;font-size:1rem">▶ Start Quiz</button>
+  </div>
+
+  <!-- ── QUIZ ───────────────────────────────────────────────────────────── -->
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-header">
+      <span class="q-counter">Question <strong id="q-num">1</strong> of <strong id="q-total">50</strong></span>
+      <div id="timer-wrap" style="display:none">
+        <span style="color:var(--text-muted);font-size:0.8rem">⏱</span>
+        <span id="timer-display">00:00</span>
+      </div>
+      <button id="exit-quiz-btn">✕ Exit</button>
+    </div>
+
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-bar-bg">
+        <div id="quiz-progress-bar" style="width:0%"></div>
+      </div>
+      <div class="quiz-progress-text" id="quiz-progress-text">0%</div>
+    </div>
+
+    <div class="badges">
+      <span id="q-domain-badge" class="domain-badge">D1</span>
+      <span id="q-level-badge" class="level-badge badge-foundation">Foundation</span>
+    </div>
+
+    <div id="q-text" class="q-text"></div>
+    <div id="q-options" class="options-list"></div>
+
+    <div id="explanation" class="explanation" style="display:none">
+      <span id="exp-icon">✓</span>
+      <span id="exp-text"></span>
+    </div>
+
+    <div class="quiz-actions">
+      <button id="bookmark-btn" title="Bookmark this question">⭐ Bookmark</button>
+      <button id="next-btn" class="btn" style="display:none">Next Question</button>
+    </div>
+  </div>
+
+  <!-- ── RESULTS ────────────────────────────────────────────────────────── -->
+  <div id="screen-results" class="screen">
+    <div class="results-hero">
+      <div id="res-score-pct">—</div>
+      <div><span id="res-verdict" class="verdict">—</span></div>
+      <div id="res-count">—</div>
+    </div>
+
+    <div class="res-grid">
+      <div class="card">
+        <div class="section-title">Score by Domain</div>
+        <div id="res-by-domain"></div>
+      </div>
+      <div class="card">
+        <div class="section-title">Score by Level</div>
+        <div id="res-by-level"></div>
+      </div>
+    </div>
+
+    <div class="results-actions">
+      <button class="btn btn-success" id="new-quiz-btn">▶ New Quiz</button>
+      <button class="btn btn-outline" id="dashboard-btn">Dashboard</button>
+      <button class="btn btn-outline" id="show-wrong-btn" data-filtered="0">Show Wrong Only</button>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Question Review</div>
+      <div id="review-list"></div>
+    </div>
+  </div>
+
+  <!-- ── BOOKMARKS ──────────────────────────────────────────────────────── -->
+  <div id="screen-bookmarks" class="screen">
+    <div class="banner" style="padding:22px 28px">
+      <div class="banner-title">⭐ Bookmarks</div>
+      <div class="banner-sub">Review your starred questions for targeted practice</div>
+    </div>
+
+    <div class="bookmarks-toolbar">
+      <select id="bk-domain-filter">
+        <option value="0">All Domains</option>
+        <option value="1">D1: Cloud Concepts</option>
+        <option value="2">D2: Data Security</option>
+        <option value="3">D3: Platform &amp; Infrastructure</option>
+        <option value="4">D4: Application Security</option>
+        <option value="5">D5: Security Operations</option>
+        <option value="6">D6: Legal, Risk &amp; Compliance</option>
+      </select>
+      <select id="bk-level-filter">
+        <option value="0">All Levels</option>
+        <option value="1">Foundation</option>
+        <option value="2">Intermediate</option>
+        <option value="3">Advanced</option>
+      </select>
+      <span class="bk-count"><span id="bk-count">0</span> bookmarks</span>
+      <button class="btn btn-success btn-sm" id="practice-bookmarks-btn">▶ Practice Bookmarks</button>
+    </div>
+
+    <div id="bookmarks-list"></div>
+  </div>
+
+  <!-- ── HISTORY ────────────────────────────────────────────────────────── -->
+  <div id="screen-history" class="screen">
+    <div class="banner" style="padding:22px 28px">
+      <div class="banner-title">🕐 Test History</div>
+      <div class="banner-sub">Track your progress and review past performance</div>
+    </div>
+
+    <div class="stats-grid" style="margin-bottom:22px">
+      <div class="stat-card">
+        <div class="stat-icon blue">📋</div>
+        <div>
+          <div class="stat-value" id="hist-tests">0</div>
+          <div class="stat-label">Tests Taken</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">📈</div>
+        <div>
+          <div class="stat-value" id="hist-avg">—</div>
+          <div class="stat-label">Average Score</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">🏆</div>
+        <div>
+          <div class="stat-value" id="hist-best">—</div>
+          <div class="stat-label">Best Score</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple">✅</div>
+        <div>
+          <div class="stat-value" id="hist-correct">—</div>
+          <div class="stat-label">Total Correct</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div style="font-size:0.95rem;font-weight:700">Test History</div>
+      <button class="btn btn-danger btn-sm" id="clear-history-btn">Clear All</button>
+    </div>
+    <div id="history-list"></div>
+  </div>
+
+  <!-- ── ACRONYMS ──────────────────────────────────────────────────────────── -->
+  <div id="screen-acronyms" class="screen">
+    <div class="banner" style="padding:22px 28px">
+      <div class="banner-title">🔤 Acronyms</div>
+      <div class="banner-sub">Quick reference guide for CCSP certification abbreviations and acronyms</div>
+    </div>
+
+    <div class="ref-toolbar">
+      <div class="ref-search-wrap">
+        <span class="ref-search-icon">🔍</span>
+        <input type="text" id="acr-search" class="ref-search" placeholder="Search acronyms or full names…" />
+      </div>
+      <div class="ref-az-row" id="acr-az-row"></div>
+    </div>
+
+    <div id="acr-count-bar" class="ref-count-bar"></div>
+    <div id="acronyms-list" class="ref-list"></div>
+  </div>
+
+  <!-- ── GLOSSARY ───────────────────────────────────────────────────────────── -->
+  <div id="screen-glossary" class="screen">
+    <div class="banner" style="padding:22px 28px">
+      <div class="banner-title">📖 Glossary</div>
+      <div class="banner-sub">Comprehensive dictionary of CCSP certification terms and concepts</div>
+    </div>
+
+    <div class="ref-toolbar">
+      <div class="ref-search-wrap">
+        <span class="ref-search-icon">🔍</span>
+        <input type="text" id="gls-search" class="ref-search" placeholder="Search terms or definitions…" />
+      </div>
+      <div class="ref-az-row" id="gls-az-row"></div>
+    </div>
+
+    <div id="gls-count-bar" class="ref-count-bar"></div>
+    <div id="glossary-list" class="ref-list"></div>
+  </div>
+
+</main>
+</div>
+
+<script src="js/questions.js"></script>
+<script src="js/acronyms.js"></script>
+<script src="js/glossary.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
