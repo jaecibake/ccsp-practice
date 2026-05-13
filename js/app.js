@@ -545,8 +545,9 @@ function renderQuestion() {
     opts.appendChild(btn);
   });
 
+  const showAns = s.config.showAnswer !== false;
   const exp = document.getElementById('explanation');
-  if (answered) {
+  if (answered && showAns) {
     exp.style.display = 'block';
     document.getElementById('exp-icon').textContent = s.answers[s.current] === q.correct ? '✓' : '✗';
     document.getElementById('exp-icon').style.color = s.answers[s.current] === q.correct ? '#27ae60' : '#e74c3c';
@@ -1062,6 +1063,7 @@ function initApp() {
     if (screen === 'history')   renderHistory();
     if (screen === 'acronyms')  renderAcronyms();
     if (screen === 'glossary')  renderGlossary();
+    if (screen === 'custom')    renderCustomTest();
   }
 
   document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -1197,6 +1199,200 @@ function initApp() {
     const homeBtn = document.querySelector('.nav-btn[data-screen="home"]');
     if (homeBtn) homeBtn.classList.add('active');
   }
+}
+
+// ── Custom Test Builder ────────────────────────────────────────────────────────
+const DOMAIN_NAMES = [
+  'Cloud Concepts, Architecture & Design',
+  'Cloud Data Security',
+  'Cloud Platform & Infrastructure Security',
+  'Cloud Application Security',
+  'Cloud Security Operations',
+  'Legal, Risk & Compliance'
+];
+
+let ctInitDone = false;
+const ctConfig = {
+  domains:    [1,2,3,4,5,6],
+  numQ:       10,
+  untimed:    true,
+  timeMin:    10,
+  showAnswer: true,
+  priority:   'default'
+};
+
+function renderCustomTest() {
+  if (ctInitDone) { updateCustomSummary(); return; }
+  ctInitDone = true;
+
+  // ── Populate domain rows ───────────────────────────────────────────────
+  const domainList = document.getElementById('ct-domain-list');
+  domainList.innerHTML = '';
+  const qs = STATE.questionStats;
+
+  DOMAIN_NAMES.forEach((name, i) => {
+    const d = i + 1;
+    const dqs = QUESTIONS.filter(q => q.domain === d);
+    const attempts = dqs.reduce((a, q) => a + (qs[q.id]?.attempts || 0), 0);
+    const correct  = dqs.reduce((a, q) => a + (qs[q.id]?.correct  || 0), 0);
+    const score    = attempts > 0 ? pct(correct, attempts) : null;
+
+    const row = document.createElement('div');
+    row.className = 'cb-domain-row checked';
+    row.dataset.domain = d;
+    row.innerHTML = `
+      <div class="cb-domain-check"></div>
+      <div class="cb-domain-name">Domain ${d}: ${name}</div>
+      <div class="cb-domain-pct ${score === null ? '' : score >= 70 ? 'green' : score >= 50 ? 'orange' : 'red'}">
+        ${score === null ? '—' : score + '%'}
+      </div>`;
+    row.addEventListener('click', () => {
+      const checked = row.classList.toggle('checked');
+      if (checked) {
+        if (!ctConfig.domains.includes(d)) ctConfig.domains.push(d);
+      } else {
+        ctConfig.domains = ctConfig.domains.filter(x => x !== d);
+      }
+      const total = document.querySelectorAll('#ct-domain-list .cb-domain-row.checked').length;
+      document.getElementById('ct-domains-tag').textContent = `${total} / 6`;
+      updateCustomSummary();
+    });
+    domainList.appendChild(row);
+  });
+
+  // ── Deselect All ──────────────────────────────────────────────────────
+  document.getElementById('ct-deselect-all').addEventListener('click', () => {
+    document.querySelectorAll('#ct-domain-list .cb-domain-row').forEach(r => r.classList.remove('checked'));
+    ctConfig.domains = [];
+    document.getElementById('ct-domains-tag').textContent = '0 / 6';
+    updateCustomSummary();
+  });
+
+  // ── Number of Questions buttons ───────────────────────────────────────
+  document.querySelectorAll('.cb-num-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cb-num-btn').forEach(b => b.classList.remove('cb-num-active'));
+      btn.classList.add('cb-num-active');
+      ctConfig.numQ = parseInt(btn.dataset.n, 10);
+      updateCustomSummary();
+    });
+  });
+
+  // ── Untimed toggle ─────────────────────────────────────────────────────
+  const untimedToggle  = document.getElementById('ct-untimed');
+  const timeSec        = document.getElementById('ct-time-section');
+  untimedToggle.addEventListener('change', () => {
+    ctConfig.untimed = untimedToggle.checked;
+    timeSec.classList.toggle('cb-time-disabled', ctConfig.untimed);
+    updateCustomSummary();
+  });
+
+  // ── Time buttons ───────────────────────────────────────────────────────
+  document.querySelectorAll('.cb-time-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cb-time-btn').forEach(b => b.classList.remove('cb-time-active'));
+      btn.classList.add('cb-time-active');
+      ctConfig.timeMin = parseInt(btn.dataset.t, 10);
+      updateCustomSummary();
+    });
+  });
+  // default-select first time btn
+  const firstTimeBtn = document.querySelector('.cb-time-btn');
+  if (firstTimeBtn) { firstTimeBtn.classList.add('cb-time-active'); ctConfig.timeMin = parseInt(firstTimeBtn.dataset.t, 10); }
+
+  // ── Show Answer toggle ─────────────────────────────────────────────────
+  const showAnsToggle = document.getElementById('ct-show-answer');
+  showAnsToggle.addEventListener('change', () => {
+    ctConfig.showAnswer = showAnsToggle.checked;
+    updateCustomSummary();
+  });
+
+  // ── Priority radios ────────────────────────────────────────────────────
+  document.querySelectorAll('.cb-priority-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.cb-priority-item').forEach(i => i.classList.remove('cb-priority-active'));
+      item.classList.add('cb-priority-active');
+      item.querySelector('input').checked = true;
+      ctConfig.priority = item.dataset.val;
+      updateCustomSummary();
+    });
+  });
+
+  // ── Build button ───────────────────────────────────────────────────────
+  document.getElementById('ct-build-btn').addEventListener('click', buildCustomTest);
+
+  updateCustomSummary();
+}
+
+function updateCustomSummary() {
+  const domCount = ctConfig.domains.length;
+  document.getElementById('ct-sum-domains').textContent = `${domCount} / 6`;
+  document.getElementById('ct-sum-mode').textContent    =
+    ctConfig.untimed ? `${ctConfig.numQ} Questions` : `${ctConfig.numQ} Q · ${ctConfig.timeMin} min`;
+  document.getElementById('ct-sum-answers').textContent = ctConfig.showAnswer ? 'Yes' : 'No';
+  const prioLabels = { wrong:'Incorrect', unseen:'Unseen', bookmarked:'Bookmarked', default:'Smart' };
+  document.getElementById('ct-sum-priority').textContent = prioLabels[ctConfig.priority] || 'Smart';
+
+  const buildBtn = document.getElementById('ct-build-btn');
+  if (buildBtn) buildBtn.disabled = domCount === 0;
+}
+
+function buildCustomTest() {
+  if (ctConfig.domains.length === 0) return;
+
+  const qs = STATE.questionStats;
+  let pool = QUESTIONS.filter(q => ctConfig.domains.includes(q.domain));
+
+  // Apply priority filter
+  if (ctConfig.priority === 'wrong') {
+    const wrong = pool.filter(q => {
+      const s = qs[q.id];
+      return s && s.attempts > 0 && (s.correct / s.attempts) < 0.5;
+    });
+    if (wrong.length > 0) pool = wrong;
+  } else if (ctConfig.priority === 'unseen') {
+    const unseen = pool.filter(q => !qs[q.id] || !qs[q.id].seen);
+    if (unseen.length > 0) pool = unseen;
+  } else if (ctConfig.priority === 'bookmarked') {
+    const bkSet = new Set(STATE.bookmarks);
+    const bkd   = pool.filter(q => bkSet.has(q.id));
+    if (bkd.length > 0) pool = bkd;
+  }
+
+  const count    = Math.min(ctConfig.numQ, pool.length);
+  const selected = shuffle(pool).slice(0, count);
+
+  if (selected.length === 0) {
+    alert('No questions found for the selected filters. Try adjusting your options.');
+    return;
+  }
+
+  const mode       = ctConfig.untimed ? 'untimed' : 'timed';
+  const timerValue = ctConfig.untimed ? 0 : ctConfig.timeMin * 60;
+
+  STATE.currentSession = {
+    config: {
+      domains:    ctConfig.domains,
+      levels:     [1,2,3],
+      count:      selected.length,
+      mode,
+      timerMode:  ctConfig.untimed ? null : 'full',
+      timerValue,
+      showAnswer: ctConfig.showAnswer
+    },
+    questions:         selected,
+    answers:           new Array(selected.length).fill(null),
+    bookmarked:        [...STATE.bookmarks],
+    current:           0,
+    startTime:         Date.now(),
+    timerRemaining:    timerValue,
+    perQTimerRemaining: null
+  };
+
+  saveState();
+  showScreen('quiz');
+  renderQuestion();
+  startTimer();
 }
 
 // ── Lock Screen & Bootstrap ────────────────────────────────────────────────────
