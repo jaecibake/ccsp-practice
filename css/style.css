@@ -147,7 +147,7 @@ main {
 
 /* ── Banner ──────────────────────────────────────────────────────────────── */
 .banner {
-  background: linear-gradient(135deg, #1565c0 0%, #0d47a1 60%, #0a3880 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
   border-radius: var(--radius);
   padding: 28px 32px;
   margin-bottom: 24px;
@@ -180,6 +180,36 @@ main {
   right: 32px; top: 50%;
   transform: translateY(-50%);
   text-align: center;
+}
+
+/* Cert badge chip inside banner title */
+.banner-cert-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.9);
+  margin-left: 10px;
+  vertical-align: middle;
+  letter-spacing: 0.04em;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Smooth accent-color transitions across the UI */
+:root {
+  transition: --accent 0s;  /* CSS variables don't transition natively; handled by JS */
+}
+.nav-btn.active,
+.sidebar-logo .logo-title,
+.cert-card-name,
+.cert-select-btn {
+  transition: color 0.35s ease, background 0.35s ease, border-color 0.35s ease;
+}
+.banner {
+  transition: background 0.4s ease;
 }
 
 /* ── Readiness Gauge ─────────────────────────────────────────────────────── */

@@ -1,4 +1,4 @@
-const ACRONYMS = [
+const ACRONYMS_CCSP = [
   { abbr:"2FA",      full:"Two Factor Authentication" },
   { abbr:"3DES",     full:"Triple Data Encryption Algorithm" },
   { abbr:"3FA",      full:"Three-Factor Authentication" },

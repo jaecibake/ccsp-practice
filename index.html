@@ -98,8 +98,10 @@
   <!-- ── HOME ─────────────────────────────────────────────────────────── -->
   <div id="screen-home" class="screen">
     <div class="banner">
-      <div class="banner-title">Welcome back! 👋</div>
-      <div class="banner-sub">Ready to continue your certification journey? Let's make today count!</div>
+      <div class="banner-title">Welcome back! 👋
+        <span id="banner-cert-badge" class="banner-cert-badge"></span>
+      </div>
+      <div class="banner-sub" id="banner-cert-sub">Ready to continue your certification journey? Let's make today count!</div>
       <div class="banner-quote">— Great things never come from comfort zones</div>
       <div class="banner-score">
         <div class="gauge-wrap">
@@ -283,13 +285,8 @@
           <button class="btn btn-outline btn-sm" id="select-all-domains">All</button>
           <button class="btn btn-outline btn-sm" id="deselect-all-domains">None</button>
         </div>
-        <div class="checkbox-group">
-          <label class="checkbox-item"><input type="checkbox" class="domain-cb" value="1" checked /><label>D1: Cloud Concepts, Architecture &amp; Design</label></label>
-          <label class="checkbox-item"><input type="checkbox" class="domain-cb" value="2" checked /><label>D2: Cloud Data Security</label></label>
-          <label class="checkbox-item"><input type="checkbox" class="domain-cb" value="3" checked /><label>D3: Cloud Platform &amp; Infrastructure Security</label></label>
-          <label class="checkbox-item"><input type="checkbox" class="domain-cb" value="4" checked /><label>D4: Cloud Application Security</label></label>
-          <label class="checkbox-item"><input type="checkbox" class="domain-cb" value="5" checked /><label>D5: Cloud Security Operations</label></label>
-          <label class="checkbox-item"><input type="checkbox" class="domain-cb" value="6" checked /><label>D6: Legal, Risk &amp; Compliance</label></label>
+        <div class="checkbox-group" id="setup-domain-checks">
+          <!-- Populated dynamically by renderSetupDomains() -->
         </div>
       </div>
 
@@ -636,7 +633,7 @@
   <div id="screen-acronyms" class="screen">
     <div class="banner" style="padding:22px 28px">
       <div class="banner-title">🔤 Acronyms</div>
-      <div class="banner-sub">Quick reference guide for CCSP certification abbreviations and acronyms</div>
+      <div class="banner-sub" id="acr-banner-sub">Quick reference guide for certification abbreviations and acronyms</div>
     </div>
 
     <div class="ref-toolbar">
@@ -655,7 +652,7 @@
   <div id="screen-glossary" class="screen">
     <div class="banner" style="padding:22px 28px">
       <div class="banner-title">📖 Glossary</div>
-      <div class="banner-sub">Comprehensive dictionary of CCSP certification terms and concepts</div>
+      <div class="banner-sub" id="gls-banner-sub">Comprehensive dictionary of certification terms and concepts</div>
     </div>
 
     <div class="ref-toolbar">
@@ -678,7 +675,13 @@
 <script src="js/questions_cisa.js"></script>
 <script src="js/questions_cissp.js"></script>
 <script src="js/acronyms.js"></script>
+<script src="js/acronyms_cism.js"></script>
+<script src="js/acronyms_cisa.js"></script>
+<script src="js/acronyms_cissp.js"></script>
 <script src="js/glossary.js"></script>
+<script src="js/glossary_cism.js"></script>
+<script src="js/glossary_cisa.js"></script>
+<script src="js/glossary_cissp.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

@@ -4,15 +4,41 @@
 // Defined here so CERT_DATA is available to all functions.
 // Question arrays (QUESTIONS_CCSP etc.) are loaded by their own <script> tags before app.js.
 const CERT_DATA = {
-  ccsp:  { name:'CCSP',  fullName:'Certified Cloud Security Professional', org:'ISC²',  icon:'☁️',  color:'#4f8ef7', getQ:()=>QUESTIONS_CCSP,  getDN:()=>DOMAIN_NAMES_CCSP  },
-  cism:  { name:'CISM',  fullName:'Certified Information Security Manager',  org:'ISACA', icon:'🔒',  color:'#27ae60', getQ:()=>QUESTIONS_CISM,  getDN:()=>DOMAIN_NAMES_CISM  },
-  cisa:  { name:'CISA',  fullName:'Certified Information Systems Auditor',   org:'ISACA', icon:'🔍',  color:'#f39c12', getQ:()=>QUESTIONS_CISA,  getDN:()=>DOMAIN_NAMES_CISA  },
-  cissp: { name:'CISSP', fullName:'Certified Info Systems Security Prof.',   org:'ISC²',  icon:'🛡️', color:'#e74c3c', getQ:()=>QUESTIONS_CISSP, getDN:()=>DOMAIN_NAMES_CISSP }
+  ccsp:  { name:'CCSP',  fullName:'Certified Cloud Security Professional',       org:'ISC²',  icon:'☁️',  color:'#4f8ef7', accentDark:'#3a6fd8',
+           getQ:()=>QUESTIONS_CCSP,  getDN:()=>DOMAIN_NAMES_CCSP,
+           getAcr:()=>ACRONYMS_CCSP, getGls:()=>GLOSSARY_CCSP,
+           acroLabel:'CCSP certification abbreviations and acronyms',
+           glsLabel:'Comprehensive dictionary of CCSP certification terms and concepts',
+           domains: 6,
+           bannerSub:'Master cloud security concepts across all 6 CCSP domains' },
+  cism:  { name:'CISM',  fullName:'Certified Information Security Manager',       org:'ISACA', icon:'🔒',  color:'#27ae60', accentDark:'#1e8449',
+           getQ:()=>QUESTIONS_CISM,  getDN:()=>DOMAIN_NAMES_CISM,
+           getAcr:()=>ACRONYMS_CISM, getGls:()=>GLOSSARY_CISM,
+           acroLabel:'CISM certification abbreviations — Governance, Risk, and Security Management',
+           glsLabel:'Key terms and concepts for the CISM examination',
+           domains: 4,
+           bannerSub:'Master information security management across all 4 CISM domains' },
+  cisa:  { name:'CISA',  fullName:'Certified Information Systems Auditor',        org:'ISACA', icon:'🔍',  color:'#f39c12', accentDark:'#d68910',
+           getQ:()=>QUESTIONS_CISA,  getDN:()=>DOMAIN_NAMES_CISA,
+           getAcr:()=>ACRONYMS_CISA, getGls:()=>GLOSSARY_CISA,
+           acroLabel:'CISA certification abbreviations — IS Audit, Governance, and Risk',
+           glsLabel:'Key terms and concepts for the CISA examination',
+           domains: 5,
+           bannerSub:'Master information systems auditing across all 5 CISA domains' },
+  cissp: { name:'CISSP', fullName:'Certified Information Systems Security Professional', org:'ISC²', icon:'🛡️', color:'#e74c3c', accentDark:'#c0392b',
+           getQ:()=>QUESTIONS_CISSP, getDN:()=>DOMAIN_NAMES_CISSP,
+           getAcr:()=>ACRONYMS_CISSP, getGls:()=>GLOSSARY_CISSP,
+           acroLabel:'CISSP certification abbreviations — across all 8 security domains',
+           glsLabel:'Key terms and concepts for the CISSP examination',
+           domains: 8,
+           bannerSub:'Master information security across all 8 CISSP CBK domains' }
 };
 
-// Active question set — populated by activateCert()
-let QUESTIONS = [];
+// Active data sets — populated by activateCert()
+let QUESTIONS    = [];
 let DOMAIN_NAMES = {};
+let ACRONYMS     = [];
+let GLOSSARY     = [];
 
 function activateCert(certCode) {
   const cd = CERT_DATA[certCode];
@@ -36,10 +62,68 @@ function activateCert(certCode) {
 
   QUESTIONS    = cd.getQ();
   DOMAIN_NAMES = cd.getDN();
+  ACRONYMS     = (typeof cd.getAcr === 'function') ? cd.getAcr() : [];
+  GLOSSARY     = (typeof cd.getGls === 'function') ? cd.getGls() : [];
+
+  // Reset reference & custom-test screens so they reinitialize for the new cert
+  acrInitDone = false;
+  glsInitDone = false;
+  ctInitDone  = false;
+  acrFilter   = { query: '', letter: null };
+  glsFilter   = { query: '', letter: null };
+  ctConfig.domains = Array.from({length: cd.domains || 6}, (_, i) => i + 1);
+
+  // Apply cert-specific UI theme
+  applyCertTheme(certCode);
 
   // Update sidebar badge
   const navTotal = document.getElementById('nav-total');
   if (navTotal) navTotal.textContent = QUESTIONS.length;
+}
+
+// ── Cert Theming ───────────────────────────────────────────────────────────────
+function applyCertTheme(certCode) {
+  const cd = CERT_DATA[certCode];
+  if (!cd) return;
+
+  // Set CSS custom properties for accent color
+  const root = document.documentElement;
+  root.style.setProperty('--accent',      cd.color);
+  root.style.setProperty('--accent-dark', cd.accentDark);
+
+  // Update sidebar logo
+  const logoTitle = document.querySelector('.logo-title');
+  const logoSub   = document.querySelector('.logo-sub');
+  if (logoTitle) logoTitle.textContent = `${cd.name} Practice`;
+  if (logoSub)   logoSub.textContent   = cd.fullName;
+
+  // Update page <title>
+  document.title = `${cd.name} Exam Practice`;
+
+  // Update home banner subtitle (if already rendered)
+  const bannerSubEl = document.getElementById('banner-cert-sub');
+  if (bannerSubEl) bannerSubEl.textContent = cd.bannerSub;
+
+  // Update home screen certification badge
+  const certBadgeEl = document.getElementById('banner-cert-badge');
+  if (certBadgeEl) {
+    certBadgeEl.textContent = `${cd.icon} ${cd.name}`;
+    certBadgeEl.style.background = cd.color + '22';
+    certBadgeEl.style.color = cd.color;
+    certBadgeEl.style.borderColor = cd.color + '55';
+  }
+
+  // Update acronyms banner sub
+  const acrBannerSub = document.getElementById('acr-banner-sub');
+  if (acrBannerSub) acrBannerSub.textContent = cd.acroLabel;
+
+  // Update glossary banner sub
+  const glsBannerSub = document.getElementById('gls-banner-sub');
+  if (glsBannerSub) glsBannerSub.textContent = cd.glsLabel;
+
+  // Update sidebar cert label
+  const certLabel = document.getElementById('sidebar-cert-label');
+  if (certLabel) certLabel.textContent = `${cd.name} · ${QUESTIONS.length} Q`;
 }
 
 // ── Crypto ─────────────────────────────────────────────────────────────────────
@@ -340,6 +424,8 @@ function readinessScore() {
 
 // ── Home Screen ────────────────────────────────────────────────────────────────
 function renderHome() {
+  // Re-apply theme (handles returning to home from quiz etc.)
+  if (STATE.activeCert) applyCertTheme(STATE.activeCert);
   const score = readinessScore();
   // gauges
   drawGauge('home-gauge', score, 110, 70);
@@ -351,8 +437,8 @@ function renderHome() {
   if (el('home-total-badge')) el('home-total-badge').textContent = QUESTIONS.length;
   if (el('home-sess-badge'))  el('home-sess-badge').textContent = STATE.sessions.length;
   if (el('home-bk-badge'))    el('home-bk-badge').textContent   = STATE.bookmarks.length;
-  if (el('home-acr-badge'))   el('home-acr-badge').textContent  = (typeof ACRONYMS !== 'undefined') ? ACRONYMS.length : '—';
-  if (el('home-gls-badge'))   el('home-gls-badge').textContent  = (typeof GLOSSARY !== 'undefined') ? GLOSSARY.length : '—';
+  if (el('home-acr-badge'))   el('home-acr-badge').textContent  = ACRONYMS.length || '—';
+  if (el('home-gls-badge'))   el('home-gls-badge').textContent  = GLOSSARY.length || '—';
 
   // sidebar badges
   updateSidebarBadges();
@@ -419,7 +505,8 @@ function renderDashboard() {
   // domain progress bars
   const dp = document.getElementById('domain-progress');
   dp.innerHTML = '';
-  for (let d = 1; d <= 6; d++) {
+  const numDomains = CERT_DATA[STATE.activeCert]?.domains || 6;
+  for (let d = 1; d <= numDomains; d++) {
     const dqs = QUESTIONS.filter(q => q.domain === d);
     const dSeen = dqs.filter(q => qs[q.id]?.seen).length;
     const dCorrect = dqs.reduce((a, q) => a + (qs[q.id]?.correct || 0), 0);
@@ -466,6 +553,35 @@ function renderDashboard() {
     if (!rl.innerHTML.trim()) {
       rl.innerHTML = '<div class="empty-state">No sessions yet. Start a quiz!</div>';
     }
+  }
+}
+
+// ── Setup Screen: Domain Checkboxes ────────────────────────────────────────────
+function renderSetupDomains() {
+  const container = document.getElementById('setup-domain-checks');
+  if (!container) return;
+  container.innerHTML = '';
+  const numDomains = CERT_DATA[STATE.activeCert]?.domains || 6;
+  for (let d = 1; d <= numDomains; d++) {
+    const name = DOMAIN_NAMES[d] || `Domain ${d}`;
+    const lbl = document.createElement('label');
+    lbl.className = 'checkbox-item';
+    lbl.innerHTML = `<input type="checkbox" class="domain-cb" value="${d}" checked /><label>D${d}: ${name}</label>`;
+    container.appendChild(lbl);
+  }
+
+  // Update bookmark domain filter dropdown
+  const bkFilter = document.getElementById('bk-domain-filter');
+  if (bkFilter) {
+    const prev = bkFilter.value;
+    bkFilter.innerHTML = '<option value="0">All Domains</option>';
+    for (let d = 1; d <= numDomains; d++) {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.textContent = `D${d}: ${DOMAIN_NAMES[d] || 'Domain ' + d}`;
+      bkFilter.appendChild(opt);
+    }
+    bkFilter.value = prev || '0';
   }
 }
 
@@ -1132,33 +1248,35 @@ function initApp() {
   }
 
   document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('click', () => navTo(btn.dataset.screen));
+    btn.onclick = () => navTo(btn.dataset.screen);
   });
 
   // Tool cards on home screen
   document.querySelectorAll('.tool-card[data-screen]').forEach(card => {
-    card.addEventListener('click', () => navTo(card.dataset.screen));
+    card.onclick = () => navTo(card.dataset.screen);
   });
 
   // Quick 10
   const q10 = document.getElementById('quick-10-card');
-  if (q10) q10.addEventListener('click', () => {
+  if (q10) q10.onclick = () => {
+    const nDomAll = CERT_DATA[STATE.activeCert]?.domains || 6;
     const selected = shuffle(QUESTIONS).slice(0, 10);
     STATE.currentSession = {
-      config:{domains:[1,2,3,4,5,6],levels:[1,2,3],count:10,mode:'untimed',timerMode:null,timerValue:0},
+      config:{domains:Array.from({length:nDomAll},(_,i)=>i+1),levels:[1,2,3],count:10,mode:'untimed',timerMode:null,timerValue:0},
       questions:selected, answers:new Array(10).fill(null),
       bookmarked:[...STATE.bookmarks], current:0, startTime:Date.now(),
       timerRemaining:0, perQTimerRemaining:null
     };
     saveState(); showScreen('quiz'); renderQuestion(); startTimer();
-  });
+  };
 
   // Weakest Domain drill
   const wdd = document.getElementById('domain-drill-card');
-  if (wdd) wdd.addEventListener('click', () => {
+  if (wdd) wdd.onclick = () => {
     const qs = STATE.questionStats;
+    const nDom = CERT_DATA[STATE.activeCert]?.domains || 6;
     let weakest = 1, weakPct = 101;
-    for (let d = 1; d <= 6; d++) {
+    for (let d = 1; d <= nDom; d++) {
       const dqs = QUESTIONS.filter(q => q.domain === d);
       const dA = dqs.reduce((a,q)=>a+(qs[q.id]?.attempts||0),0);
       const dC = dqs.reduce((a,q)=>a+(qs[q.id]?.correct||0),0);
@@ -1174,11 +1292,11 @@ function initApp() {
       timerRemaining:0, perQTimerRemaining:null
     };
     saveState(); showScreen('quiz'); renderQuestion(); startTimer();
-  });
+  };
 
   // QOTD button
   const qotdBtn = document.getElementById('qotd-answer-btn');
-  if (qotdBtn) qotdBtn.addEventListener('click', () => {
+  if (qotdBtn) qotdBtn.onclick = () => {
     const today = new Date();
     const dayIndex = Math.floor(today.getTime() / 86400000) % QUESTIONS.length;
     const q = QUESTIONS[dayIndex];
@@ -1189,27 +1307,29 @@ function initApp() {
       timerRemaining:0, perQTimerRemaining:null
     };
     saveState(); showScreen('quiz'); renderQuestion(); startTimer();
-  });
+  };
+
+  // Setup screen — render domain checkboxes for current cert
+  renderSetupDomains();
 
   // Setup screen controls
   document.querySelectorAll('input[name="quiz-mode"]').forEach(r =>
     r.addEventListener('change', () => setupQuizMode(r.value === 'timed'))
   );
-  document.getElementById('select-all-domains').addEventListener('click', () =>
-    document.querySelectorAll('.domain-cb').forEach(c => c.checked = true)
-  );
-  document.getElementById('deselect-all-domains').addEventListener('click', () =>
-    document.querySelectorAll('.domain-cb').forEach(c => c.checked = false)
-  );
-  document.getElementById('start-quiz-btn').addEventListener('click', startQuiz);
+  // Select/deselect all use onclick to avoid duplicate listeners on cert switch
+  const selAllBtn = document.getElementById('select-all-domains');
+  const deselAllBtn = document.getElementById('deselect-all-domains');
+  if (selAllBtn)   selAllBtn.onclick   = () => document.querySelectorAll('.domain-cb').forEach(c => c.checked = true);
+  if (deselAllBtn) deselAllBtn.onclick = () => document.querySelectorAll('.domain-cb').forEach(c => c.checked = false);
+  document.getElementById('start-quiz-btn').onclick = startQuiz;
 
-  // Quiz controls
-  document.getElementById('bookmark-btn').addEventListener('click', () => {
+  // Quiz controls — use onclick to prevent duplicate listeners on cert switch
+  document.getElementById('bookmark-btn').onclick = () => {
     const q = STATE.currentSession.questions[STATE.currentSession.current];
     toggleBookmark(q.id);
-  });
-  document.getElementById('next-btn').addEventListener('click', nextQuestion);
-  document.getElementById('exit-quiz-btn').addEventListener('click', () => {
+  };
+  document.getElementById('next-btn').onclick = nextQuestion;
+  document.getElementById('exit-quiz-btn').onclick = () => {
     if (confirm('Exit quiz? Your current progress will be lost.')) {
       clearInterval(timerInterval);
       STATE.currentSession = null;
@@ -1217,57 +1337,50 @@ function initApp() {
       showScreen('dashboard');
       renderDashboard();
     }
-  });
+  };
 
   // Results controls
-  document.getElementById('show-wrong-btn').addEventListener('click', function() {
+  document.getElementById('show-wrong-btn').onclick = function() {
     const isFiltered = this.dataset.filtered === '1';
     renderReview(!isFiltered);
     this.dataset.filtered = isFiltered ? '0' : '1';
     this.textContent = isFiltered ? 'Show Wrong Only' : 'Show All';
-  });
-  document.getElementById('new-quiz-btn').addEventListener('click', () => {
+  };
+  document.getElementById('new-quiz-btn').onclick = () => {
     STATE.currentSession = null; saveState();
     document.querySelector('[data-screen="setup"]').classList.add('active');
     showScreen('setup');
-  });
-  document.getElementById('dashboard-btn').addEventListener('click', () => {
+  };
+  document.getElementById('dashboard-btn').onclick = () => {
     STATE.currentSession = null; saveState(); renderDashboard(); showScreen('dashboard');
-  });
+  };
 
   // Bookmarks controls
-  document.getElementById('bk-domain-filter').addEventListener('change', renderBookmarks);
-  document.getElementById('bk-level-filter').addEventListener('change', renderBookmarks);
-  document.getElementById('practice-bookmarks-btn').addEventListener('click', practiceBookmarks);
+  document.getElementById('bk-domain-filter').onchange = renderBookmarks;
+  document.getElementById('bk-level-filter').onchange  = renderBookmarks;
+  document.getElementById('practice-bookmarks-btn').onclick = practiceBookmarks;
 
   // History controls
-  document.getElementById('clear-history-btn').addEventListener('click', clearHistory);
+  document.getElementById('clear-history-btn').onclick = clearHistory;
 
   // Switch Cert button — saves current cert data and returns to cert select
   const switchCertBtn = document.getElementById('switch-cert-btn');
-  if (switchCertBtn) switchCertBtn.addEventListener('click', () => {
+  if (switchCertBtn) switchCertBtn.onclick = () => {
     saveState();
     STATE.activeCert = null; // clear so cert select doesn't auto-skip
     document.getElementById('cert-select-screen').style.display = 'flex';
     renderCertSelect();
     showScreen('home'); // ensure main app is at home when user returns
-  });
+  };
 
   // Lock Device button — clears stored passphrase and reloads
   const lockDeviceBtn = document.getElementById('lock-device-btn');
-  if (lockDeviceBtn) lockDeviceBtn.addEventListener('click', () => {
+  if (lockDeviceBtn) lockDeviceBtn.onclick = () => {
     if (confirm('Lock this device? You\'ll need to enter the secret key next time.')) {
       localStorage.removeItem(CCSP_PASS_LKEY);
       location.reload();
     }
-  });
-
-  // Update sidebar cert label
-  const certLabel = document.getElementById('sidebar-cert-label');
-  if (certLabel && STATE.activeCert) {
-    const cd = CERT_DATA[STATE.activeCert];
-    certLabel.textContent = cd ? `${cd.name} · ${QUESTIONS.length} Q` : 'v1.0';
-  }
+  };
 
   // Restore active quiz if page was refreshed mid-quiz
   if (STATE.currentSession && STATE.currentSession.answers.some(a => a === null)) {
@@ -1304,8 +1417,9 @@ function renderCustomTest() {
   const domainList = document.getElementById('ct-domain-list');
   domainList.innerHTML = '';
   const qs = STATE.questionStats;
+  const certDomainCount = CERT_DATA[STATE.activeCert]?.domains || 6;
 
-  [1,2,3,4,5,6].forEach(d => {
+  Array.from({length: certDomainCount}, (_, i) => i + 1).forEach(d => {
     const name = DOMAIN_NAMES[d];
     const dqs = QUESTIONS.filter(q => q.domain === d);
     const attempts = dqs.reduce((a, q) => a + (qs[q.id]?.attempts || 0), 0);
@@ -1329,7 +1443,7 @@ function renderCustomTest() {
         ctConfig.domains = ctConfig.domains.filter(x => x !== d);
       }
       const total = document.querySelectorAll('#ct-domain-list .cb-domain-row.checked').length;
-      document.getElementById('ct-domains-tag').textContent = `${total} / 6`;
+      document.getElementById('ct-domains-tag').textContent = `${total} / ${certDomainCount}`;
       updateCustomSummary();
     });
     domainList.appendChild(row);
@@ -1339,7 +1453,7 @@ function renderCustomTest() {
   document.getElementById('ct-deselect-all').addEventListener('click', () => {
     document.querySelectorAll('#ct-domain-list .cb-domain-row').forEach(r => r.classList.remove('checked'));
     ctConfig.domains = [];
-    document.getElementById('ct-domains-tag').textContent = '0 / 6';
+    document.getElementById('ct-domains-tag').textContent = `0 / ${certDomainCount}`;
     updateCustomSummary();
   });
 
@@ -1401,7 +1515,8 @@ function renderCustomTest() {
 
 function updateCustomSummary() {
   const domCount = ctConfig.domains.length;
-  document.getElementById('ct-sum-domains').textContent = `${domCount} / 6`;
+  const totalDom = CERT_DATA[STATE.activeCert]?.domains || 6;
+  document.getElementById('ct-sum-domains').textContent = `${domCount} / ${totalDom}`;
   document.getElementById('ct-sum-mode').textContent    =
     ctConfig.untimed ? `${ctConfig.numQ} Questions` : `${ctConfig.numQ} Q · ${ctConfig.timeMin} min`;
   document.getElementById('ct-sum-answers').textContent = ctConfig.showAnswer ? 'Yes' : 'No';

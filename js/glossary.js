@@ -1,4 +1,4 @@
-const GLOSSARY = [
+const GLOSSARY_CCSP = [
   { term:"Acceptable Use Policy (AUP)", def:"A documented set of rules governing how an organization's IT resources, networks, and internet access may be used by employees, contractors, and other authorized users. Violations may result in disciplinary action or termination." },
   { term:"Access Control", def:"Policies, procedures, and mechanisms that restrict access to systems, data, and resources based on identity, role, or attributes. Encompasses both physical and logical controls." },
   { term:"Advanced Encryption Standard (AES)", def:"A symmetric block cipher adopted by NIST in 2001 as the U.S. federal encryption standard. Supports key sizes of 128, 192, and 256 bits and is the most widely deployed encryption algorithm in the world." },
