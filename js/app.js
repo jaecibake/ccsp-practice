@@ -1086,15 +1086,18 @@ function renderAcronyms() {
       refreshAcronymList();
     });
     const acrInput = document.getElementById('acr-search');
-    if (acrInput) acrInput.addEventListener('input', function() {
-      acrFilter.query = this.value.trim().toLowerCase();
-      if (acrFilter.query) {
-        acrFilter.letter = null;
-        document.querySelectorAll('#acr-az-row .az-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector('#acr-az-row .az-btn')?.classList.add('active');
-      }
-      refreshAcronymList();
-    });
+    if (acrInput) {
+      acrInput.value = '';
+      acrInput.oninput = function() {
+        acrFilter.query = this.value.trim().toLowerCase();
+        if (acrFilter.query) {
+          acrFilter.letter = null;
+          document.querySelectorAll('#acr-az-row .az-btn').forEach(b => b.classList.remove('active'));
+          document.querySelector('#acr-az-row .az-btn')?.classList.add('active');
+        }
+        refreshAcronymList();
+      };
+    }
     // disable letters that have no entries
     const letters = new Set(ACRONYMS.map(a => a.abbr[0].toUpperCase()));
     document.querySelectorAll('#acr-az-row .az-btn[data-letter]').forEach(btn => {
@@ -1163,15 +1166,18 @@ function renderGlossary() {
       refreshGlossaryList();
     });
     const glsInput = document.getElementById('gls-search');
-    if (glsInput) glsInput.addEventListener('input', function() {
-      glsFilter.query = this.value.trim().toLowerCase();
-      if (glsFilter.query) {
-        glsFilter.letter = null;
-        document.querySelectorAll('#gls-az-row .az-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector('#gls-az-row .az-btn')?.classList.add('active');
-      }
-      refreshGlossaryList();
-    });
+    if (glsInput) {
+      glsInput.value = '';
+      glsInput.oninput = function() {
+        glsFilter.query = this.value.trim().toLowerCase();
+        if (glsFilter.query) {
+          glsFilter.letter = null;
+          document.querySelectorAll('#gls-az-row .az-btn').forEach(b => b.classList.remove('active'));
+          document.querySelector('#gls-az-row .az-btn')?.classList.add('active');
+        }
+        refreshGlossaryList();
+      };
+    }
     // disable letters with no entries
     const letters = new Set(GLOSSARY.map(g => g.term[0].toUpperCase()));
     document.querySelectorAll('#gls-az-row .az-btn[data-letter]').forEach(btn => {
