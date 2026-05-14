@@ -955,7 +955,7 @@ function practiceBookmarks() {
   const bqs = QUESTIONS.filter(q => STATE.bookmarks.includes(q.id));
   if (bqs.length === 0) { alert('No bookmarks to practice.'); return; }
   STATE.currentSession = {
-    config: { domains: [1,2,3,4,5,6], levels: [1,2,3], count: bqs.length, mode: 'untimed', timerMode: null, timerValue: 0 },
+    config: { domains: Array.from({length: CERT_DATA[STATE.activeCert]?.domains||6},(_,i)=>i+1), levels: [1,2,3], count: bqs.length, mode: 'untimed', timerMode: null, timerValue: 0 },
     questions: shuffle(bqs),
     answers: new Array(bqs.length).fill(null),
     bookmarked: [...STATE.bookmarks],
