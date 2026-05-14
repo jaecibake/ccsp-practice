@@ -1,4 +1,4 @@
-const QUESTIONS = [
+const QUESTIONS_CCSP = [
 // ─── DOMAIN 1: Cloud Concepts, Architecture and Design ───────────────────────
 {id:1,domain:1,level:1,question:"According to NIST SP 800-145, which of the following is NOT one of the five essential characteristics of cloud computing?",options:["A. On-demand self-service","B. Broad network access","C. Dedicated hardware allocation","D. Measured service"],correct:2,explanation:"NIST defines five essential characteristics: on-demand self-service, broad network access, resource pooling, rapid elasticity, and measured service. Dedicated hardware allocation contradicts the shared/pooled nature of cloud."},
 {id:2,domain:1,level:1,question:"Which cloud service model gives the customer the MOST control over the underlying infrastructure?",options:["A. SaaS","B. PaaS","C. IaaS","D. FaaS"],correct:2,explanation:"In IaaS the customer manages OS, middleware, applications, and data. PaaS abstracts the OS and below; SaaS abstracts everything. IaaS therefore provides the most control."},
@@ -1088,7 +1088,7 @@ const QUESTIONS = [
 {id:705,domain:1,level:2,question:"What is the purpose of a 'cloud exit strategy'?",options:["A. Procedures for offboarding employees from cloud access","B. A plan for migrating data and workloads away from a cloud provider if needed, avoiding lock-in","C. Emergency shutdown procedures for cloud resources","D. A strategy for exiting unprofitable cloud service lines"],correct:1,explanation:"A cloud exit strategy defines how an organization would migrate away from a cloud provider (data portability, workload migration, contract termination). It mitigates vendor lock-in risk and is important for business continuity planning."},
 ];
 
-const DOMAIN_NAMES = {
+const DOMAIN_NAMES_CCSP = {
   1: "Cloud Concepts, Architecture & Design",
   2: "Cloud Data Security",
   3: "Cloud Platform & Infrastructure Security",

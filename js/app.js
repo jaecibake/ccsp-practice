@@ -1,5 +1,47 @@
 'use strict';
 
+// ── Cert Config ────────────────────────────────────────────────────────────────
+// Defined here so CERT_DATA is available to all functions.
+// Question arrays (QUESTIONS_CCSP etc.) are loaded by their own <script> tags before app.js.
+const CERT_DATA = {
+  ccsp:  { name:'CCSP',  fullName:'Certified Cloud Security Professional', org:'ISC²',  icon:'☁️',  color:'#4f8ef7', getQ:()=>QUESTIONS_CCSP,  getDN:()=>DOMAIN_NAMES_CCSP  },
+  cism:  { name:'CISM',  fullName:'Certified Information Security Manager',  org:'ISACA', icon:'🔒',  color:'#27ae60', getQ:()=>QUESTIONS_CISM,  getDN:()=>DOMAIN_NAMES_CISM  },
+  cisa:  { name:'CISA',  fullName:'Certified Information Systems Auditor',   org:'ISACA', icon:'🔍',  color:'#f39c12', getQ:()=>QUESTIONS_CISA,  getDN:()=>DOMAIN_NAMES_CISA  },
+  cissp: { name:'CISSP', fullName:'Certified Info Systems Security Prof.',   org:'ISC²',  icon:'🛡️', color:'#e74c3c', getQ:()=>QUESTIONS_CISSP, getDN:()=>DOMAIN_NAMES_CISSP }
+};
+
+// Active question set — populated by activateCert()
+let QUESTIONS = [];
+let DOMAIN_NAMES = {};
+
+function activateCert(certCode) {
+  const cd = CERT_DATA[certCode];
+  if (!cd) return;
+  // Sync current cert data back before switching
+  if (STATE.activeCert && STATE.certData) {
+    STATE.certData[STATE.activeCert] = {
+      questionStats: STATE.questionStats,
+      bookmarks:     STATE.bookmarks,
+      sessions:      STATE.sessions
+    };
+  }
+  if (!STATE.certData) STATE.certData = {};
+  if (!STATE.certData[certCode]) STATE.certData[certCode] = { questionStats:{}, bookmarks:[], sessions:[] };
+
+  STATE.activeCert    = certCode;
+  STATE.questionStats = STATE.certData[certCode].questionStats || {};
+  STATE.bookmarks     = STATE.certData[certCode].bookmarks     || [];
+  STATE.sessions      = STATE.certData[certCode].sessions      || [];
+  STATE.currentSession = null;
+
+  QUESTIONS    = cd.getQ();
+  DOMAIN_NAMES = cd.getDN();
+
+  // Update sidebar badge
+  const navTotal = document.getElementById('nav-total');
+  if (navTotal) navTotal.textContent = QUESTIONS.length;
+}
+
 // ── Crypto ─────────────────────────────────────────────────────────────────────
 const CCSP_SALT_KEY  = 'ccsp_salt';
 const CCSP_VALID_KEY = 'ccsp_validator';
@@ -65,6 +107,8 @@ async function validateKey(passphrase) {
 
 // ── State ──────────────────────────────────────────────────────────────────────
 let STATE = {
+  activeCert: null,
+  certData: {},
   bookmarks: [],
   sessions: [],
   questionStats: {},
@@ -215,10 +259,23 @@ async function loadState() {
       const dec = await _decryptStr(cryptoKey, enc);
       STATE = JSON.parse(dec);
     } else {
-      // fallback: unencrypted legacy data
       const raw = localStorage.getItem('ccsp_state');
       if (raw) STATE = JSON.parse(raw);
     }
+    // Migrate old flat STATE (no certData) to new per-cert structure
+    if (!STATE.certData) {
+      STATE.certData = {
+        ccsp: {
+          questionStats: STATE.questionStats || {},
+          bookmarks:     STATE.bookmarks     || [],
+          sessions:      STATE.sessions      || []
+        }
+      };
+    }
+    if (!STATE.certData.ccsp)  STATE.certData.ccsp  = { questionStats:{}, bookmarks:[], sessions:[] };
+    if (!STATE.certData.cism)  STATE.certData.cism  = { questionStats:{}, bookmarks:[], sessions:[] };
+    if (!STATE.certData.cisa)  STATE.certData.cisa  = { questionStats:{}, bookmarks:[], sessions:[] };
+    if (!STATE.certData.cissp) STATE.certData.cissp = { questionStats:{}, bookmarks:[], sessions:[] };
     if (!STATE.bookmarks)     STATE.bookmarks = [];
     if (!STATE.sessions)      STATE.sessions = [];
     if (!STATE.questionStats) STATE.questionStats = {};
@@ -227,6 +284,14 @@ async function loadState() {
 
 async function saveState() {
   try {
+    // Sync active cert data before saving
+    if (STATE.activeCert && STATE.certData) {
+      STATE.certData[STATE.activeCert] = {
+        questionStats: STATE.questionStats,
+        bookmarks:     STATE.bookmarks,
+        sessions:      STATE.sessions
+      };
+    }
     if (cryptoKey) {
       const enc = await _encryptStr(cryptoKey, JSON.stringify(STATE));
       localStorage.setItem(CCSP_DATA_KEY, enc);
@@ -1178,6 +1243,16 @@ function initApp() {
   // History controls
   document.getElementById('clear-history-btn').addEventListener('click', clearHistory);
 
+  // Switch Cert button — saves current cert data and returns to cert select
+  const switchCertBtn = document.getElementById('switch-cert-btn');
+  if (switchCertBtn) switchCertBtn.addEventListener('click', () => {
+    saveState();
+    STATE.activeCert = null; // clear so cert select doesn't auto-skip
+    document.getElementById('cert-select-screen').style.display = 'flex';
+    renderCertSelect();
+    showScreen('home'); // ensure main app is at home when user returns
+  });
+
   // Lock Device button — clears stored passphrase and reloads
   const lockDeviceBtn = document.getElementById('lock-device-btn');
   if (lockDeviceBtn) lockDeviceBtn.addEventListener('click', () => {
@@ -1186,6 +1261,13 @@ function initApp() {
       location.reload();
     }
   });
+
+  // Update sidebar cert label
+  const certLabel = document.getElementById('sidebar-cert-label');
+  if (certLabel && STATE.activeCert) {
+    const cd = CERT_DATA[STATE.activeCert];
+    certLabel.textContent = cd ? `${cd.name} · ${QUESTIONS.length} Q` : 'v1.0';
+  }
 
   // Restore active quiz if page was refreshed mid-quiz
   if (STATE.currentSession && STATE.currentSession.answers.some(a => a === null)) {
@@ -1388,6 +1470,62 @@ function buildCustomTest() {
   startTimer();
 }
 
+// ── Cert Selection Screen ──────────────────────────────────────────────────────
+function showCertSelect() {
+  // If returning user already had a cert selected, go straight in
+  if (STATE.activeCert && CERT_DATA[STATE.activeCert]) {
+    activateCert(STATE.activeCert);
+    initApp();
+    return;
+  }
+  renderCertSelect();
+  document.getElementById('cert-select-screen').style.display = 'flex';
+}
+
+function renderCertSelect() {
+  const grid = document.getElementById('cert-select-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  Object.entries(CERT_DATA).forEach(([code, cert]) => {
+    const questions = cert.getQ();
+    const qs = STATE.certData?.[code] || {};
+    const stats = qs.questionStats || {};
+
+    // Calculate overall score
+    const allAttempts = Object.values(stats).reduce((a, s) => a + (s.attempts || 0), 0);
+    const allCorrect  = Object.values(stats).reduce((a, s) => a + (s.correct  || 0), 0);
+    const scoreText   = allAttempts > 0 ? Math.round(allCorrect / allAttempts * 100) + '%' : 'Not started';
+    const sessions    = (qs.sessions || []).length;
+
+    const card = document.createElement('div');
+    card.className = 'cert-card';
+    card.innerHTML = `
+      <div class="cert-card-icon" style="color:${cert.color}">${cert.icon}</div>
+      <div class="cert-card-name" style="color:${cert.color}">${cert.name}</div>
+      <div class="cert-card-fullname">${cert.fullName}</div>
+      <div class="cert-card-org">${cert.org}</div>
+      <div class="cert-card-stats">
+        <div class="cert-stat"><div class="cert-stat-val">${questions.length}</div><div class="cert-stat-lbl">Questions</div></div>
+        <div class="cert-stat"><div class="cert-stat-val">${sessions}</div><div class="cert-stat-lbl">Sessions</div></div>
+        <div class="cert-stat"><div class="cert-stat-val" style="color:${allAttempts>0?(allCorrect/allAttempts>=0.7?'#27ae60':allCorrect/allAttempts>=0.5?'#f39c12':'#e74c3c'):'inherit'}">${scoreText}</div><div class="cert-stat-lbl">Score</div></div>
+      </div>
+      <button class="cert-select-btn" style="background:${cert.color}" data-cert="${code}">
+        ${STATE.certData?.[code]?.sessions?.length ? 'Continue ▶' : 'Start →'}
+      </button>`;
+    grid.appendChild(card);
+  });
+
+  // Wire up buttons
+  grid.querySelectorAll('.cert-select-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('cert-select-screen').style.display = 'none';
+      activateCert(btn.dataset.cert);
+      initApp();
+    });
+  });
+}
+
 // ── Lock Screen & Bootstrap ────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   const lockScreen = document.getElementById('lock-screen');
@@ -1422,7 +1560,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       localStorage.setItem(CCSP_PASS_LKEY, passphrase);
       await loadState();
       lockScreen.style.animation = 'lockFadeOut 0.4s ease forwards';
-      setTimeout(() => { lockScreen.style.display = 'none'; initApp(); }, 380);
+      setTimeout(() => { lockScreen.style.display = 'none'; showCertSelect(); }, 380);
     } else {
       lockErr.style.display = 'block';
       lockErr.style.animation = 'none';
@@ -1460,7 +1598,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (valid) {
       await loadState();
       lockScreen.style.display = 'none';
-      initApp();
+      showCertSelect();
       return;
     }
     localStorage.removeItem(CCSP_PASS_LKEY);
