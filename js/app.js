@@ -42,7 +42,67 @@ const CERT_DATA = {
            acroLabel:'CISSP certification abbreviations — across all 8 security domains',
            glsLabel:'Key terms and concepts for the CISSP examination',
            domains: 8,
-           bannerSub:'Master information security across all 8 CISSP CBK domains' }
+           bannerSub:'Master information security across all 8 CISSP CBK domains' },
+  crisc: { name:'CRISC', fullName:'Certified in Risk and Information Systems Control', org:'ISACA', icon:'⚠️', color:'#9b59b6', accentDark:'#8e44ad',
+           getQ:()=>[...QUESTIONS_CRISC,
+             ...(typeof QUESTIONS_CRISC_A!=='undefined'?QUESTIONS_CRISC_A:[]),
+             ...(typeof QUESTIONS_CRISC_B!=='undefined'?QUESTIONS_CRISC_B:[])],
+           getDN:()=>DOMAIN_NAMES_CRISC,
+           getAcr:()=>ACRONYMS_CRISC, getGls:()=>GLOSSARY_CRISC,
+           acroLabel:'CRISC certification abbreviations — IT Risk and Information Systems Control',
+           glsLabel:'Key terms and concepts for the CRISC examination',
+           domains: 4,
+           bannerSub:'Master IT risk management across all 4 CRISC domains' },
+  issap: { name:'ISSAP', fullName:'Information Systems Security Architecture Professional', org:'ISC²', icon:'🏗️', color:'#1abc9c', accentDark:'#16a085',
+           getQ:()=>[...QUESTIONS_ISSAP,
+             ...(typeof QUESTIONS_ISSAP_A!=='undefined'?QUESTIONS_ISSAP_A:[]),
+             ...(typeof QUESTIONS_ISSAP_B!=='undefined'?QUESTIONS_ISSAP_B:[])],
+           getDN:()=>DOMAIN_NAMES_ISSAP,
+           getAcr:()=>ACRONYMS_ISSAP, getGls:()=>GLOSSARY_ISSAP,
+           acroLabel:'ISSAP certification abbreviations — Security Architecture Professional',
+           glsLabel:'Key terms and concepts for the ISSAP examination',
+           domains: 6,
+           bannerSub:'Master security architecture across all 6 ISSAP domains' },
+  secx:  { name:'SecurityX', fullName:'CompTIA SecurityX (CASP+)', org:'CompTIA', icon:'🔐', color:'#e67e22', accentDark:'#ca6f1e',
+           getQ:()=>[...QUESTIONS_SECX,
+             ...(typeof QUESTIONS_SECX_A!=='undefined'?QUESTIONS_SECX_A:[]),
+             ...(typeof QUESTIONS_SECX_B!=='undefined'?QUESTIONS_SECX_B:[])],
+           getDN:()=>DOMAIN_NAMES_SECX,
+           getAcr:()=>ACRONYMS_SECX, getGls:()=>GLOSSARY_SECX,
+           acroLabel:'CompTIA SecurityX certification abbreviations and acronyms',
+           glsLabel:'Key terms and concepts for the CompTIA SecurityX examination',
+           domains: 4,
+           bannerSub:'Master advanced security concepts across all 4 SecurityX domains' },
+  chfi:  { name:'CHFI', fullName:'Computer Hacking Forensic Investigator', org:'EC-Council', icon:'🔬', color:'#c0392b', accentDark:'#a93226',
+           getQ:()=>[...QUESTIONS_CHFI,
+             ...(typeof QUESTIONS_CHFI_A!=='undefined'?QUESTIONS_CHFI_A:[]),
+             ...(typeof QUESTIONS_CHFI_B!=='undefined'?QUESTIONS_CHFI_B:[])],
+           getDN:()=>DOMAIN_NAMES_CHFI,
+           getAcr:()=>ACRONYMS_CHFI, getGls:()=>GLOSSARY_CHFI,
+           acroLabel:'CHFI certification abbreviations — Digital Forensics and Investigation',
+           glsLabel:'Key terms and concepts for the CHFI examination',
+           domains: 6,
+           bannerSub:'Master digital forensics investigation across all 6 CHFI domains' },
+  ecih:  { name:'ECIH', fullName:'EC-Council Certified Incident Handler', org:'EC-Council', icon:'🚨', color:'#2980b9', accentDark:'#2471a3',
+           getQ:()=>[...QUESTIONS_ECIH,
+             ...(typeof QUESTIONS_ECIH_A!=='undefined'?QUESTIONS_ECIH_A:[]),
+             ...(typeof QUESTIONS_ECIH_B!=='undefined'?QUESTIONS_ECIH_B:[])],
+           getDN:()=>DOMAIN_NAMES_ECIH,
+           getAcr:()=>ACRONYMS_ECIH, getGls:()=>GLOSSARY_ECIH,
+           acroLabel:'ECIH certification abbreviations — Incident Handling and Response',
+           glsLabel:'Key terms and concepts for the ECIH examination',
+           domains: 5,
+           bannerSub:'Master incident handling and response across all 5 ECIH domains' },
+  cpent: { name:'CPENT', fullName:'Certified Penetration Testing Professional', org:'EC-Council', icon:'⚔️', color:'#d35400', accentDark:'#ba4a00',
+           getQ:()=>[...QUESTIONS_CPENT,
+             ...(typeof QUESTIONS_CPENT_A!=='undefined'?QUESTIONS_CPENT_A:[]),
+             ...(typeof QUESTIONS_CPENT_B!=='undefined'?QUESTIONS_CPENT_B:[])],
+           getDN:()=>DOMAIN_NAMES_CPENT,
+           getAcr:()=>ACRONYMS_CPENT, getGls:()=>GLOSSARY_CPENT,
+           acroLabel:'CPENT certification abbreviations — Penetration Testing Professional',
+           glsLabel:'Key terms and concepts for the CPENT examination',
+           domains: 5,
+           bannerSub:'Master penetration testing across all 5 CPENT domains' }
 };
 
 // Active data sets — populated by activateCert()
@@ -779,6 +839,12 @@ function handleAnswer(idx) {
   qs[q.id].attempts++;
   if (idx === q.correct) qs[q.id].correct++;
 
+  // increment permanent lifetime counter (persists through progress resets)
+  if (!STATE.certData) STATE.certData = {};
+  if (!STATE.certData[STATE.activeCert]) STATE.certData[STATE.activeCert] = {};
+  STATE.certData[STATE.activeCert].lifetimeAnswered =
+    (STATE.certData[STATE.activeCert].lifetimeAnswered || 0) + 1;
+
   saveState();
   renderQuestion();
 }
@@ -1372,6 +1438,24 @@ function initApp() {
     STATE.currentSession = null; saveState(); renderDashboard(); showScreen('dashboard');
   };
 
+  // Reset current cert progress (from dashboard Danger Zone)
+  const resetCertBtnEl = document.getElementById('reset-cert-btn');
+  if (resetCertBtnEl) resetCertBtnEl.onclick = () => {
+    const code = STATE.activeCert;
+    const cert = CERT_DATA[code];
+    if (!cert) return;
+    const qs = STATE.certData?.[code] || {};
+    const sessions = (qs.sessions || []).length;
+    const attempts = Object.values(qs.questionStats || {}).reduce((a, s) => a + (s.attempts || 0), 0);
+    if (!sessions && !attempts) { alert('Nothing to reset — no progress recorded yet.'); return; }
+    const msg = `Reset all ${cert.name} progress?\n\n• ${sessions} session(s) deleted\n• ${attempts} question attempt(s) cleared\n• Bookmarks cleared\n\nYour all-time counter (${(qs.lifetimeAnswered||0).toLocaleString()} answered) will be preserved.\n\nThis cannot be undone.`;
+    if (confirm(msg)) {
+      resetCertProgress(code);
+      renderDashboard();
+      alert(`${cert.name} progress has been reset.`);
+    }
+  };
+
   // Bookmarks controls
   document.getElementById('bk-domain-filter').onchange = renderBookmarks;
   document.getElementById('bk-level-filter').onchange  = renderBookmarks;
@@ -1614,6 +1698,26 @@ function showCertSelect() {
   document.getElementById('cert-select-screen').style.display = 'flex';
 }
 
+function resetCertProgress(code) {
+  if (!STATE.certData) STATE.certData = {};
+  const prev = STATE.certData[code] || {};
+  // Preserve lifetime counter, wipe everything else
+  STATE.certData[code] = {
+    questionStats: {},
+    bookmarks: [],
+    sessions: [],
+    lifetimeAnswered: prev.lifetimeAnswered || 0
+  };
+  // If currently active cert, update live state too
+  if (STATE.activeCert === code) {
+    STATE.questionStats  = {};
+    STATE.bookmarks      = [];
+    STATE.sessions       = [];
+    STATE.currentSession = null;
+  }
+  saveState();
+}
+
 function renderCertSelect() {
   const grid = document.getElementById('cert-select-grid');
   if (!grid) return;
@@ -1625,14 +1729,20 @@ function renderCertSelect() {
     const stats = qs.questionStats || {};
 
     // Calculate overall score
-    const allAttempts = Object.values(stats).reduce((a, s) => a + (s.attempts || 0), 0);
-    const allCorrect  = Object.values(stats).reduce((a, s) => a + (s.correct  || 0), 0);
-    const scoreText   = allAttempts > 0 ? Math.round(allCorrect / allAttempts * 100) + '%' : 'Not started';
-    const sessions    = (qs.sessions || []).length;
+    const allAttempts    = Object.values(stats).reduce((a, s) => a + (s.attempts || 0), 0);
+    const allCorrect     = Object.values(stats).reduce((a, s) => a + (s.correct  || 0), 0);
+    const scoreText      = allAttempts > 0 ? Math.round(allCorrect / allAttempts * 100) + '%' : '—';
+    const sessions       = (qs.sessions || []).length;
+    const lifetimeAns    = qs.lifetimeAnswered || 0;
+    const scoreColor     = allAttempts > 0
+      ? (allCorrect / allAttempts >= 0.7 ? '#27ae60' : allCorrect / allAttempts >= 0.5 ? '#f39c12' : '#e74c3c')
+      : 'inherit';
 
     const card = document.createElement('div');
     card.className = 'cert-card';
+    card.dataset.cert = code;
     card.innerHTML = `
+      <button class="cert-reset-btn" data-cert="${code}" title="Reset progress for ${cert.name}">↺ Reset</button>
       <div class="cert-card-icon" style="color:${cert.color}">${cert.icon}</div>
       <div class="cert-card-name" style="color:${cert.color}">${cert.name}</div>
       <div class="cert-card-fullname">${cert.fullName}</div>
@@ -1640,20 +1750,39 @@ function renderCertSelect() {
       <div class="cert-card-stats">
         <div class="cert-stat"><div class="cert-stat-val">${questions.length}</div><div class="cert-stat-lbl">Questions</div></div>
         <div class="cert-stat"><div class="cert-stat-val">${sessions}</div><div class="cert-stat-lbl">Sessions</div></div>
-        <div class="cert-stat"><div class="cert-stat-val" style="color:${allAttempts>0?(allCorrect/allAttempts>=0.7?'#27ae60':allCorrect/allAttempts>=0.5?'#f39c12':'#e74c3c'):'inherit'}">${scoreText}</div><div class="cert-stat-lbl">Score</div></div>
+        <div class="cert-stat"><div class="cert-stat-val" style="color:${scoreColor}">${scoreText}</div><div class="cert-stat-lbl">Score</div></div>
+        <div class="cert-stat cert-stat-lifetime"><div class="cert-stat-val" style="color:${cert.color}">${lifetimeAns.toLocaleString()}</div><div class="cert-stat-lbl">All-Time ✦</div></div>
       </div>
       <button class="cert-select-btn" style="background:${cert.color}" data-cert="${code}">
-        ${STATE.certData?.[code]?.sessions?.length ? 'Continue ▶' : 'Start →'}
+        ${sessions > 0 ? 'Continue ▶' : 'Start →'}
       </button>`;
     grid.appendChild(card);
   });
 
-  // Wire up buttons
+  // Wire up Select buttons
   grid.querySelectorAll('.cert-select-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.getElementById('cert-select-screen').style.display = 'none';
       activateCert(btn.dataset.cert);
       initApp();
+    });
+  });
+
+  // Wire up Reset buttons
+  grid.querySelectorAll('.cert-reset-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const code = btn.dataset.cert;
+      const cert = CERT_DATA[code];
+      const qs = STATE.certData?.[code] || {};
+      const sessions = (qs.sessions || []).length;
+      const attempts = Object.values(qs.questionStats || {}).reduce((a, s) => a + (s.attempts || 0), 0);
+      if (!sessions && !attempts) { return; } // nothing to reset
+      const msg = `Reset all ${cert.name} progress?\n\n• ${sessions} session(s) deleted\n• ${attempts} question attempt(s) cleared\n• Bookmarks cleared\n\nYour all-time counter (${(qs.lifetimeAnswered||0).toLocaleString()} answered) will be preserved.\n\nThis cannot be undone.`;
+      if (confirm(msg)) {
+        resetCertProgress(code);
+        renderCertSelect(); // re-render to show cleared stats
+      }
     });
   });
 }

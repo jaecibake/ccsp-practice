@@ -269,6 +269,16 @@
     </div>
 
     <button class="btn" onclick="document.querySelector('[data-screen=setup]').click()">▶ Start a New Quiz</button>
+
+    <div class="card" style="margin-top:18px;border:1px solid #e74c3c44">
+      <div class="card-title" style="color:#e74c3c">⚠️ Danger Zone</div>
+      <div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:12px">
+        Reset all progress for this certification. Your all-time answered counter will be preserved.
+      </div>
+      <button class="btn btn-danger" id="reset-cert-btn" style="font-size:0.85rem;padding:8px 20px">
+        ↺ Reset This Cert's Progress
+      </button>
+    </div>
   </div>
 
   <!-- ── SETUP ──────────────────────────────────────────────────────────── -->
@@ -670,10 +680,17 @@
 </main>
 </div>
 
+<!-- Base question packs -->
 <script src="js/questions.js"></script>
 <script src="js/questions_cism.js"></script>
 <script src="js/questions_cisa.js"></script>
 <script src="js/questions_cissp.js"></script>
+<script src="js/questions_crisc.js"></script>
+<script src="js/questions_issap.js"></script>
+<script src="js/questions_secx.js"></script>
+<script src="js/questions_chfi.js"></script>
+<script src="js/questions_ecih.js"></script>
+<script src="js/questions_cpent.js"></script>
 <!-- Extra question packs (loaded when available) -->
 <script src="js/q_cism_a.js" onerror="void 0"></script>
 <script src="js/q_cism_b.js" onerror="void 0"></script>
@@ -681,14 +698,40 @@
 <script src="js/q_cisa_b.js" onerror="void 0"></script>
 <script src="js/q_cissp_a.js" onerror="void 0"></script>
 <script src="js/q_cissp_b.js" onerror="void 0"></script>
+<script src="js/q_crisc_a.js" onerror="void 0"></script>
+<script src="js/q_crisc_b.js" onerror="void 0"></script>
+<script src="js/q_issap_a.js" onerror="void 0"></script>
+<script src="js/q_issap_b.js" onerror="void 0"></script>
+<script src="js/q_secx_a.js" onerror="void 0"></script>
+<script src="js/q_secx_b.js" onerror="void 0"></script>
+<script src="js/q_chfi_a.js" onerror="void 0"></script>
+<script src="js/q_chfi_b.js" onerror="void 0"></script>
+<script src="js/q_ecih_a.js" onerror="void 0"></script>
+<script src="js/q_ecih_b.js" onerror="void 0"></script>
+<script src="js/q_cpent_a.js" onerror="void 0"></script>
+<script src="js/q_cpent_b.js" onerror="void 0"></script>
+<!-- Acronyms -->
 <script src="js/acronyms.js"></script>
 <script src="js/acronyms_cism.js"></script>
 <script src="js/acronyms_cisa.js"></script>
 <script src="js/acronyms_cissp.js"></script>
+<script src="js/acronyms_crisc.js"></script>
+<script src="js/acronyms_issap.js"></script>
+<script src="js/acronyms_secx.js"></script>
+<script src="js/acronyms_chfi.js"></script>
+<script src="js/acronyms_ecih.js"></script>
+<script src="js/acronyms_cpent.js"></script>
+<!-- Glossaries -->
 <script src="js/glossary.js"></script>
 <script src="js/glossary_cism.js"></script>
 <script src="js/glossary_cisa.js"></script>
 <script src="js/glossary_cissp.js"></script>
+<script src="js/glossary_crisc.js"></script>
+<script src="js/glossary_issap.js"></script>
+<script src="js/glossary_secx.js"></script>
+<script src="js/glossary_chfi.js"></script>
+<script src="js/glossary_ecih.js"></script>
+<script src="js/glossary_cpent.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
