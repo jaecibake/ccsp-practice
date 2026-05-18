@@ -903,6 +903,16 @@ select:focus, input:focus { outline: none; border-color: var(--accent); }
   text-align: center;
   margin-bottom: 36px;
 }
+.cert-select-brand {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #4f8ef7, #1abc9c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
 .cert-select-title {
   font-size: 1.8rem;
   font-weight: 800;

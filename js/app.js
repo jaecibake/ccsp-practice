@@ -192,11 +192,11 @@ function applyCertTheme(certCode) {
   // Update sidebar logo
   const logoTitle = document.querySelector('.logo-title');
   const logoSub   = document.querySelector('.logo-sub');
-  if (logoTitle) logoTitle.textContent = `${cd.name} Practice`;
-  if (logoSub)   logoSub.textContent   = cd.fullName;
+  if (logoTitle) logoTitle.textContent = `CertPrepAI`;
+  if (logoSub)   logoSub.textContent   = `${cd.icon} ${cd.name} · ${cd.org}`;
 
   // Update page <title>
-  document.title = `${cd.name} Exam Practice`;
+  document.title = `CertPrepAI — ${cd.name}`;
 
   // Update home banner subtitle (if already rendered)
   const bannerSubEl = document.getElementById('banner-cert-sub');
