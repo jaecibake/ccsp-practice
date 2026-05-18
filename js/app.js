@@ -141,12 +141,14 @@ let GLOSSARY     = [];
 function activateCert(certCode) {
   const cd = CERT_DATA[certCode];
   if (!cd) return;
-  // Sync current cert data back before switching
+  // Sync current cert data back before switching (preserve lifetimeAnswered)
   if (STATE.activeCert && STATE.certData) {
+    const prev = STATE.certData[STATE.activeCert] || {};
     STATE.certData[STATE.activeCert] = {
-      questionStats: STATE.questionStats,
-      bookmarks:     STATE.bookmarks,
-      sessions:      STATE.sessions
+      questionStats:    STATE.questionStats,
+      bookmarks:        STATE.bookmarks,
+      sessions:         STATE.sessions,
+      lifetimeAnswered: prev.lifetimeAnswered || 0
     };
   }
   if (!STATE.certData) STATE.certData = {};
@@ -1208,7 +1210,7 @@ function renderAcronyms() {
       };
     }
     // disable letters that have no entries
-    const letters = new Set(ACRONYMS.map(a => a.abbr[0].toUpperCase()));
+    const letters = new Set(ACRONYMS.filter(a => _acrAbbr(a)).map(a => _acrAbbr(a)[0].toUpperCase()));
     document.querySelectorAll('#acr-az-row .az-btn[data-letter]').forEach(btn => {
       if (!letters.has(btn.dataset.letter)) btn.disabled = true;
     });
@@ -1217,18 +1219,22 @@ function renderAcronyms() {
   refreshAcronymList();
 }
 
+// Normalize acronym entry — supports both { abbr, full } and { term, definition } formats
+function _acrAbbr(a) { return a.abbr || a.term || ''; }
+function _acrFull(a) { return a.full || a.definition || ''; }
+
 function refreshAcronymList() {
   const container = document.getElementById('acronyms-list');
   const countBar = document.getElementById('acr-count-bar');
   if (!container) return;
 
-  let items = ACRONYMS;
+  let items = ACRONYMS.filter(a => _acrAbbr(a));
   if (acrFilter.letter) {
-    items = items.filter(a => a.abbr[0].toUpperCase() === acrFilter.letter);
+    items = items.filter(a => _acrAbbr(a)[0].toUpperCase() === acrFilter.letter);
   }
   if (acrFilter.query) {
     const q = acrFilter.query;
-    items = items.filter(a => a.abbr.toLowerCase().includes(q) || a.full.toLowerCase().includes(q));
+    items = items.filter(a => _acrAbbr(a).toLowerCase().includes(q) || _acrFull(a).toLowerCase().includes(q));
   }
 
   if (countBar) countBar.textContent = `Showing ${items.length} of ${ACRONYMS.length} acronyms`;
@@ -1242,7 +1248,7 @@ function refreshAcronymList() {
   // Group by first letter
   const grouped = {};
   items.forEach(a => {
-    const key = a.abbr[0].toUpperCase();
+    const key = _acrAbbr(a)[0].toUpperCase();
     if (!grouped[key]) grouped[key] = [];
     grouped[key].push(a);
   });
@@ -1258,7 +1264,7 @@ function refreshAcronymList() {
     grouped[letter].forEach(a => {
       const card = document.createElement('div');
       card.className = 'ref-card';
-      card.innerHTML = `<div class="ref-abbr">${a.abbr}</div><div class="ref-full">${a.full}</div>`;
+      card.innerHTML = `<div class="ref-abbr">${_acrAbbr(a)}</div><div class="ref-full">${_acrFull(a)}</div>`;
       container.appendChild(card);
     });
   });
@@ -1297,18 +1303,21 @@ function renderGlossary() {
   refreshGlossaryList();
 }
 
+// Normalize glossary entry — supports both { term, def } and { term, definition } formats
+function _glsDef(g) { return g.def || g.definition || ''; }
+
 function refreshGlossaryList() {
   const container = document.getElementById('glossary-list');
   const countBar = document.getElementById('gls-count-bar');
   if (!container) return;
 
-  let items = GLOSSARY;
+  let items = GLOSSARY.filter(g => g.term);
   if (glsFilter.letter) {
     items = items.filter(g => g.term[0].toUpperCase() === glsFilter.letter);
   }
   if (glsFilter.query) {
     const q = glsFilter.query;
-    items = items.filter(g => g.term.toLowerCase().includes(q) || g.def.toLowerCase().includes(q));
+    items = items.filter(g => g.term.toLowerCase().includes(q) || _glsDef(g).toLowerCase().includes(q));
   }
 
   if (countBar) countBar.textContent = `Showing ${items.length} of ${GLOSSARY.length} terms`;
@@ -1338,7 +1347,7 @@ function refreshGlossaryList() {
     grouped[letter].forEach(g => {
       const card = document.createElement('div');
       card.className = 'ref-card';
-      card.innerHTML = `<div class="ref-term">${g.term}</div><div class="ref-def">${g.def}</div>`;
+      card.innerHTML = `<div class="ref-term">${g.term}</div><div class="ref-def">${_glsDef(g)}</div>`;
       container.appendChild(card);
     });
   });
@@ -1413,8 +1422,10 @@ function initApp() {
   const qotdBtn = document.getElementById('qotd-answer-btn');
   if (qotdBtn) qotdBtn.onclick = () => {
     const today = new Date();
-    const dayIndex = Math.floor(today.getTime() / 86400000) % QUESTIONS.length;
-    const q = QUESTIONS[dayIndex];
+    const validQs = QUESTIONS.filter(q => q && q.question);
+    if (validQs.length === 0) { alert('No questions available yet.'); return; }
+    const dayIndex = Math.floor(today.getTime() / 86400000) % validQs.length;
+    const q = validQs[dayIndex];
     STATE.currentSession = {
       config:{domains:[q.domain],levels:[q.level],count:1,mode:'untimed',timerMode:null,timerValue:0},
       questions:[q], answers:[null],
@@ -1510,7 +1521,7 @@ function initApp() {
   const lockDeviceBtn = document.getElementById('lock-device-btn');
   if (lockDeviceBtn) lockDeviceBtn.onclick = () => {
     if (confirm('Lock this device? You\'ll need to enter the secret key next time.')) {
-      localStorage.removeItem(CCSP_PASS_LKEY);
+      sessionStorage.removeItem(CCSP_PASS_LKEY);
       location.reload();
     }
   };
@@ -1850,7 +1861,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setLockBtnLoading(false);
 
     if (valid) {
-      localStorage.setItem(CCSP_PASS_LKEY, passphrase);
+      sessionStorage.setItem(CCSP_PASS_LKEY, passphrase); // sessionStorage: cleared on tab close, not visible in persistent storage
       await loadState();
       lockScreen.style.animation = 'lockFadeOut 0.4s ease forwards';
       setTimeout(() => { lockScreen.style.display = 'none'; showCertSelect(); }, 380);
@@ -1876,14 +1887,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (lockResetBtn) {
     lockResetBtn.addEventListener('click', () => {
       if (confirm('Reset this device?\n\nThis will erase your stored key and ALL saved progress on this device.')) {
-        [CCSP_SALT_KEY, CCSP_VALID_KEY, CCSP_DATA_KEY, CCSP_PASS_LKEY, 'ccsp_state'].forEach(k => localStorage.removeItem(k));
+        [CCSP_SALT_KEY, CCSP_VALID_KEY, CCSP_DATA_KEY, 'ccsp_state'].forEach(k => localStorage.removeItem(k));
+        sessionStorage.removeItem(CCSP_PASS_LKEY);
         location.reload();
       }
     });
   }
 
-  // Auto-unlock if this device has unlocked before
-  const savedPass = localStorage.getItem(CCSP_PASS_LKEY);
+  // Auto-unlock if this session has already unlocked (sessionStorage — cleared on tab close)
+  const savedPass = sessionStorage.getItem(CCSP_PASS_LKEY);
   if (savedPass) {
     setLockBtnLoading(true);
     let valid = false;
