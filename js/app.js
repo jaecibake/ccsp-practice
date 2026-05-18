@@ -160,7 +160,15 @@ function activateCert(certCode) {
   STATE.sessions      = STATE.certData[certCode].sessions      || [];
   STATE.currentSession = null;
 
-  QUESTIONS    = cd.getQ();
+  // Normalize questions: convert correct field from letter ("A"-"D") to numeric index (0-3)
+  // Some question files use letter strings, others use numeric — this makes both work transparently
+  QUESTIONS    = cd.getQ().map(q => {
+    if (q && typeof q.correct === 'string' && q.correct.length === 1) {
+      const idx = 'ABCD'.indexOf(q.correct.toUpperCase());
+      if (idx !== -1) return Object.assign({}, q, { correct: idx });
+    }
+    return q;
+  });
   DOMAIN_NAMES = cd.getDN();
   ACRONYMS     = (typeof cd.getAcr === 'function') ? cd.getAcr() : [];
   GLOSSARY     = (typeof cd.getGls === 'function') ? cd.getGls() : [];
@@ -1964,7 +1972,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       showCertSelect();
       return;
     }
-    localStorage.removeItem(CCSP_PASS_LKEY);
+    sessionStorage.removeItem(CCSP_PASS_LKEY);
     setLockBtnLoading(false);
   }
 
