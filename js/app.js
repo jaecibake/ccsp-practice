@@ -454,10 +454,10 @@ async function loadState() {
         }
       };
     }
-    if (!STATE.certData.ccsp)  STATE.certData.ccsp  = { questionStats:{}, bookmarks:[], sessions:[] };
-    if (!STATE.certData.cism)  STATE.certData.cism  = { questionStats:{}, bookmarks:[], sessions:[] };
-    if (!STATE.certData.cisa)  STATE.certData.cisa  = { questionStats:{}, bookmarks:[], sessions:[] };
-    if (!STATE.certData.cissp) STATE.certData.cissp = { questionStats:{}, bookmarks:[], sessions:[] };
+    // Ensure all known certs have a certData entry
+    ['ccsp','cism','cisa','cissp','crisc','issap','secx','chfi','ecih','cpent'].forEach(k => {
+      if (!STATE.certData[k]) STATE.certData[k] = { questionStats:{}, bookmarks:[], sessions:[] };
+    });
     if (!STATE.bookmarks)     STATE.bookmarks = [];
     if (!STATE.sessions)      STATE.sessions = [];
     if (!STATE.questionStats) STATE.questionStats = {};
@@ -468,10 +468,12 @@ async function saveState() {
   try {
     // Sync active cert data before saving
     if (STATE.activeCert && STATE.certData) {
+      const prev = STATE.certData[STATE.activeCert] || {};
       STATE.certData[STATE.activeCert] = {
-        questionStats: STATE.questionStats,
-        bookmarks:     STATE.bookmarks,
-        sessions:      STATE.sessions
+        questionStats:   STATE.questionStats,
+        bookmarks:       STATE.bookmarks,
+        sessions:        STATE.sessions,
+        lifetimeAnswered: prev.lifetimeAnswered || 0  // preserve across saves
       };
     }
     if (cryptoKey) {
@@ -507,7 +509,9 @@ function shuffle(arr) {
 function pct(n, d) { return d === 0 ? 0 : Math.round((n / d) * 100); }
 
 function domainColor(d) {
-  return ['','#4f8ef7','#e67e22','#27ae60','#8e44ad','#e74c3c','#16a085'][d];
+  // Supports up to 10 domains (CISSP has 8)
+  const COLORS = ['','#4f8ef7','#e67e22','#27ae60','#8e44ad','#e74c3c','#16a085','#f39c12','#2980b9','#c0392b','#1abc9c'];
+  return COLORS[d] || '#7a90b0';
 }
 
 function levelBadgeClass(l) { return ['','badge-foundation','badge-intermediate','badge-advanced'][l]; }
@@ -543,10 +547,11 @@ function renderHome() {
 
   // Question of the Day — pick deterministically by day
   const today = new Date();
-  const dayIndex = Math.floor(today.getTime() / 86400000) % QUESTIONS.length;
-  const qotd = QUESTIONS[dayIndex];
+  const validQs = QUESTIONS.filter(q => q && q.question);
+  const dayIndex = validQs.length > 0 ? Math.floor(today.getTime() / 86400000) % validQs.length : 0;
+  const qotd = validQs[dayIndex];
   const qotdEl = document.getElementById('qotd-text');
-  if (qotdEl) qotdEl.textContent = qotd.question;
+  if (qotdEl) qotdEl.textContent = qotd ? qotd.question : 'No questions available yet.';
   const dateEl = document.getElementById('qotd-date');
   if (dateEl) dateEl.textContent = today.toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric',year:'numeric'});
 }
@@ -605,7 +610,7 @@ function renderDashboard() {
   dp.innerHTML = '';
   const numDomains = CERT_DATA[STATE.activeCert]?.domains || 6;
   for (let d = 1; d <= numDomains; d++) {
-    const dqs = QUESTIONS.filter(q => q.domain === d);
+    const dqs = QUESTIONS.filter(q => q && q.domain === d);
     const dSeen = dqs.filter(q => qs[q.id]?.seen).length;
     const dCorrect = dqs.reduce((a, q) => a + (qs[q.id]?.correct || 0), 0);
     const dAttempts = dqs.reduce((a, q) => a + (qs[q.id]?.attempts || 0), 0);
@@ -696,7 +701,7 @@ function startQuiz() {
     alert('Please select at least one domain and one level.');
     return;
   }
-  const pool = QUESTIONS.filter(q => domains.includes(q.domain) && levels.includes(q.level));
+  const pool = QUESTIONS.filter(q => q && domains.includes(q.domain) && levels.includes(q.level));
   if (pool.length === 0) {
     alert('No questions match the selected filters. Try a different combination.');
     return;
@@ -1016,7 +1021,7 @@ function renderBookmarks() {
   const levelFilter = +document.getElementById('bk-level-filter').value || 0;
 
   const bqs = QUESTIONS.filter(q =>
-    STATE.bookmarks.includes(q.id) &&
+    q && STATE.bookmarks.includes(q.id) &&
     (domainFilter === 0 || q.domain === domainFilter) &&
     (levelFilter === 0 || q.level === levelFilter)
   );
@@ -1056,7 +1061,7 @@ function renderBookmarks() {
 }
 
 function practiceBookmarks() {
-  const bqs = QUESTIONS.filter(q => STATE.bookmarks.includes(q.id));
+  const bqs = QUESTIONS.filter(q => q && STATE.bookmarks.includes(q.id));
   if (bqs.length === 0) { alert('No bookmarks to practice.'); return; }
   STATE.currentSession = {
     config: { domains: Array.from({length: CERT_DATA[STATE.activeCert]?.domains||6},(_,i)=>i+1), levels: [1,2,3], count: bqs.length, mode: 'untimed', timerMode: null, timerValue: 0 },
@@ -1387,13 +1392,13 @@ function initApp() {
     const nDom = CERT_DATA[STATE.activeCert]?.domains || 6;
     let weakest = 1, weakPct = 101;
     for (let d = 1; d <= nDom; d++) {
-      const dqs = QUESTIONS.filter(q => q.domain === d);
+      const dqs = QUESTIONS.filter(q => q && q.domain === d);
       const dA = dqs.reduce((a,q)=>a+(qs[q.id]?.attempts||0),0);
       const dC = dqs.reduce((a,q)=>a+(qs[q.id]?.correct||0),0);
       const dp = dA > 0 ? pct(dC,dA) : 50;
       if (dp < weakPct) { weakPct = dp; weakest = d; }
     }
-    const pool = QUESTIONS.filter(q => q.domain === weakest);
+    const pool = QUESTIONS.filter(q => q && q.domain === weakest);
     const selected = shuffle(pool).slice(0, 20);
     STATE.currentSession = {
       config:{domains:[weakest],levels:[1,2,3],count:selected.length,mode:'untimed',timerMode:null,timerValue:0},
@@ -1549,7 +1554,7 @@ function renderCustomTest() {
 
   Array.from({length: certDomainCount}, (_, i) => i + 1).forEach(d => {
     const name = DOMAIN_NAMES[d];
-    const dqs = QUESTIONS.filter(q => q.domain === d);
+    const dqs = QUESTIONS.filter(q => q && q.domain === d);
     const attempts = dqs.reduce((a, q) => a + (qs[q.id]?.attempts || 0), 0);
     const correct  = dqs.reduce((a, q) => a + (qs[q.id]?.correct  || 0), 0);
     const score    = attempts > 0 ? pct(correct, attempts) : null;
@@ -1659,7 +1664,7 @@ function buildCustomTest() {
   if (ctConfig.domains.length === 0) return;
 
   const qs = STATE.questionStats;
-  let pool = QUESTIONS.filter(q => ctConfig.domains.includes(q.domain));
+  let pool = QUESTIONS.filter(q => q && ctConfig.domains.includes(q.domain));
 
   // Apply priority filter
   if (ctConfig.priority === 'wrong') {
