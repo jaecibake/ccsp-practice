@@ -888,7 +888,9 @@ select:focus, input:focus { outline: none; border-color: var(--accent); }
   inset: 0;
   background: radial-gradient(ellipse at 40% 30%, #0d2145 0%, #060e1a 70%);
   display: flex;
-  align-items: center;
+  /* flex-start instead of center: fixes scroll-to-top on mobile.
+     align-items:center clips overflow above top:0 making it unreachable. */
+  align-items: flex-start;
   justify-content: center;
   z-index: 9998;
   animation: lockFadeIn 0.4s ease;
@@ -898,6 +900,9 @@ select:focus, input:focus { outline: none; border-color: var(--accent); }
 .cert-select-wrap {
   width: 100%;
   max-width: 900px;
+  /* margin:auto centers the wrap when content is shorter than the viewport
+     (distributes leftover flex space equally); has no effect when scrolling */
+  margin: auto;
 }
 .cert-select-header {
   text-align: center;
@@ -1423,8 +1428,14 @@ select:focus, input:focus { outline: none; border-color: var(--accent); }
 /* ── Mobile (≤ 768px) ────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   /* Layout */
-  #mobile-header { display: flex; }
+  #mobile-header {
+    display: flex;
+    z-index: 10000; /* above cert-select-screen (9998) so hamburger always reachable */
+  }
   .sidebar-close-btn { display: flex; }
+
+  /* Cert select screen: leave room for the mobile header */
+  #cert-select-screen { padding-top: 72px; }
 
   .sidebar {
     display: flex;

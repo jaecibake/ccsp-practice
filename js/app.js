@@ -1402,6 +1402,14 @@ function initApp() {
       STATE.currentSession = null;
       saveState();
     }
+    // If cert select screen is open (switch-cert flow) and a cert is loaded,
+    // dismiss it so the user gets back into the app via the hamburger nav
+    if (STATE.activeCert) {
+      const certSelectEl = document.getElementById('cert-select-screen');
+      if (certSelectEl && certSelectEl.style.display !== 'none') {
+        certSelectEl.style.display = 'none';
+      }
+    }
     showScreen(screen);
     if (screen === 'home')      renderHome();
     if (screen === 'dashboard') renderDashboard();
