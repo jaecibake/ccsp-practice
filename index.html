@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self';" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self';" />
   <title>CertPrepAI</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -270,7 +270,7 @@
       <div id="recent-sessions"></div>
     </div>
 
-    <button class="btn" onclick="document.querySelector('[data-screen=setup]').click()">▶ Start a New Quiz</button>
+    <button class="btn" id="dash-new-quiz-btn">▶ Start a New Quiz</button>
 
     <div class="card" style="margin-top:18px;border:1px solid #e74c3c44">
       <div class="card-title" style="color:#e74c3c">⚠️ Danger Zone</div>

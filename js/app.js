@@ -278,7 +278,15 @@ async function validateKey(passphrase) {
     const key       = await _deriveKey(passphrase);
     const validator = localStorage.getItem(CCSP_VALID_KEY);
     if (!validator) {
-      // First-time setup — write validator
+      // First-time setup ONLY when no prior data exists.
+      // If salt or encrypted data exist without a validator, refuse re-seeding
+      // (prevents auth bypass via DevTools validator deletion).
+      const saltExists = !!localStorage.getItem(CCSP_SALT_KEY);
+      const dataExists = !!localStorage.getItem(CCSP_DATA_KEY);
+      if (saltExists || dataExists) {
+        // Validator was deleted but device data remains — block re-setup
+        return false;
+      }
       localStorage.setItem(CCSP_VALID_KEY, await _encryptStr(key, 'CCSP_UNLOCKED'));
       cryptoKey = key;
       return true;
@@ -499,6 +507,19 @@ function showScreen(id) {
 }
 
 // ── Utilities ──────────────────────────────────────────────────────────────────
+// HTML-escape untrusted values before inserting into innerHTML (prevents stored XSS)
+function esc(v) {
+  return String(v == null ? '' : v)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// Safe integer coercion — returns the number or 0 if non-numeric
+function safeInt(v) { const n = parseInt(v, 10); return isNaN(n) ? 0 : n; }
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -644,14 +665,15 @@ function renderDashboard() {
       try {
         const d = new Date(s.date);
         const dateStr = isNaN(d.getTime()) ? 'Unknown date' : `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
-        const domainsStr = Array.isArray(s.domains) ? s.domains.map(x => 'D' + x).join(', ') : '—';
-        const levelsStr = Array.isArray(s.levels) ? s.levels.map(x => LEVEL_NAMES[x] || x).join(', ') : '—';
-        const pass = (s.pct || 0) >= 70;
+        // esc() prevents stored XSS from tampered localStorage session data
+        const domainsStr = Array.isArray(s.domains) ? s.domains.map(x => esc('D' + safeInt(x))).join(', ') : '—';
+        const levelsStr  = Array.isArray(s.levels)  ? s.levels.map(x => esc(LEVEL_NAMES[safeInt(x)] || 'L' + safeInt(x))).join(', ') : '—';
+        const pass = (safeInt(s.pct)) >= 70;
         rl.innerHTML += `
           <div class="session-row">
-            <span class="session-date">${dateStr}</span>
-            <span class="session-info">${s.total || 0} Qs &nbsp;·&nbsp; ${domainsStr} &nbsp;·&nbsp; ${levelsStr}</span>
-            <span class="session-score" style="color:${pass ? '#27ae60' : '#e74c3c'}">${s.score}/${s.total} (${s.pct}%)</span>
+            <span class="session-date">${esc(dateStr)}</span>
+            <span class="session-info">${safeInt(s.total)} Qs &nbsp;·&nbsp; ${domainsStr} &nbsp;·&nbsp; ${levelsStr}</span>
+            <span class="session-score" style="color:${pass ? '#27ae60' : '#e74c3c'}">${safeInt(s.score)}/${safeInt(s.total)} (${safeInt(s.pct)}%)</span>
           </div>`;
       } catch (e) { /* skip malformed session entry */ }
     });
@@ -1109,19 +1131,26 @@ function renderHistory() {
 
   [...STATE.sessions].reverse().forEach((s, i) => {
     const d = new Date(s.date);
-    const pass = s.pct >= 70;
-    const wrong = s.total - s.score;
-    const skip = s.answers ? s.answers.filter(a => a === null).length : 0;
-    const correct = s.score;
-    const fillColor = pass ? '#27ae60' : s.pct >= 40 ? '#f39c12' : '#e74c3c';
-    const testName = s.total >= 100 ? 'Assessment Test' : s.total >= 50 ? 'Practice Test' : 'Custom Test';
+    // safeInt() prevents stored XSS by coercing all numeric fields from localStorage
+    const spct    = safeInt(s.pct);
+    const stotal  = safeInt(s.total);
+    const sscore  = safeInt(s.score);
+    const pass    = spct >= 70;
+    const wrong   = stotal - sscore;
+    const skip    = Array.isArray(s.answers) ? s.answers.filter(a => a === null).length : 0;
+    const correct = sscore;
+    const fillColor = pass ? '#27ae60' : spct >= 40 ? '#f39c12' : '#e74c3c';
+    const testName  = stotal >= 100 ? 'Assessment Test' : stotal >= 50 ? 'Practice Test' : 'Custom Test';
+    const dateStr   = isNaN(d.getTime()) ? 'Unknown date' : d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const domsStr   = Array.isArray(s.domains) ? s.domains.map(x => esc('D' + safeInt(x))).join(', ') : '—';
+    const lvlsStr   = Array.isArray(s.levels)  ? s.levels.map(x => esc(LEVEL_NAMES[safeInt(x)] || '')).join(', ') : '—';
 
     const card = document.createElement('div');
     card.className = 'history-card';
     card.innerHTML = `
-      <div class="history-score-ring" style="color:${fillColor}">${s.pct}%</div>
-      <div class="history-card-title">${testName}</div>
-      <div class="history-card-date">📅 ${d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+      <div class="history-score-ring" style="color:${fillColor}">${spct}%</div>
+      <div class="history-card-title">${esc(testName)}</div>
+      <div class="history-card-date">📅 ${esc(dateStr)}</div>
       <div class="history-tally">
         <div class="history-tally-item">
           <div class="tally-num correct">${correct}</div>
@@ -1137,10 +1166,10 @@ function renderHistory() {
         </div>
       </div>
       <div class="history-progress-bar">
-        <div class="history-progress-fill" style="width:${s.pct}%;background:${fillColor}"></div>
+        <div class="history-progress-fill" style="width:${spct}%;background:${fillColor}"></div>
       </div>
       <div style="font-size:0.72rem;color:var(--text-muted);margin-top:8px">
-        ${s.domains.map(x=>'D'+x).join(', ')} &nbsp;·&nbsp; ${s.levels.map(x=>LEVEL_NAMES[x]).join(', ')}
+        ${domsStr} &nbsp;·&nbsp; ${lvlsStr}
       </div>`;
     cards.appendChild(card);
   });
@@ -1463,6 +1492,12 @@ function initApp() {
       showScreen('dashboard');
       renderDashboard();
     }
+  };
+
+  // Dashboard "Start a New Quiz" button (was inline onclick — moved here for CSP compliance)
+  const dashNewQuiz = document.getElementById('dash-new-quiz-btn');
+  if (dashNewQuiz) dashNewQuiz.onclick = () => {
+    document.querySelector('[data-screen="setup"]').click();
   };
 
   // Results controls
@@ -1850,22 +1885,45 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // Brute-force lockout: max 5 attempts, then 30-second cooldown
+  let failedAttempts = 0;
+  let lockoutUntil   = 0;
+
   async function attemptUnlock(passphrase) {
     if (!passphrase) { lockInput.focus(); return; }
+
+    // Enforce lockout cooldown
+    const now = Date.now();
+    if (now < lockoutUntil) {
+      const secs = Math.ceil((lockoutUntil - now) / 1000);
+      lockErr.textContent = `Too many failed attempts. Try again in ${secs}s.`;
+      lockErr.style.display = 'block';
+      return;
+    }
+
     setLockBtnLoading(true);
     lockErr.style.display = 'none';
 
     let valid = false;
-    try { valid = await validateKey(passphrase); } catch (e) { console.error('Unlock error:', e); }
+    try { valid = await validateKey(passphrase); } catch (e) { /* suppress stack trace */ }
 
     setLockBtnLoading(false);
 
     if (valid) {
-      sessionStorage.setItem(CCSP_PASS_LKEY, passphrase); // sessionStorage: cleared on tab close, not visible in persistent storage
+      failedAttempts = 0;
+      sessionStorage.setItem(CCSP_PASS_LKEY, passphrase); // sessionStorage: cleared on tab close
       await loadState();
       lockScreen.style.animation = 'lockFadeOut 0.4s ease forwards';
       setTimeout(() => { lockScreen.style.display = 'none'; showCertSelect(); }, 380);
     } else {
+      failedAttempts++;
+      if (failedAttempts >= 5) {
+        lockoutUntil = Date.now() + 30000; // 30-second lockout
+        failedAttempts = 0;
+        lockErr.textContent = 'Too many failed attempts. Locked for 30 seconds.';
+      } else {
+        lockErr.textContent = `Incorrect key. ${5 - failedAttempts} attempt(s) remaining.`;
+      }
       lockErr.style.display = 'block';
       lockErr.style.animation = 'none';
       void lockErr.offsetWidth;
