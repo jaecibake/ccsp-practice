@@ -232,6 +232,10 @@ function applyCertTheme(certCode) {
   // Update sidebar cert label
   const certLabel = document.getElementById('sidebar-cert-label');
   if (certLabel) certLabel.textContent = `${cd.name} · ${QUESTIONS.length} Q`;
+
+  // Update mobile header cert name
+  const mobileCertName = document.getElementById('mobile-cert-name');
+  if (mobileCertName) mobileCertName.textContent = `${cd.icon} ${cd.name}`;
 }
 
 // ── Crypto ─────────────────────────────────────────────────────────────────────
@@ -1409,8 +1413,33 @@ function initApp() {
   }
 
   document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.onclick = () => navTo(btn.dataset.screen);
+    btn.onclick = () => {
+      navTo(btn.dataset.screen);
+      // Close mobile sidebar after navigation
+      closeMobileSidebar();
+    };
   });
+
+  // ── Mobile sidebar ────────────────────────────────────────────────────────────
+  const sidebar         = document.querySelector('.sidebar');
+  const hamburgerBtn    = document.getElementById('hamburger-btn');
+  const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+  const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+
+  function openMobileSidebar() {
+    if (sidebar)         sidebar.classList.add('mobile-open');
+    if (sidebarBackdrop) sidebarBackdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMobileSidebar() {
+    if (sidebar)         sidebar.classList.remove('mobile-open');
+    if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  if (hamburgerBtn)    hamburgerBtn.onclick    = openMobileSidebar;
+  if (sidebarCloseBtn) sidebarCloseBtn.onclick = closeMobileSidebar;
+  if (sidebarBackdrop) sidebarBackdrop.onclick  = closeMobileSidebar;
 
   // Tool cards on home screen
   document.querySelectorAll('.tool-card[data-screen]').forEach(card => {

@@ -1332,22 +1332,230 @@ select:focus, input:focus { outline: none; border-color: var(--accent); }
 /* ── Misc ────────────────────────────────────────────────────────────────── */
 .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
 
-/* ── Responsive ──────────────────────────────────────────────────────────── */
-@media (max-width: 900px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .tools-grid  { grid-template-columns: repeat(2, 1fr); }
-  .two-col, .two-col-wide { grid-template-columns: 1fr; }
-  .cb-grid { grid-template-columns: 1fr; }
-  .cb-num-grid { grid-template-columns: repeat(3, 1fr); }
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Mobile Top Header (hidden on desktop) ───────────────────────────────── */
+#mobile-header {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  background: var(--sidebar-bg);
+  border-bottom: 1px solid var(--border);
+  z-index: 190;
+  align-items: center;
+  padding: 0 14px;
+  gap: 12px;
 }
-@media (max-width: 700px) {
-  :root { --sidebar-w: 0px; }
-  .sidebar { display: none; }
-  .main-wrap { margin-left: 0; }
+#hamburger-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s, color 0.15s;
+}
+#hamburger-btn:hover { border-color: var(--accent); color: var(--accent); }
+.mobile-logo-txt {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  flex: 1;
+}
+#mobile-cert-name {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: right;
+  flex-shrink: 0;
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Sidebar Close Button (mobile only) ──────────────────────────────────── */
+.sidebar-close-btn {
+  display: none;
+  position: absolute;
+  top: 14px; right: 14px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 1rem;
+  width: 32px; height: 32px;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  z-index: 1;
+}
+.sidebar-close-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+/* ── Sidebar Overlay Backdrop ────────────────────────────────────────────── */
+#sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 199;
+  animation: fadeIn 0.2s ease;
+}
+#sidebar-backdrop.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── Tablet (≤ 960px) ────────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .stats-grid   { grid-template-columns: repeat(2, 1fr); }
+  .tools-grid   { grid-template-columns: repeat(2, 1fr); }
+  .two-col, .two-col-wide { grid-template-columns: 1fr; }
+  .cb-grid      { grid-template-columns: 1fr; }
+  .cb-num-grid  { grid-template-columns: repeat(3, 1fr); }
+  .cert-select-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── Mobile (≤ 768px) ────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Layout */
+  #mobile-header { display: flex; }
+  .sidebar-close-btn { display: flex; }
+
+  .sidebar {
+    display: flex;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 200;
+    width: min(240px, 85vw);
+  }
+  .sidebar.mobile-open { transform: translateX(0); }
+
+  .main-wrap { margin-left: 0; padding-top: 56px; }
   main { padding: 16px; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .tools-grid  { grid-template-columns: 1fr 1fr; }
-  .history-cards { grid-template-columns: 1fr; }
+
+  /* Banner */
+  .banner { padding: 18px 16px; }
+  .banner-title { font-size: 1.1rem; }
+  .banner-sub   { font-size: 0.82rem; }
   .banner-score { display: none; }
+  .banner-cert-badge { display: block; margin-left: 0; margin-top: 6px; }
+
+  /* Cards */
+  .card { padding: 16px; }
+
+  /* Stats */
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-card  { padding: 12px 14px; gap: 10px; }
+  .stat-value { font-size: 1.2rem; }
+  .stat-icon  { width: 36px; height: 36px; font-size: 1.2rem; }
+
+  /* Tools grid */
+  .tools-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tool-card  { padding: 14px 12px; }
+  .tool-icon  { font-size: 1.4rem; margin-bottom: 6px; }
+  .tool-name  { font-size: 0.82rem; }
+  .tool-desc  { font-size: 0.7rem; }
+
+  /* QOTD */
+  .qotd-card { padding: 16px; }
+
+  /* Domain progress bars — fix min-width overflow */
+  .domain-row   { gap: 8px; font-size: 0.8rem; }
+  .domain-label { min-width: 0; flex: 0 0 auto; max-width: 55%; }
+  .domain-stats { display: none; }
+  .domain-pct-badge { min-width: 36px; }
+
+  /* Session rows */
+  .session-date  { min-width: 0; width: 100%; font-size: 0.75rem; color: var(--text-muted); }
+  .session-info  { width: 100%; font-size: 0.8rem; }
+  .session-score { width: 100%; }
+  .session-row   { flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px 0; }
+
+  /* Quiz */
+  .quiz-header { gap: 8px; }
+  .q-text      { font-size: 0.95rem; line-height: 1.6; margin-bottom: 18px; }
+  .option-btn  { padding: 13px 14px; font-size: 0.88rem; min-height: 48px; }
+  .quiz-actions { flex-wrap: wrap; }
+  #next-btn    { flex: 1; justify-content: center; min-height: 44px; }
+  #bookmark-btn { min-height: 44px; }
+
+  /* Results */
+  #res-score-pct { font-size: 3rem; }
+  .res-grid { grid-template-columns: 1fr; }
+  .res-domain-row   { flex-wrap: wrap; gap: 4px; }
+  .res-domain-name  { min-width: 0; flex: 1; font-size: 0.8rem; }
+  .res-bar-wrap     { flex: 0 0 100%; order: 3; }
+  .res-domain-pct   { min-width: 0; }
+  .results-actions  { gap: 8px; }
+  .results-actions .btn { flex: 1; justify-content: center; min-height: 44px; }
+
+  /* History */
+  .history-cards { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .history-card  { padding: 14px 12px; }
+
+  /* Bookmarks */
+  .bookmarks-toolbar { gap: 8px; }
+  .bookmarks-toolbar select { font-size: 0.82rem; }
+  .bk-card { padding: 14px; }
+
+  /* Custom test */
+  .cb-grid     { grid-template-columns: 1fr; }
+  .cb-num-grid { grid-template-columns: repeat(3, 1fr); }
+  .cb-time-grid { grid-template-columns: repeat(5, 1fr); }
+
+  /* Acronyms / Glossary */
   .ref-list { grid-template-columns: 1fr; }
+  .az-btn   { padding: 5px 8px; font-size: 0.72rem; }
+
+  /* Cert select screen */
+  .cert-select-grid   { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .cert-select-title  { font-size: 1.3rem; }
+  .cert-select-brand  { font-size: 1.6rem; }
+  .cert-card          { padding: 20px 12px 16px; }
+  .cert-card-icon     { font-size: 2.2rem; }
+  .cert-card-name     { font-size: 1.2rem; }
+  .cert-card-fullname { font-size: 0.68rem; min-height: 0; }
+  .cert-card-stats    { gap: 6px; padding: 8px 6px; }
+  .cert-stat-val      { font-size: 0.9rem; }
+
+  /* Lock card */
+  .lock-card { padding: 32px 22px 26px; }
+}
+
+/* ── Small Mobile (≤ 480px) ──────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  main { padding: 12px; }
+  .banner { padding: 14px 12px; }
+  .banner-title { font-size: 1rem; }
+
+  .tools-grid  { gap: 8px; }
+  .stats-grid  { gap: 8px; }
+
+  .history-cards { grid-template-columns: 1fr; }
+
+  .results-actions { flex-direction: column; }
+  .results-actions .btn { width: 100%; }
+
+  /* Cert select: 1 column on very small phones */
+  .cert-select-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cert-card { padding: 16px 10px 14px; gap: 4px; }
+  .cert-card-name { font-size: 1.05rem; }
+  .cert-card-fullname { display: none; }
+  .cert-card-org { font-size: 0.65rem; }
+
+  .lock-card { padding: 28px 18px 22px; }
+  .lock-title { font-size: 1.4rem; }
+}
+
+/* ── Extra Small (≤ 360px) ───────────────────────────────────────────────── */
+@media (max-width: 360px) {
+  .cert-select-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .tools-grid { grid-template-columns: 1fr 1fr; }
+  .history-cards { grid-template-columns: 1fr; }
 }
