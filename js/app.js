@@ -705,7 +705,7 @@ function renderSetupDomains() {
     const name = DOMAIN_NAMES[d] || `Domain ${d}`;
     const lbl = document.createElement('label');
     lbl.className = 'checkbox-item';
-    lbl.innerHTML = `<input type="checkbox" class="domain-cb" value="${d}" checked /><label>D${d}: ${name}</label>`;
+    lbl.innerHTML = `<input type="checkbox" class="domain-cb" value="${safeInt(d)}" checked /><label>D${safeInt(d)}: ${esc(name)}</label>`;
     container.appendChild(lbl);
   }
 
@@ -1029,12 +1029,12 @@ function renderReview(filterWrong = false) {
       <div class="review-header">
         <span class="review-icon">${isCorrect ? '✓' : '✗'}</span>
         <span class="domain-badge-sm" style="border-color:${domainColor(q.domain)};color:${domainColor(q.domain)}">D${q.domain}</span>
-        <span class="level-badge ${levelBadgeClass(q.level)}" style="font-size:0.7rem">${LEVEL_NAMES[q.level]}</span>
+        <span class="level-badge ${levelBadgeClass(q.level)}" style="font-size:0.7rem">${esc(LEVEL_NAMES[q.level])}</span>
       </div>
-      <div class="review-q">${q.question}</div>
-      ${!isCorrect ? `<div class="review-your">Your answer: <span class="wrong-text">${q.options[ans] ?? 'Not answered'}</span></div>` : ''}
-      <div class="review-correct-ans">Correct: <span class="correct-text">${q.options[q.correct]}</span></div>
-      <div class="review-exp">${q.explanation}</div>`;
+      <div class="review-q">${esc(q.question)}</div>
+      ${!isCorrect ? `<div class="review-your">Your answer: <span class="wrong-text">${esc(q.options[ans] ?? 'Not answered')}</span></div>` : ''}
+      <div class="review-correct-ans">Correct: <span class="correct-text">${esc(q.options[q.correct])}</span></div>
+      <div class="review-exp">${esc(q.explanation)}</div>`;
     container.appendChild(card);
   });
 }
@@ -1075,16 +1075,16 @@ function renderBookmarks() {
     card.className = 'bk-card';
     card.innerHTML = `
       <div class="bk-card-header">
-        <span class="domain-badge-sm" style="border-color:${domainColor(q.domain)};color:${domainColor(q.domain)}">D${q.domain}: ${DOMAIN_NAMES[q.domain]}</span>
-        <span class="level-badge ${levelBadgeClass(q.level)}" style="font-size:0.7rem">${LEVEL_NAMES[q.level]}</span>
-        <button class="bk-remove" data-qid="${q.id}" title="Remove bookmark">&#9733;</button>
+        <span class="domain-badge-sm" style="border-color:${domainColor(q.domain)};color:${domainColor(q.domain)}">D${q.domain}: ${esc(DOMAIN_NAMES[q.domain])}</span>
+        <span class="level-badge ${levelBadgeClass(q.level)}" style="font-size:0.7rem">${esc(LEVEL_NAMES[q.level])}</span>
+        <button class="bk-remove" data-qid="${safeInt(q.id)}" title="Remove bookmark">&#9733;</button>
       </div>
-      <div class="bk-question">${q.question}</div>
-      <div class="bk-meta">${qs.attempts ? `Attempted ${qs.attempts}x · ${pct(qs.correct||0, qs.attempts)}% correct` : 'Not yet attempted'}</div>
+      <div class="bk-question">${esc(q.question)}</div>
+      <div class="bk-meta">${qs.attempts ? `Attempted ${safeInt(qs.attempts)}x · ${pct(qs.correct||0, qs.attempts)}% correct` : 'Not yet attempted'}</div>
       <div class="bk-options">
-        ${q.options.map((opt, i) => `<div class="bk-opt ${i === q.correct ? 'bk-opt-correct' : ''}">${opt}${i === q.correct ? ' ✓' : ''}</div>`).join('')}
+        ${q.options.map((opt, i) => `<div class="bk-opt ${i === q.correct ? 'bk-opt-correct' : ''}">${esc(opt)}${i === q.correct ? ' ✓' : ''}</div>`).join('')}
       </div>
-      <div class="bk-exp">${q.explanation}</div>`;
+      <div class="bk-exp">${esc(q.explanation)}</div>`;
     container.appendChild(card);
   });
 
@@ -1305,7 +1305,7 @@ function refreshAcronymList() {
     grouped[letter].forEach(a => {
       const card = document.createElement('div');
       card.className = 'ref-card';
-      card.innerHTML = `<div class="ref-abbr">${_acrAbbr(a)}</div><div class="ref-full">${_acrFull(a)}</div>`;
+      card.innerHTML = `<div class="ref-abbr">${esc(_acrAbbr(a))}</div><div class="ref-full">${esc(_acrFull(a))}</div>`;
       container.appendChild(card);
     });
   });
@@ -1334,8 +1334,8 @@ function renderGlossary() {
         refreshGlossaryList();
       };
     }
-    // disable letters with no entries
-    const letters = new Set(GLOSSARY.map(g => g.term[0].toUpperCase()));
+    // disable letters with no entries (filter falsy terms first to avoid .term[0] crash)
+    const letters = new Set(GLOSSARY.filter(g => g.term).map(g => g.term[0].toUpperCase()));
     document.querySelectorAll('#gls-az-row .az-btn[data-letter]').forEach(btn => {
       if (!letters.has(btn.dataset.letter)) btn.disabled = true;
     });
@@ -1388,7 +1388,7 @@ function refreshGlossaryList() {
     grouped[letter].forEach(g => {
       const card = document.createElement('div');
       card.className = 'ref-card';
-      card.innerHTML = `<div class="ref-term">${g.term}</div><div class="ref-def">${_glsDef(g)}</div>`;
+      card.innerHTML = `<div class="ref-term">${esc(g.term)}</div><div class="ref-def">${esc(_glsDef(g))}</div>`;
       container.appendChild(card);
     });
   });
@@ -1505,9 +1505,10 @@ function initApp() {
   renderSetupDomains();
 
   // Setup screen controls
-  document.querySelectorAll('input[name="quiz-mode"]').forEach(r =>
-    r.addEventListener('change', () => setupQuizMode(r.value === 'timed'))
-  );
+  // Use onchange (not addEventListener) to prevent stacking on cert switch
+  document.querySelectorAll('input[name="quiz-mode"]').forEach(r => {
+    r.onchange = () => setupQuizMode(r.value === 'timed');
+  });
   // Select/deselect all use onclick to avoid duplicate listeners on cert switch
   const selAllBtn = document.getElementById('select-all-domains');
   const deselAllBtn = document.getElementById('deselect-all-domains');
@@ -1666,40 +1667,41 @@ function renderCustomTest() {
   });
 
   // ── Deselect All ──────────────────────────────────────────────────────
-  document.getElementById('ct-deselect-all').addEventListener('click', () => {
+  // Use onclick (not addEventListener) to prevent listener stacking on cert switch
+  document.getElementById('ct-deselect-all').onclick = () => {
     document.querySelectorAll('#ct-domain-list .cb-domain-row').forEach(r => r.classList.remove('checked'));
     ctConfig.domains = [];
     document.getElementById('ct-domains-tag').textContent = `0 / ${certDomainCount}`;
     updateCustomSummary();
-  });
+  };
 
   // ── Number of Questions buttons ───────────────────────────────────────
   document.querySelectorAll('.cb-num-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.onclick = () => {
       document.querySelectorAll('.cb-num-btn').forEach(b => b.classList.remove('cb-num-active'));
       btn.classList.add('cb-num-active');
       ctConfig.numQ = parseInt(btn.dataset.n, 10);
       updateCustomSummary();
-    });
+    };
   });
 
   // ── Untimed toggle ─────────────────────────────────────────────────────
   const untimedToggle  = document.getElementById('ct-untimed');
   const timeSec        = document.getElementById('ct-time-section');
-  untimedToggle.addEventListener('change', () => {
+  untimedToggle.onchange = () => {
     ctConfig.untimed = untimedToggle.checked;
     timeSec.classList.toggle('cb-time-disabled', ctConfig.untimed);
     updateCustomSummary();
-  });
+  };
 
   // ── Time buttons ───────────────────────────────────────────────────────
   document.querySelectorAll('.cb-time-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.onclick = () => {
       document.querySelectorAll('.cb-time-btn').forEach(b => b.classList.remove('cb-time-active'));
       btn.classList.add('cb-time-active');
       ctConfig.timeMin = parseInt(btn.dataset.t, 10);
       updateCustomSummary();
-    });
+    };
   });
   // default-select first time btn
   const firstTimeBtn = document.querySelector('.cb-time-btn');
@@ -1707,24 +1709,24 @@ function renderCustomTest() {
 
   // ── Show Answer toggle ─────────────────────────────────────────────────
   const showAnsToggle = document.getElementById('ct-show-answer');
-  showAnsToggle.addEventListener('change', () => {
+  showAnsToggle.onchange = () => {
     ctConfig.showAnswer = showAnsToggle.checked;
     updateCustomSummary();
-  });
+  };
 
   // ── Priority radios ────────────────────────────────────────────────────
   document.querySelectorAll('.cb-priority-item').forEach(item => {
-    item.addEventListener('click', () => {
+    item.onclick = () => {
       document.querySelectorAll('.cb-priority-item').forEach(i => i.classList.remove('cb-priority-active'));
       item.classList.add('cb-priority-active');
       item.querySelector('input').checked = true;
       ctConfig.priority = item.dataset.val;
       updateCustomSummary();
-    });
+    };
   });
 
   // ── Build button ───────────────────────────────────────────────────────
-  document.getElementById('ct-build-btn').addEventListener('click', buildCustomTest);
+  document.getElementById('ct-build-btn').onclick = buildCustomTest;
 
   updateCustomSummary();
 }
@@ -1923,8 +1925,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Brute-force lockout: max 5 attempts, then 30-second cooldown
+  // lockoutUntil persisted in sessionStorage so a page-refresh doesn't bypass it
   let failedAttempts = 0;
-  let lockoutUntil   = 0;
+  let lockoutUntil   = parseInt(sessionStorage.getItem('ccsp_lockout_until') || '0', 10);
 
   async function attemptUnlock(passphrase) {
     if (!passphrase) { lockInput.focus(); return; }
@@ -1948,6 +1951,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (valid) {
       failedAttempts = 0;
+      sessionStorage.removeItem('ccsp_lockout_until'); // clear lockout on successful login
       sessionStorage.setItem(CCSP_PASS_LKEY, passphrase); // sessionStorage: cleared on tab close
       await loadState();
       lockScreen.style.animation = 'lockFadeOut 0.4s ease forwards';
@@ -1956,6 +1960,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       failedAttempts++;
       if (failedAttempts >= 5) {
         lockoutUntil = Date.now() + 30000; // 30-second lockout
+        sessionStorage.setItem('ccsp_lockout_until', lockoutUntil.toString()); // survive page refresh
         failedAttempts = 0;
         lockErr.textContent = 'Too many failed attempts. Locked for 30 seconds.';
       } else {
