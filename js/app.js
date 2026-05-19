@@ -178,8 +178,16 @@ function activateCert(certCode) {
       if (idx !== -1) correct = idx;
     }
 
+    // Step 1b: strip letter prefixes from option text so the shuffle isn't betrayed.
+    // Many AI-generated files store options as "A Some text", "B Some text", etc.
+    // Even after shuffling positions, the embedded letter reveals the original answer.
+    // Strip patterns like "A ", "A. ", "A) ", "A: " (case-insensitive).
+    const stripPrefix = opt =>
+      typeof opt === 'string' ? opt.replace(/^[A-Da-d][.):]?\s+/, '').trim() : opt;
+    const cleanedOpts = Array.isArray(q.options) ? q.options.map(stripPrefix) : q.options;
+
     // Step 2: shuffle answer options so correct answer appears in a random position
-    if (Array.isArray(q.options) && q.options.length === 4 &&
+    if (Array.isArray(cleanedOpts) && cleanedOpts.length === 4 &&
         typeof correct === 'number' && correct >= 0 && correct < 4) {
       // Fisher-Yates shuffle of position indices
       const perm = [0, 1, 2, 3];
@@ -187,7 +195,7 @@ function activateCert(certCode) {
         const j = Math.floor(Math.random() * (i + 1));
         [perm[i], perm[j]] = [perm[j], perm[i]];
       }
-      const shuffledOpts = perm.map(oldIdx => q.options[oldIdx]);
+      const shuffledOpts = perm.map(oldIdx => cleanedOpts[oldIdx]);
       const newCorrect   = perm.indexOf(correct); // where did the correct answer land?
       return Object.assign({}, q, { options: shuffledOpts, correct: newCorrect });
     }
