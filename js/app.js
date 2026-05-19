@@ -160,14 +160,34 @@ function activateCert(certCode) {
   STATE.sessions      = STATE.certData[certCode].sessions      || [];
   STATE.currentSession = null;
 
-  // Normalize questions: convert correct field from letter ("A"-"D") to numeric index (0-3)
-  // Some question files use letter strings, others use numeric — this makes both work transparently
+  // Normalize questions: fix correct field + shuffle options to remove AI position bias.
+  // LLMs disproportionately place correct answers at position B (index 1) — up to 73% of
+  // generated questions. Shuffling options at load time distributes them evenly.
   QUESTIONS    = cd.getQ().map(q => {
-    if (q && typeof q.correct === 'string' && q.correct.length === 1) {
-      const idx = 'ABCD'.indexOf(q.correct.toUpperCase());
-      if (idx !== -1) return Object.assign({}, q, { correct: idx });
+    if (!q) return q;
+
+    // Step 1: normalize correct field from letter ("A"-"D") to numeric index (0-3)
+    let correct = q.correct;
+    if (typeof correct === 'string' && correct.length === 1) {
+      const idx = 'ABCD'.indexOf(correct.toUpperCase());
+      if (idx !== -1) correct = idx;
     }
-    return q;
+
+    // Step 2: shuffle answer options so correct answer appears in a random position
+    if (Array.isArray(q.options) && q.options.length === 4 &&
+        typeof correct === 'number' && correct >= 0 && correct < 4) {
+      // Fisher-Yates shuffle of position indices
+      const perm = [0, 1, 2, 3];
+      for (let i = 3; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [perm[i], perm[j]] = [perm[j], perm[i]];
+      }
+      const shuffledOpts = perm.map(oldIdx => q.options[oldIdx]);
+      const newCorrect   = perm.indexOf(correct); // where did the correct answer land?
+      return Object.assign({}, q, { options: shuffledOpts, correct: newCorrect });
+    }
+
+    return correct !== q.correct ? Object.assign({}, q, { correct }) : q;
   });
   DOMAIN_NAMES = cd.getDN();
   ACRONYMS     = (typeof cd.getAcr === 'function') ? cd.getAcr() : [];
@@ -287,18 +307,23 @@ async function _decryptStr(key, stored) {
 
 async function validateKey(passphrase) {
   try {
-    const key       = await _deriveKey(passphrase);
+    // IMPORTANT: check validator/salt/data BEFORE calling _deriveKey().
+    // _deriveKey() stores the salt to localStorage as a side effect, so if we
+    // check saltExists after the call it is always true on fresh devices —
+    // which would permanently block first-time validator creation (login always fails).
     const validator = localStorage.getItem(CCSP_VALID_KEY);
     if (!validator) {
-      // First-time setup ONLY when no prior data exists.
-      // If salt or encrypted data exist without a validator, refuse re-seeding
-      // (prevents auth bypass via DevTools validator deletion).
       const saltExists = !!localStorage.getItem(CCSP_SALT_KEY);
       const dataExists = !!localStorage.getItem(CCSP_DATA_KEY);
       if (saltExists || dataExists) {
         // Validator was deleted but device data remains — block re-setup
+        // (prevents auth bypass via DevTools validator deletion).
         return false;
       }
+    }
+    // Derive key only after confirming we should proceed
+    const key = await _deriveKey(passphrase);
+    if (!validator) {
       localStorage.setItem(CCSP_VALID_KEY, await _encryptStr(key, 'CCSP_UNLOCKED'));
       cryptoKey = key;
       return true;
