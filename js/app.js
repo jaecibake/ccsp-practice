@@ -1,3 +1,8 @@
+// ── Entire app wrapped in IIFE to remove all functions from window scope.
+// This prevents DevTools console attacks like: validateKey = async () => true
+// All symbols (validateKey, loadState, showCertSelect, initApp, etc.) are
+// local to this function and cannot be overridden from outside.
+(function () {
 'use strict';
 
 // ── Cert Config ────────────────────────────────────────────────────────────────
@@ -483,13 +488,12 @@ function drawProgressChart(canvasId) {
 
 async function loadState() {
   try {
+    // Only load data when a valid cryptoKey is present.
+    // No unencrypted fallback — state is never readable without authentication.
     const enc = localStorage.getItem(CCSP_DATA_KEY);
     if (enc && cryptoKey) {
       const dec = await _decryptStr(cryptoKey, enc);
       STATE = JSON.parse(dec);
-    } else {
-      const raw = localStorage.getItem('ccsp_state');
-      if (raw) STATE = JSON.parse(raw);
     }
     // Migrate old flat STATE (no certData) to new per-cert structure
     if (!STATE.certData) {
@@ -523,11 +527,10 @@ async function saveState() {
         lifetimeAnswered: prev.lifetimeAnswered || 0  // preserve across saves
       };
     }
+    // Only save when authenticated — never write plaintext state to localStorage.
     if (cryptoKey) {
       const enc = await _encryptStr(cryptoKey, JSON.stringify(STATE));
       localStorage.setItem(CCSP_DATA_KEY, enc);
-    } else {
-      localStorage.setItem('ccsp_state', JSON.stringify(STATE));
     }
   } catch (e) {}
 }
@@ -1421,6 +1424,8 @@ function refreshGlossaryList() {
 
 // ── App Init (called after successful unlock) ──────────────────────────────────
 function initApp() {
+  // Hard gate: cryptoKey must exist — prevents bypass via direct console call
+  if (!cryptoKey) return;
   // Nav (sidebar + any data-screen tool cards)
   function navTo(screen) {
     if (STATE.currentSession && STATE.currentSession.answers.every(a => a !== null)) {
@@ -1838,6 +1843,8 @@ function buildCustomTest() {
 
 // ── Cert Selection Screen ──────────────────────────────────────────────────────
 function showCertSelect() {
+  // Hard gate: no cryptoKey = login was bypassed — refuse to proceed
+  if (!cryptoKey) return;
   // If returning user already had a cert selected, go straight in
   if (STATE.activeCert && CERT_DATA[STATE.activeCert]) {
     activateCert(STATE.activeCert);
@@ -2045,3 +2052,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   lockInput.focus();
 });
+
+})(); // end IIFE — nothing above is accessible on window
