@@ -684,7 +684,7 @@ function renderDashboard() {
       <div class="domain-row">
         <div class="domain-label">
           <span class="domain-dot" style="background:${domainColor(d)}"></span>
-          <span>D${d}: ${DOMAIN_NAMES[d]}</span>
+          <span>D${safeInt(d)}: ${esc(DOMAIN_NAMES[d])}</span>
         </div>
         <div class="domain-bar-wrap">
           <div class="domain-bar" style="width:${dPct}%;background:${domainColor(d)}"></div>
@@ -1012,7 +1012,7 @@ function renderResults() {
     byDomain.innerHTML += `
       <div class="res-domain-row">
         <span class="domain-dot" style="background:${domainColor(d)}"></span>
-        <span class="res-domain-name">D${d}: ${DOMAIN_NAMES[d]}</span>
+        <span class="res-domain-name">D${safeInt(d)}: ${esc(DOMAIN_NAMES[d])}</span>
         <div class="res-bar-wrap"><div class="res-bar" style="width:${dp}%;background:${domainColor(d)}"></div></div>
         <span class="res-domain-pct">${dc}/${dqs.length} (${dp}%)</span>
       </div>`;
