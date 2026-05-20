@@ -11,7 +11,11 @@
 const CERT_DATA = {
   ccsp:  { name:'CCSP',  fullName:'Certified Cloud Security Professional',       org:'ISC²',  icon:'☁️',  color:'#4f8ef7', accentDark:'#3a6fd8',
            getQ:()=>[...QUESTIONS_CCSP,
-             ...(typeof QUESTIONS_CCSP_EXTRA!=='undefined'?QUESTIONS_CCSP_EXTRA:[])],
+             ...(typeof QUESTIONS_CCSP_C1!=='undefined'?QUESTIONS_CCSP_C1:[]),
+             ...(typeof QUESTIONS_CCSP_C2!=='undefined'?QUESTIONS_CCSP_C2:[]),
+             ...(typeof QUESTIONS_CCSP_C3!=='undefined'?QUESTIONS_CCSP_C3:[]),
+             ...(typeof QUESTIONS_CCSP_C4!=='undefined'?QUESTIONS_CCSP_C4:[]),
+             ...(typeof QUESTIONS_CCSP_C5!=='undefined'?QUESTIONS_CCSP_C5:[])],
            getDN:()=>DOMAIN_NAMES_CCSP,
            getAcr:()=>ACRONYMS_CCSP, getGls:()=>GLOSSARY_CCSP,
            acroLabel:'CCSP certification abbreviations and acronyms',
