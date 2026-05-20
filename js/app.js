@@ -1980,8 +1980,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   // lockoutUntil persisted in sessionStorage so a page-refresh doesn't bypass it
   let failedAttempts = 0;
   let lockoutUntil   = parseInt(sessionStorage.getItem('ccsp_lockout_until') || '0', 10);
+  // Guard against concurrent calls (touchend + click double-fire, Enter + click race, etc.).
+  // Without this, two concurrent validateKey() calls can corrupt the salt/validator
+  // pairing: call A stores salt, call B sees "salt exists but no validator" → returns false,
+  // or B overwrites A's salt after A encrypted the validator with A's salt → every future
+  // login fails. One flag prevents all of that.
+  let unlocking = false;
 
   async function attemptUnlock(passphrase) {
+    if (unlocking) return;                   // ← prevent concurrent calls
     if (!passphrase) { lockInput.focus(); return; }
 
     // Enforce lockout cooldown
@@ -1993,12 +2000,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
+    unlocking = true;
     setLockBtnLoading(true);
     lockErr.style.display = 'none';
 
     let valid = false;
     try { valid = await validateKey(passphrase); } catch (e) { /* suppress stack trace */ }
 
+    unlocking = false;
     setLockBtnLoading(false);
 
     if (valid) {
@@ -2028,9 +2037,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   lockBtn.addEventListener('click', () => attemptUnlock(lockInput.value.trim()));
-  // touchend: prevents mobile-keyboard-dismiss viewport reflow from dropping the tap.
-  // e.preventDefault() suppresses the subsequent synthetic 'click' so we don't double-fire.
-  lockBtn.addEventListener('touchend', e => { e.preventDefault(); attemptUnlock(lockInput.value.trim()); });
+  // pointerdown: blur the input immediately so the mobile keyboard starts dismissing
+  // BEFORE the viewport reflows and before the click event fires. Without this, the
+  // keyboard-dismiss reflow can move the button between pointerdown and click, causing
+  // the click to land outside the button's new position on some mobile browsers.
+  // Using pointerdown (not touchstart) keeps mouse behaviour identical — a single
+  // 'click' fires after pointerup regardless of input type.
+  lockBtn.addEventListener('pointerdown', () => { lockInput.blur(); });
   // Enter key: call attemptUnlock directly — NOT via lockBtn.click() — so it fires even
   // while the button is temporarily disabled during the auto-unlock PBKDF2 check.
   lockInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); attemptUnlock(lockInput.value.trim()); } });
@@ -2054,9 +2067,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Auto-unlock if this session has already unlocked (sessionStorage — cleared on tab close)
   const savedPass = sessionStorage.getItem(CCSP_PASS_LKEY);
   if (savedPass) {
+    unlocking = true;          // block concurrent attemptUnlock during auto-unlock PBKDF2
     setLockBtnLoading(true);
     let valid = false;
     try { valid = await validateKey(savedPass); } catch (e) {}
+    unlocking = false;
     if (valid) {
       await loadState();
       lockScreen.style.display = 'none';
@@ -2065,9 +2080,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     sessionStorage.removeItem(CCSP_PASS_LKEY);
     setLockBtnLoading(false);
-    // If the user typed their passphrase while auto-unlock was running (button was
-    // disabled and swallowed their click), attempt it now so they don't have to
-    // click a second time.
+    // If the user typed their passphrase while auto-unlock was running, attempt it
+    // now so they don't need to click a second time.
     const queuedPass = lockInput.value.trim();
     if (queuedPass) { attemptUnlock(queuedPass); return; }
   }
