@@ -2024,7 +2024,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   lockBtn.addEventListener('click', () => attemptUnlock(lockInput.value.trim()));
-  lockInput.addEventListener('keydown', e => { if (e.key === 'Enter') lockBtn.click(); });
+  // touchend: prevents mobile-keyboard-dismiss viewport reflow from dropping the tap.
+  // e.preventDefault() suppresses the subsequent synthetic 'click' so we don't double-fire.
+  lockBtn.addEventListener('touchend', e => { e.preventDefault(); attemptUnlock(lockInput.value.trim()); });
+  // Enter key: call attemptUnlock directly — NOT via lockBtn.click() — so it fires even
+  // while the button is temporarily disabled during the auto-unlock PBKDF2 check.
+  lockInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); attemptUnlock(lockInput.value.trim()); } });
   lockToggle.addEventListener('click', () => {
     lockInput.type = lockInput.type === 'password' ? 'text' : 'password';
     lockToggle.textContent = lockInput.type === 'password' ? '👁' : '🙈';
@@ -2056,6 +2061,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     sessionStorage.removeItem(CCSP_PASS_LKEY);
     setLockBtnLoading(false);
+    // If the user typed their passphrase while auto-unlock was running (button was
+    // disabled and swallowed their click), attempt it now so they don't have to
+    // click a second time.
+    const queuedPass = lockInput.value.trim();
+    if (queuedPass) { attemptUnlock(queuedPass); return; }
   }
 
   lockInput.focus();
