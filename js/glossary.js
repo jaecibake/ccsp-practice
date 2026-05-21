@@ -209,4 +209,4 @@ const GLOSSARY_CCSP = [
   { term:"Zero-Day Vulnerability", def:"A software vulnerability unknown to the vendor or the public at the time of discovery, for which no patch or fix yet exists. Named because developers have had 'zero days' to address the flaw. Zero-day exploits are highly valuable to attackers and nation-state actors." },
 ];
 // Sort alphabetically by term
-GLOSSARY.sort((a, b) => a.term.localeCompare(b.term, undefined, { sensitivity: 'base' }));
+GLOSSARY_CCSP.sort((a, b) => a.term.localeCompare(b.term, undefined, { sensitivity: 'base' }));

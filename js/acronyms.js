@@ -551,4 +551,4 @@ const ACRONYMS_CCSP = [
   { abbr:"ZTA",      full:"Zero Trust Architecture" },
 ];
 // Sort alphabetically (case-insensitive)
-ACRONYMS.sort((a, b) => a.abbr.localeCompare(b.abbr, undefined, { sensitivity: 'base' }));
+ACRONYMS_CCSP.sort((a, b) => a.abbr.localeCompare(b.abbr, undefined, { sensitivity: 'base' }));
