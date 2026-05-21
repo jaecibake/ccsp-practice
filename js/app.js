@@ -151,6 +151,9 @@ const CERT_DATA = {
            bannerSub:'Master penetration testing across all 5 CPENT domains' }
 };
 
+// Difficulty level display names (levels 1–3)
+const LEVEL_NAMES = { 1: 'Foundation', 2: 'Intermediate', 3: 'Advanced' };
+
 // Active data sets — populated by activateCert()
 let QUESTIONS    = [];
 let DOMAIN_NAMES = {};
