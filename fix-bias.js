@@ -1,98 +1,81 @@
-// fix-bias.js — redistributes correct answers evenly (0,1,2,3) in existing chunk files
+// fix-bias.js — fix answer-length bias in js/q_ccsp_c4.js
+// Mode 1 (no patch files in js/fixquestion): dump biased questions to js/fixquestion/c4_dump.txt
+// Mode 2 (js/fixquestion/c4_patch*.json exist): apply patches, validate, rebuild js/q_ccsp_c4.js
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
+const ROOT = __dirname;
+const SRC = path.join(ROOT, 'js', 'q_ccsp_c4.js');
+const FIXDIR = path.join(ROOT, 'js', 'fixquestion');
+const KEY = 'QUESTIONS_CCSP_C4';
 const LETTERS = ['A', 'B', 'C', 'D'];
-const BASE = 'C:\\Temp\\Test Project';
 
-function loadFile(rel) {
-  const src = fs.readFileSync(path.join(BASE, rel), 'utf8');
-  const sandbox = { window: {} };
-  try {
-    vm.runInNewContext(src, sandbox);
-    const key = Object.keys(sandbox.window).find(k => /^QUESTIONS_/.test(k));
-    if (key && Array.isArray(sandbox.window[key]) && sandbox.window[key].length > 0)
-      return { name: key, questions: sandbox.window[key] };
-  } catch(e) { console.error('Load error', rel, e.message); }
-  return null;
+const sandbox = { window: {} };
+vm.runInNewContext(fs.readFileSync(SRC, 'utf8'), sandbox);
+const qs = sandbox.window[KEY];
+
+const patchFiles = fs.readdirSync(FIXDIR).filter(f => /^c4_patch.*\.json$/.test(f)).sort();
+
+if (patchFiles.length === 0) {
+  // DUMP MODE
+  const out = [];
+  let biased = 0;
+  qs.forEach(q => {
+    const c = q.options[q.correct].length;
+    const wmax = Math.max(...q.options.filter((_, i) => i !== q.correct).map(o => o.length));
+    if (c > wmax * 1.2) {
+      biased++;
+      const lines = q.options.map((o, i) =>
+        (i === q.correct ? '*' : String(i)) + ' (' + o.length + ') ' + o);
+      out.push('#' + q.id + ' correct=' + q.correct + ' clen=' + c + '\n' + lines.join('\n'));
+    }
+  });
+  fs.writeFileSync(path.join(FIXDIR, 'c4_dump.txt'), out.join('\n\n'), 'utf8');
+  console.log('total=' + qs.length + ' biased=' + biased + ' dumped to js/fixquestion/c4_dump.txt');
+} else {
+  // APPLY MODE
+  const patch = {};
+  patchFiles.forEach(f => {
+    const p = JSON.parse(fs.readFileSync(path.join(FIXDIR, f), 'utf8'));
+    Object.entries(p).forEach(([id, opts]) => {
+      patch[id] = Object.assign(patch[id] || {}, opts);
+    });
+  });
+  let applied = 0;
+  qs.forEach(q => {
+    const p = patch[String(q.id)];
+    if (!p) return;
+    Object.entries(p).forEach(([idx, text]) => {
+      const i = Number(idx);
+      if (i === q.correct) { console.log('ERROR: patch touches correct option of #' + q.id); return; }
+      if (!text.startsWith(LETTERS[i] + ' ')) console.log('WARN: #' + q.id + ' opt ' + i + ' missing prefix ' + LETTERS[i]);
+      q.options[i] = text;
+      applied++;
+    });
+  });
+  // Validate
+  let biased = 0, longest = 0;
+  const issues = [];
+  qs.forEach(q => {
+    const lens = q.options.map(o => o.length);
+    const c = lens[q.correct];
+    const w = lens.filter((_, i) => i !== q.correct);
+    if (c === Math.max(...lens)) longest++;
+    if (c > Math.max(...w) * 1.2) issues.push('#' + q.id + ' STILL-BIASED lens=' + lens.join(',') + ' correct=' + q.correct), biased++;
+    const mn = Math.min(...lens), mx = Math.max(...lens);
+    if (mx > mn * 1.45) issues.push('#' + q.id + ' WIDE-SPREAD lens=' + lens.join(',') + ' correct=' + q.correct);
+  });
+  // Rebuild file (one question per line)
+  const lines = qs.map(q => {
+    const opts = q.options.map(o => JSON.stringify(o)).join(',');
+    return `  { id:${q.id}, domain:${q.domain}, level:${q.level}, question:${JSON.stringify(q.question)}, options:[${opts}], correct:${q.correct}, explanation:${JSON.stringify(q.explanation)} }`;
+  });
+  const content = `const ${KEY} = [\n${lines.join(',\n')}\n];\nif (typeof window !== 'undefined') window.${KEY} = ${KEY};\n`;
+  fs.writeFileSync(SRC, content, 'utf8');
+  fs.writeFileSync(path.join(FIXDIR, 'c4_lens.txt'),
+    qs.map(q => q.id + ' c=' + q.correct + ' ' + q.options.map(o => o.length).join(',')).join('\n'), 'utf8');
+  console.log('applied=' + applied + ' patched-questions=' + Object.keys(patch).length);
+  console.log('total=' + qs.length + ' correctIsLongest=' + longest + ' biased20pct=' + biased);
+  issues.forEach(s => console.log(s));
 }
-
-function moveCorrect(q, newPos) {
-  if (q.correct === newPos) return q;
-  const opts = [...q.options];
-  const cur = q.correct;
-  const strip = s => s.replace(/^[A-D]\s+/, '');
-  const cContent = strip(opts[cur]);
-  const sContent = strip(opts[newPos]);
-  opts[cur]  = LETTERS[cur]  + ' ' + sContent;
-  opts[newPos] = LETTERS[newPos] + ' ' + cContent;
-  return { ...q, options: opts, correct: newPos };
-}
-
-function redistribute(questions) {
-  const n = questions.length;
-  const base = Math.floor(n / 4);
-  const rem  = n % 4;
-  // build target list
-  const targets = [];
-  for (let p = 0; p < 4; p++)
-    for (let j = 0; j < base + (p < rem ? 1 : 0); j++)
-      targets.push(p);
-  // Fisher-Yates shuffle targets so distribution is random (not sequential)
-  for (let i = targets.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [targets[i], targets[j]] = [targets[j], targets[i]];
-  }
-  return questions.map((q, i) => moveCorrect(q, targets[i]));
-}
-
-function serializeQ(q) {
-  const opts = q.options.map(o => JSON.stringify(o)).join(',');
-  return `  { id:${q.id}, domain:${q.domain}, level:${q.level}, question:${JSON.stringify(q.question)}, options:[${opts}], correct:${q.correct}, explanation:${JSON.stringify(q.explanation)} }`;
-}
-
-function writeBack(rel, name, questions) {
-  const content =
-    `const ${name} = [\n` +
-    questions.map(serializeQ).join(',\n') +
-    `\n];\nif (typeof window !== 'undefined') window.${name} = ${name};\n`;
-  fs.writeFileSync(path.join(BASE, rel), content, 'utf8');
-}
-
-const FILES = [
-  'js/q_ccsp_c1.js',
-  'js/q_ccsp_c2.js',
-  'js/q_ccsp_c3.js',
-  'js/q_ccsp_c4.js',
-  'js/q_ccsp_c5.js',
-  'js/q_cism_c1.js',
-  'js/q_cism_c2.js',
-  'js/q_cism_c3.js',
-  'js/q_cism_c4.js',
-  'js/q_cism_c5.js',
-  'js/q_cissp_c1.js',
-  'js/q_cissp_c2.js',
-  'js/q_cissp_c3.js',
-  'js/q_cissp_c4.js',
-  'js/q_cissp_c5.js',
-  'js/q_issap_c1.js',
-  'js/q_issap_c2.js',
-  'js/q_issap_c3.js',
-  'js/q_issap_c4.js',
-  'js/q_issap_c5.js',
-];
-
-FILES.forEach(rel => {
-  const loaded = loadFile(rel);
-  if (!loaded) { console.log(`SKIP (empty) ${rel}`); return; }
-  const { name, questions } = loaded;
-  const before = {};
-  questions.forEach(q => before[q.correct] = (before[q.correct]||0)+1);
-  const fixed = redistribute(questions);
-  const after = {};
-  fixed.forEach(q => after[q.correct] = (after[q.correct]||0)+1);
-  writeBack(rel, name, fixed);
-  console.log(`${rel}: ${questions.length}q  before=${JSON.stringify(before)}  after=${JSON.stringify(after)}`);
-});
-console.log('Done.');

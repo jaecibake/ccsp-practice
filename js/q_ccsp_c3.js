@@ -565,9 +565,9 @@ const QUESTIONS_CCSP_C3 = [
     "level": 2,
     "question": "Which of the following BEST describes 'elasticity' as a cloud computing characteristic?",
     "options": [
-      "A The adaptability of cloud services to different pricing models",
-      "B The physical flexibility of cloud data center infrastructure",
-      "C The ability of cloud systems to survive hardware failures",
+      "A The adaptability of cloud services to support many different pricing and consumption models",
+      "B The physical flexibility and modularity of cloud data center infrastructure components",
+      "C The ability of cloud systems to survive hardware failures without any service interruption",
       "D The ability to automatically scale computing resources up and down based on demand"
     ],
     "correct": 3,
@@ -579,10 +579,10 @@ const QUESTIONS_CCSP_C3 = [
     "level": 2,
     "question": "A cloud architect is evaluating whether to use containers or virtual machines for a microservices deployment. The PRIMARY security advantage of VMs over containers is:",
     "options": [
-      "A VMs have better application performance",
-      "B VMs have a smaller attack surface than containers",
+      "A VMs deliver better raw application performance than containers",
+      "B VMs have a considerably smaller attack surface than containers",
       "C VMs provide stronger isolation through hardware-level separation",
-      "D VMs are easier to deploy than containers"
+      "D VMs are easier to deploy and orchestrate at scale than containers"
     ],
     "correct": 2,
     "explanation": "VMs use hardware-level isolation via the hypervisor, providing stronger tenant isolation than containers which share the host OS kernel; a kernel vulnerability could potentially allow container escape to the host or other containers."
@@ -594,9 +594,9 @@ const QUESTIONS_CCSP_C3 = [
     "question": "Which of the following cloud deployment considerations MOST directly affects regulatory compliance for healthcare data?",
     "options": [
       "A Geographic location of cloud data storage relative to regulatory jurisdiction",
-      "B Network bandwidth between cloud regions",
-      "C Cloud provider pricing model",
-      "D Cloud infrastructure performance characteristics"
+      "B Available network bandwidth and latency between geographically separate cloud regions",
+      "C The cloud provider's pricing model and consumption-based billing structure",
+      "D Performance and throughput characteristics of the cloud infrastructure"
     ],
     "correct": 0,
     "explanation": "Healthcare data regulations (HIPAA in the US, GDPR in the EU) impose requirements based on geographic jurisdiction; data stored in specific countries may trigger different regulatory obligations and transfer restrictions."
@@ -607,10 +607,10 @@ const QUESTIONS_CCSP_C3 = [
     "level": 3,
     "question": "An organization is evaluating cloud providers for a highly sensitive government workload. The MOST appropriate security consideration is:",
     "options": [
-      "A Number of data centers the provider operates",
+      "A The total number of geographically distributed data centers the provider operates worldwide",
       "B FedRAMP authorization level and the impact level (Low, Moderate, High) matching the data classification",
-      "C Cost of the cloud service",
-      "D The provider's customer base size"
+      "C The overall cost of the cloud service compared against equivalent offerings from competitors",
+      "D The size and diversity of the provider's existing government and commercial customer base"
     ],
     "correct": 1,
     "explanation": "FedRAMP defines three impact levels (Low, Moderate, High) with increasingly rigorous security controls; selecting a provider with FedRAMP authorization at the appropriate impact level ensures the security posture matches the sensitivity of government data."
@@ -621,9 +621,9 @@ const QUESTIONS_CCSP_C3 = [
     "level": 2,
     "question": "Which of the following BEST describes homomorphic encryption and its cloud security application?",
     "options": [
-      "A A cloud provider's method for encrypting customer data",
-      "B Encryption using multiple keys for defense in depth",
-      "C Encryption that can be performed at high speed in cloud environments",
+      "A A cloud provider's proprietary method for encrypting customer data uniformly at rest",
+      "B Encryption applying multiple independent keys in layers to achieve defense in depth",
+      "C Encryption optimized to be performed at very high speed in large cloud environments",
       "D Encryption allowing computation on encrypted data without decryption, protecting data in use"
     ],
     "correct": 3,
@@ -635,10 +635,10 @@ const QUESTIONS_CCSP_C3 = [
     "level": 1,
     "question": "Which of the following data security controls is MOST appropriate for protecting sensitive data in cloud database query results returned to applications?",
     "options": [
-      "A Requiring TLS for all database connections",
-      "B Encrypting the database at rest",
+      "A Requiring TLS encryption for all connections between applications and databases",
+      "B Encrypting the entire database at rest using provider-managed encryption keys",
       "C Masking sensitive fields in query results based on user authorization level",
-      "D Implementing database activity monitoring"
+      "D Implementing database activity monitoring to record and alert on query patterns"
     ],
     "correct": 2,
     "explanation": "Masking sensitive fields in query results based on user authorization (dynamic data masking) allows authorized queries while protecting sensitive values (like full credit card numbers) from users who should see only partial data."
@@ -664,9 +664,9 @@ const QUESTIONS_CCSP_C3 = [
     "question": "Which of the following BEST describes the purpose of a cloud 'landing zone' from a security perspective?",
     "options": [
       "A A pre-configured, secure baseline cloud environment implementing governance guardrails",
-      "B The geographic location where cloud traffic lands",
-      "C The on-premises location for staging cloud migrations",
-      "D The first cloud service deployed in an organization's environment"
+      "B The geographic location and region where inbound cloud network traffic first lands",
+      "C The designated on-premises staging location used for preparing cloud migrations",
+      "D The first production cloud service deployed in an organization's new environment"
     ],
     "correct": 0,
     "explanation": "A cloud landing zone is a pre-configured environment with built-in security guardrails, governance policies, and baseline configurations that ensures new workloads are deployed into a consistently secure, compliant foundation."
@@ -678,9 +678,9 @@ const QUESTIONS_CCSP_C3 = [
     "question": "Which of the following application security threats is MOST specific to containerized cloud applications?",
     "options": [
       "A Malicious container images with embedded malware in trusted registries",
-      "B SQL injection",
-      "C Cross-site scripting",
-      "D Insecure direct object references"
+      "B SQL injection attacks targeting the application's backend databases",
+      "C Cross-site scripting attacks executed in users' web browsers",
+      "D Insecure direct object references exposing other users' records"
     ],
     "correct": 0,
     "explanation": "Container image supply chain attacks — malicious code embedded in base images or dependencies from registries — are a cloud-container-specific threat, particularly when organizations use unverified images from public registries without scanning."
@@ -691,10 +691,10 @@ const QUESTIONS_CCSP_C3 = [
     "level": 2,
     "question": "Which of the following cloud security operations metrics BEST indicates the maturity of an organization's threat detection capability?",
     "options": [
-      "A Number of security analysts in the SOC",
+      "A The total number of trained security analysts staffing the 24x7 SOC",
       "B Mean time to detect (MTTD) and percentage of threats detected vs. simulated",
-      "C Amount of log data collected per day",
-      "D Number of security tools deployed"
+      "C The total volume of log and telemetry data collected and indexed per day",
+      "D The number of distinct security tools deployed across the environment"
     ],
     "correct": 1,
     "explanation": "MTTD and detection rate against known threat scenarios (measured through purple team exercises or red team results) directly measure detection capability effectiveness, showing how quickly and completely threats are identified."
@@ -1139,10 +1139,10 @@ const QUESTIONS_CCSP_C3 = [
     "level": 3,
     "question": "An organization's cloud contract contains a limitation of liability clause capping the provider's liability at three months of service fees. From a risk management perspective, the MOST appropriate response is:",
     "options": [
-      "A Acknowledge the clause as a common contractual term prevalent across the cloud service provider industry.",
+      "A Acknowledge and accept the clause as a common, non-negotiable contractual term that is prevalent across the entire cloud service provider industry.",
       "B Conduct a thorough risk assessment to quantify potential data breach impact, then negotiate for increased liability limits or procure supplementary cyber insurance coverage.",
-      "C Implement strategies to reduce reliance on the cloud service, thereby minimizing potential financial exposure under the existing liability cap.",
-      "D Decline the proposed contract terms and seek alternative cloud providers willing to offer unlimited or significantly higher liability coverage."
+      "C Implement strategies to progressively reduce organizational reliance on the cloud service, thereby minimizing potential financial exposure under the existing liability cap.",
+      "D Decline the proposed contract terms outright and seek alternative cloud providers willing to offer unlimited or significantly higher liability coverage commitments."
     ],
     "correct": 1,
     "explanation": "Providers' liability caps often represent a small fraction of actual breach costs; risk managers should assess residual financial exposure, negotiate higher caps where possible, and obtain cyber insurance to address remaining financial risk."
@@ -1210,9 +1210,9 @@ const QUESTIONS_CCSP_C3 = [
     "question": "A cloud security architect is designing a security operations capability that must detect advanced persistent threats (APTs) in a cloud environment. The MOST effective approach is:",
     "options": [
       "A Integrating advanced behavioral analytics with curated threat intelligence feeds, developing bespoke detection rules mapped to MITRE ATT&CK, and conducting proactive threat hunting exercises.",
-      "B Relying exclusively on security tools provided by the cloud service provider, leveraging their inherent integration and operational efficiencies.",
-      "C Strategically deploying a comprehensive array of diverse security monitoring tools across the cloud infrastructure to maximize visibility and log collection.",
-      "D Implementing a Security Information and Event Management (SIEM) system configured with its out-of-the-box detection rulesets and basic alerting capabilities."
+      "B Relying exclusively on the native security tools provided by the cloud service provider, leveraging their inherent platform integration, telemetry access, and operational efficiencies.",
+      "C Strategically deploying a comprehensive array of diverse, best-of-breed security monitoring tools across the entire cloud infrastructure to maximize visibility and log collection coverage.",
+      "D Implementing a Security Information and Event Management (SIEM) system configured with its vendor-supplied out-of-the-box detection rulesets and basic correlation alerting capabilities."
     ],
     "correct": 0,
     "explanation": "APT detection requires behavioral analytics to detect subtle TTPs, threat intelligence to contextualize activity, ATT&CK-aligned detection coverage to address known adversary techniques, and proactive threat hunting to find activity that evades automated detection."
@@ -1685,10 +1685,10 @@ const QUESTIONS_CCSP_C3 = [
     "level": 2,
     "question": "Which of the following BEST describes the security risk of 'credential harvesting' attacks targeting cloud environments?",
     "options": [
-      "A Attackers exfiltrate sensitive data directly from managed cloud databases.",
+      "A Attackers exfiltrate sensitive customer data directly from managed cloud database services.",
       "B Attackers compromise identity credentials via source code, configuration files, or social engineering.",
-      "C Attackers illicitly gather operational telemetry from cloud API usage logs.",
-      "D Attackers retrieve encrypted authentication artifacts from cloud storage buckets."
+      "C Attackers illicitly gather operational telemetry and metadata from cloud API usage logs.",
+      "D Attackers retrieve encrypted authentication artifacts from misconfigured cloud storage buckets."
     ],
     "correct": 1,
     "explanation": "Credential harvesting targets cloud credentials through multiple vectors: source code with hardcoded credentials, configuration files in public repositories, cloud metadata services (SSRF to access instance credentials), phishing cloud console login pages — granting attackers cloud API access with the victim's permissions."
@@ -1839,10 +1839,10 @@ const QUESTIONS_CCSP_C3 = [
     "level": 3,
     "question": "An organization processes medical records in the cloud and must comply with HIPAA. The cloud provider offers a Business Associate Agreement (BAA). Which ADDITIONAL safeguards are MOST critical?",
     "options": [
-      "A Ensuring the cloud provider holds HIPAA certifications, assuming this fully covers the organization's compliance responsibilities for all data.",
-      "B Solely depending on the Business Associate Agreement (BAA) as sufficient for compliance, overlooking the organization's direct obligations.",
+      "A Ensuring the cloud provider holds recognized HIPAA certifications and attestations, assuming this fully covers the organization's compliance responsibilities for all data.",
+      "B Solely depending on the executed Business Associate Agreement (BAA) as sufficient evidence of compliance, overlooking the organization's own direct regulatory obligations.",
       "C Implementing robust encryption (customer-managed keys), detailed audit logging, strict access controls, breach notification protocols, and a thorough risk analysis for gaps.",
-      "D Restricting all cloud access to personnel located exclusively within US geographic boundaries, regardless of technical security controls."
+      "D Restricting all administrative cloud access to personnel located exclusively within United States geographic boundaries, regardless of other technical security controls."
     ],
     "correct": 2,
     "explanation": "A BAA defines the provider's responsibilities but doesn't fulfill the organization's own HIPAA obligations: the covered entity must implement technical safeguards (encryption, audit controls, access controls), administrative safeguards (policies, training, risk analysis), and physical safeguards appropriate to the ePHI risk environment."
@@ -1854,9 +1854,9 @@ const QUESTIONS_CCSP_C3 = [
     "question": "Which of the following BEST describes the security purpose of using 'workload identity' in cloud-native architectures?",
     "options": [
       "A Providing cryptographic identities to workloads (containers, functions, VMs) for secure mutual authentication between services, eliminating reliance on shared secrets.",
-      "B Pinpointing the exact physical or logical geographic region where specific cloud workloads are deployed and operating.",
-      "C Automating the discovery and categorization of unpatched or vulnerable cloud workloads to facilitate timely security updates.",
-      "D Monitoring and logging the utilization of compute, storage, and network resources by workloads for accurate cost allocation and billing."
+      "B Pinpointing the exact physical or logical geographic region where specific cloud workloads are deployed and operating at any given point in time.",
+      "C Automating the continuous discovery and categorization of unpatched or vulnerable cloud workloads to facilitate timely security updates and patching.",
+      "D Monitoring and logging the utilization of compute, storage, and network resources by individual workloads for accurate cost allocation and chargeback billing."
     ],
     "correct": 0,
     "explanation": "Workload identity (SPIFFE/SPIRE, cloud-native service accounts with OIDC tokens) allows workloads to authenticate using short-lived cryptographic tokens tied to their identity rather than shared secrets or long-lived API keys — enabling mutual authentication between services with automatic rotation."
@@ -1980,9 +1980,9 @@ const QUESTIONS_CCSP_C3 = [
     "question": "Which of the following BEST describes the security implication of 'right to erasure' (GDPR Article 17) for cloud environments?",
     "options": [
       "A Organizations must identify and delete personal data across all cloud storage, backups, and processing systems within defined timeframes, requiring robust data discovery.",
-      "B Organizations are required to delete all backups containing personal data immediately upon receiving a valid user request for erasure.",
-      "C Cloud providers assume primary responsibility for all aspects of data erasure and legal compliance obligations under data protection laws.",
-      "D The right to erasure exclusively pertains to data stored in active databases, explicitly excluding any content within backups or archives."
+      "B Organizations are strictly required to delete all backup copies containing personal data immediately upon receiving any valid user request for erasure.",
+      "C Cloud providers assume primary legal responsibility for all aspects of personal data erasure and ongoing compliance obligations under data protection laws.",
+      "D The right to erasure exclusively pertains to data stored in active production databases, explicitly excluding any content within backups or long-term archives."
     ],
     "correct": 0,
     "explanation": "GDPR's right to erasure requires identifying and deleting an individual's personal data across all systems within one month — including cloud databases, object storage, backups, data warehouses, and logs; organizations without comprehensive data inventory and deletion procedures cannot comply, requiring cloud-specific data discovery capabilities."
@@ -2343,10 +2343,10 @@ const QUESTIONS_CCSP_C3 = [
     "level": 3,
     "question": "An organization using multi-cloud must demonstrate GDPR compliance across providers storing EU personal data in different countries. The MOST comprehensive approach is:",
     "options": [
-      "A Consolidating all GDPR-regulated data onto a single, designated cloud provider to simplify compliance oversight.",
-      "B Implementing comprehensive encryption for all personal data utilizing customer-managed keys (CMK) across all cloud services.",
+      "A Consolidating all GDPR-regulated personal data onto a single, designated cloud provider in order to simplify compliance oversight and auditing.",
+      "B Implementing comprehensive encryption for all personal data utilizing customer-managed keys (CMK) consistently across all cloud services and regions.",
       "C Deploying a holistic data governance framework encompassing inventory, consistent protection standards, legal transfer mechanisms, and recurring audits.",
-      "D Strictly enforcing data residency policies to guarantee that all personal data remains exclusively within the European Union."
+      "D Strictly enforcing data residency policies to guarantee that all personal data remains stored exclusively within the European Union at all times."
     ],
     "correct": 2,
     "explanation": "Multi-cloud GDPR compliance requires systematic governance: complete data inventory (what personal data is where), appropriate legal mechanisms for each cross-border transfer, consistent technical safeguards (encryption, access controls) across all providers, regular assessment, and documented accountability — not just encryption or geographic restriction."
@@ -2609,9 +2609,9 @@ const QUESTIONS_CCSP_C3 = [
     "level": 2,
     "question": "Which of the following BEST describes the security benefit of 'cloud infrastructure entitlement management' (CIEM)?",
     "options": [
-      "A CIEM primarily focuses on managing the contractual agreements and service level entitlements established with various cloud service providers.",
-      "B CIEM is specifically designed to enforce granular network access control policies across all cloud virtual private clouds and subnets.",
-      "C CIEM assists in optimizing and managing the financial billing entitlements and cost allocations for all cloud infrastructure resources.",
+      "A CIEM primarily focuses on managing the contractual agreements, subscription terms, and service level entitlements established with various cloud service providers across the enterprise.",
+      "B CIEM is specifically designed to define and enforce granular network access control policies across all cloud virtual private clouds, subnets, and peering connections at scale.",
+      "C CIEM assists organizations in optimizing and managing the financial billing entitlements, budget allocations, and cost chargebacks for all cloud infrastructure resources.",
       "D CIEM provides crucial visibility and control over proliferated cloud identities (human and machine) and their granular permissions, identifying and remediating over-privileged access risks effectively."
     ],
     "correct": 3,
@@ -2623,10 +2623,10 @@ const QUESTIONS_CCSP_C3 = [
     "level": 2,
     "question": "Which of the following BEST describes the security risk of 'XML external entity' (XXE) injection in cloud web services?",
     "options": [
-      "A XXE vulnerabilities can be exploited by attackers to craft and forge valid XML digital signatures for unauthorized data manipulation purposes.",
-      "B XXE exploits allow adversaries to passively intercept and eavesdrop on sensitive XML API response data during transit between cloud services.",
+      "A XXE vulnerabilities can be exploited by sophisticated attackers to craft and forge valid XML digital signatures for unauthorized transaction and data manipulation purposes.",
+      "B XXE exploits allow adversaries to passively intercept and eavesdrop on sensitive XML API response data while it is in transit between cooperating cloud services.",
       "C XXE vulnerabilities exploit XML parser behavior to process external entity references, allowing attackers to read local files, perform SSRF, or trigger denial of service attacks.",
-      "D XXE vulnerabilities enable attackers to maliciously modify the integrity of XML data stored within various cloud storage services."
+      "D XXE vulnerabilities enable attackers to maliciously and silently modify the integrity of XML documents and data stored within various cloud storage services."
     ],
     "correct": 2,
     "explanation": "XXE occurs when XML parsers process untrusted external entity definitions, enabling attackers to read arbitrary files (/etc/passwd, application configs), perform SSRF to internal services, exfiltrate data via out-of-band channels, or cause DoS through recursive entity expansion (billion laughs attack)."
@@ -2638,9 +2638,9 @@ const QUESTIONS_CCSP_C3 = [
     "question": "An organization discovers that API keys for their cloud environment have been exposed in a public GitHub repository for 6 months. Which response actions are MOST critical?",
     "options": [
       "A Promptly revoking all exposed keys, rotating all credentials within the impacted account, conducting a comprehensive audit log review for unauthorized activity, assessing data exposure, and initiating breach notification procedures.",
-      "B Promptly changing the exposed API keys to new, randomly generated values and updating all associated application configurations to prevent further unauthorized access attempts.",
-      "C Immediately deleting the public GitHub repository containing the keys and assuming that the exposed API keys were not discovered or actively exploited by malicious actors.",
-      "D Informing GitHub support to remove the exposed credentials from their public search indexes and requesting a review of their historical repository snapshots."
+      "B Promptly changing the exposed API keys to new, cryptographically random values and carefully updating all associated application configurations and deployment pipelines to prevent further unauthorized access attempts.",
+      "C Immediately deleting the public GitHub repository containing the exposed keys and reasonably assuming that the credentials were not discovered, indexed, or actively exploited by malicious actors during the exposure window.",
+      "D Informing GitHub support to remove the exposed credentials from their public search indexes and code scanning caches, and formally requesting a review of their historical repository snapshots and forks."
     ],
     "correct": 0,
     "explanation": "A 6-month exposure window requires comprehensive response: immediate revocation stops ongoing abuse, new credentials must be issued, the full historical audit trail must be examined for unauthorized use (potential breach), any data accessed or exfiltrated must be identified for breach notification assessment, and all stakeholders notified appropriately."
@@ -2651,10 +2651,10 @@ const QUESTIONS_CCSP_C3 = [
     "level": 2,
     "question": "Which of the following BEST describes the security challenge of 'cloud-to-cloud' data sharing between business partners?",
     "options": [
-      "A Cloud-to-cloud data sharing is inherently secure due to the advanced security postures and integrated controls provided by modern cloud service providers.",
-      "B Cloud providers are responsible for automatically implementing and managing all necessary security controls for data shared across different organizational tenants.",
+      "A Cloud-to-cloud data sharing is inherently secure by default due to the advanced security postures, mature encryption, and integrated controls provided by all modern cloud service providers.",
+      "B Cloud providers are contractually responsible for automatically implementing and managing all necessary security controls for any data shared across different organizational tenants and platforms.",
       "C Data shared between distinct cloud environments may traverse public networks, encounter differing security standards, and create complex data lineage issues, necessitating robust contract terms and technical controls.",
-      "D Utilizing cloud-to-cloud sharing paradigms effectively eliminates all regulatory and compliance obligations related to data sovereignty and privacy requirements."
+      "D Utilizing cloud-to-cloud sharing paradigms effectively eliminates all regulatory and compliance obligations related to data sovereignty, cross-border transfer, and privacy requirements."
     ],
     "correct": 2,
     "explanation": "Business partner cloud data sharing requires: encryption in transit, access controls ensuring only authorized recipient systems can access shared data, clear contractual terms about permitted uses and security requirements, data lineage tracking, and compliance assessment — shared cloud environments don't inherit security controls automatically."

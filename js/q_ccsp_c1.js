@@ -47,10 +47,10 @@ const QUESTIONS_CCSP_C1 = [
     "level": 1,
     "question": "Which of the following BEST describes the cloud data lifecycle phase known as 'Create'?",
     "options": [
-      "A Migrating data to long-term archives.",
-      "B Permanently removing data from all systems.",
+      "A Migrating aging data into long-term archival storage tiers.",
+      "B Permanently removing data from all systems and backups.",
       "C Data generation, acquisition, or initial modification.",
-      "D Distributing data to authorized users."
+      "D Distributing data to authorized internal and external users."
     ],
     "correct": 2,
     "explanation": "The Create phase is when data originates — whether generated, acquired, input, or modified into a new form — and is the first phase of the CSA cloud data lifecycle (Create, Store, Use, Share, Archive, Destroy)."
@@ -551,9 +551,9 @@ const QUESTIONS_CCSP_C1 = [
     "level": 2,
     "question": "Which of the following BEST describes the concept of 'bring your own key' (BYOK) in cloud services?",
     "options": [
-      "A A standardized, secure communication protocol facilitating the transmission of encryption keys to provider infrastructure.",
-      "B A specific key escrow methodology enabling the cloud service provider to fully recover customer-managed encryption keys.",
-      "C The practice of enterprise employees utilizing personal mobile devices to access and manage corporate cloud services.",
+      "A A standardized, secure communication protocol facilitating the encrypted transmission of encryption keys between customer systems and provider infrastructure.",
+      "B A specific key escrow methodology enabling the cloud service provider to fully recover and restore customer-managed encryption keys upon lawful request.",
+      "C The practice of enterprise employees utilizing their own personal mobile devices to access, administer, and manage corporate cloud services and data.",
       "D Customers generating their own cryptographic keys externally and subsequently importing them into the cloud provider's Key Management Service (KMS)."
     ],
     "correct": 3,

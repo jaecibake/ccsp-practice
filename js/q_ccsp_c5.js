@@ -187,9 +187,9 @@ const QUESTIONS_CCSP_C5 = [
     "level": 3,
     "question": "A penetration tester discovers that a cloud-hosted web application accepts user-supplied XML input and makes external entity references enabled. The MOST critical vulnerability is:",
     "options": [
-      "A Excessive XML data parsing operations, leading to significant performance degradation and resource exhaustion within the application system.",
-      "B Insecure or inadequate XML schema validation, potentially allowing malformed or unauthorized data structures to be processed by the application.",
-      "C The transmission of sensitive XML data over unencrypted communication channels, exposing information to eavesdropping or interception.",
+      "A Excessive XML data parsing operations, leading to significant performance degradation and compute resource exhaustion within the application system under sustained load.",
+      "B Insecure or inadequate XML schema validation, potentially allowing malformed, unexpected, or unauthorized data structures to be accepted and processed by the application.",
+      "C The transmission of sensitive XML data over unencrypted communication channels, exposing confidential information to network eavesdropping or interception by attackers.",
       "D XML External Entity (XXE) injection, enabling critical vulnerabilities such as local file disclosure, Server-Side Request Forgery (SSRF), and potentially remote code execution."
     ],
     "correct": 3,
@@ -481,10 +481,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 2,
     "question": "Which of the following cloud security considerations MOST directly affects the 'right to audit' in cloud contracts?",
     "options": [
-      "A The explicit right to conduct audits is solely applicable within traditional on-premises computing environments and does not extend to modern cloud service offerings.",
-      "B Cloud service providers are legally compelled to grant auditors complete and unrestricted access to the underlying source code of their proprietary services and platforms.",
+      "A The explicit contractual right to conduct security audits is solely applicable within traditional on-premises computing environments and does not meaningfully extend to modern cloud service offerings.",
+      "B Cloud service providers are legally compelled to grant customer auditors complete and unrestricted access to the underlying source code of their proprietary services, hypervisors, and platforms.",
       "C Direct physical audit access to multi-tenant cloud infrastructure environments is inherently impractical; therefore, independent third-party certifications and attestations frequently function as accepted audit proxies.",
-      "D Cloud service providers consistently demonstrate a readiness and willingness to grant direct physical access to their data centers and infrastructure for customer audit purposes."
+      "D Cloud service providers consistently demonstrate a readiness and willingness to grant customers direct physical access to their data centers and underlying infrastructure for audit purposes."
     ],
     "correct": 2,
     "explanation": "Multi-tenancy makes direct physical audits impractical without exposing other tenants' data and infrastructure; third-party certifications (SOC 2, ISO 27001, FedRAMP) serve as audit proxies that regulators and customers accept as evidence of control effectiveness."
@@ -551,9 +551,9 @@ const QUESTIONS_CCSP_C5 = [
     "level": 1,
     "question": "Which of the following BEST describes the concept of 'cloud security governance' from a board perspective?",
     "options": [
-      "A The day-to-day operational management and effective coordination of all activities specifically undertaken by the dedicated cloud security team within the organization.",
-      "B The comprehensive evaluation and direct oversight of the security practices and the robust compliance adherence maintained by external cloud service providers.",
-      "C Direct technical supervision and a detailed review of all implemented cloud security configurations and settings across the various cloud platforms in operation.",
+      "A The day-to-day operational management and effective coordination of all security activities specifically undertaken by the dedicated cloud security team within the organization's structure.",
+      "B The comprehensive evaluation and direct ongoing oversight of the security practices and the robust compliance adherence maintained by all external cloud service providers under contract.",
+      "C Direct technical supervision and a detailed periodic review of all implemented cloud security configurations and settings across the various cloud platforms currently in operation.",
       "D Strategic board-level oversight focused on ensuring that the cloud security strategy, risk management framework, and compliance efforts are completely aligned with overarching organizational business objectives."
     ],
     "correct": 3,
@@ -607,9 +607,9 @@ const QUESTIONS_CCSP_C5 = [
     "level": 2,
     "question": "Which of the following BEST describes the concept of 'GraphQL security' in cloud API contexts?",
     "options": [
-      "A Specific security measures implemented for graph databases hosted within diverse cloud computing environments.",
-      "B The practice of using graphical representations to visualize and analyze the security posture of cloud network topologies.",
-      "C Methodologies involving graph theory to visually map and comprehend the intricate security topology of various cloud APIs.",
+      "A Specific security measures and hardening practices implemented for graph databases hosted within diverse cloud computing environments.",
+      "B The practice of using graphical representations and dashboards to visualize and analyze the security posture of cloud network topologies.",
+      "C Methodologies involving applied graph theory to visually map and comprehend the intricate security topology of various cloud APIs.",
       "D Specialized security considerations for GraphQL APIs, encompassing query depth limits, introspection control, and granular field-level authorization."
     ],
     "correct": 3,
@@ -1167,9 +1167,9 @@ const QUESTIONS_CCSP_C5 = [
     "level": 1,
     "question": "Which of the following BEST describes the concept of 'secure disposal' of cloud data from a CSP perspective?",
     "options": [
-      "A Initiating the removal of data objects or volumes directly through the cloud provider's administrative web interface or API.",
-      "B Revoking all existing access control privileges and roles associated with specific data sets for all designated users.",
-      "C Transferring inactive or legacy data into specialized long-term, low-cost storage tiers prior to service contract expiration.",
+      "A Initiating the removal of stored data objects or volumes directly through the cloud provider's administrative web management interface or programmatic API calls.",
+      "B Revoking all existing access control privileges, entitlements, and roles associated with specific data sets for all designated users and service accounts.",
+      "C Transferring inactive or legacy data into specialized long-term, low-cost archival storage tiers prior to the expiration of the service contract.",
       "D Implementing robust processes to permanently and irrecoverably destroy data, using methods like cryptographic erasure or multi-pass overwriting, before storage reallocation."
     ],
     "correct": 3,
@@ -1265,10 +1265,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 2,
     "question": "Which of the following BEST describes the cloud security concept of 'infrastructure redundancy' from a security perspective?",
     "options": [
-      "A Implementing duplicate cloud security control systems to ensure continuity of defense capabilities during an outage.",
-      "B Maintaining parallel, identical cloud subscription accounts for rapid failover during service disruptions.",
+      "A Implementing duplicate and parallel cloud security control systems to ensure the continuity of critical defense capabilities during a platform or tooling outage.",
+      "B Maintaining parallel, identically configured cloud subscription accounts to enable rapid failover and recovery during major provider service disruptions.",
       "C Leveraging geographically dispersed infrastructure components and services to eliminate single points of failure, bolstering resilience against both cyberattacks and system outages.",
-      "D Establishing overlapping coverage schedules for security operations center personnel to provide continuous incident response."
+      "D Establishing overlapping coverage schedules for security operations center personnel to provide continuous around-the-clock incident response capability."
     ],
     "correct": 2,
     "explanation": "Infrastructure redundancy — multiple availability zones, regions, and provider diversity — eliminates single points of failure targeted by attackers (DDoS, infrastructure compromise) and provides resilience that improves security availability."
@@ -1279,10 +1279,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 1,
     "question": "Which of the following BEST describes the security purpose of 'container registry security scanning'?",
     "options": [
-      "A Analyzing audit logs from container registries to detect unauthorized access patterns or policy violations.",
+      "A Analyzing administrative audit logs from container registries to detect unauthorized access patterns, suspicious pulls, or policy violations.",
       "B Automated analysis of stored container images within registries to identify software vulnerabilities, embedded malware, and misconfigurations prior to deployment.",
-      "C Monitoring network communication flows to and from container registries for indicators of compromise or data exfiltration attempts.",
-      "D Evaluating the security settings of the container registry platform to ensure adherence to compliance policies and best practices."
+      "C Monitoring network communication flows to and from container registries for indicators of compromise or attempted data exfiltration activity in real time.",
+      "D Evaluating the security settings of the container registry platform itself to ensure adherence to compliance policies and best practices."
     ],
     "correct": 1,
     "explanation": "Registry scanning provides a centralized quality gate scanning all container images for CVEs, malware, hardcoded secrets, and configuration issues before they can be pulled and deployed, preventing vulnerable images from entering production environments."
@@ -1307,9 +1307,9 @@ const QUESTIONS_CCSP_C5 = [
     "level": 2,
     "question": "Which of the following BEST describes the concept of 'cloud security transparency' from a governance perspective?",
     "options": [
-      "A Exposing all detailed cloud infrastructure security configurations and access policies publicly to promote accountability and trust.",
-      "B Disclosing the detailed cost structures and pricing models for all cloud-native security services offered by the provider.",
-      "C Publishing comprehensive reports that detail only requests for customer data made by governmental and law enforcement agencies.",
+      "A Exposing all detailed cloud infrastructure security configurations and access policies publicly to promote external accountability and broad community trust.",
+      "B Disclosing the detailed internal cost structures and pricing models for all cloud-native security services and add-ons offered by the service provider.",
+      "C Publishing comprehensive transparency reports that detail only the requests for customer data made by governmental and law enforcement agencies worldwide.",
       "D Mutual candidness between cloud providers and customers regarding security controls, incident handling, and inherent limitations to facilitate informed risk management decisions."
     ],
     "correct": 3,
@@ -1321,10 +1321,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 2,
     "question": "Which of the following BEST describes the security consideration of 'cloud provider geographic diversity' in resilience planning?",
     "options": [
-      "A Verifying that the cloud provider's internal operational and support personnel are spread across diverse geographical locations.",
+      "A Verifying that the cloud provider's internal operational and customer support personnel are distributed across a wide range of diverse geographical locations.",
       "B Strategically deploying critical applications and data across multiple cloud providers and distinct global regions to mitigate risks from localized outages or provider-specific failures.",
-      "C Selecting cloud service providers whose corporate headquarters are situated in various sovereign nations for legal diversification.",
-      "D Establishing a cloud security team with members operating from different physical locations to ensure operational resilience and 24/7 coverage."
+      "C Selecting cloud service providers whose corporate headquarters are deliberately situated in various sovereign nations to achieve legal and jurisdictional diversification.",
+      "D Establishing a cloud security team with members operating from different physical office locations to ensure operational resilience and continuous 24/7 coverage."
     ],
     "correct": 1,
     "explanation": "Multi-region and multi-provider geographic distribution prevents cloud catastrophic failures (regional outage, provider-specific incidents, geopolitical events) from compromising availability and security, supporting resilience objectives for critical workloads."
@@ -1335,10 +1335,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 1,
     "question": "Which of the following BEST describes the cloud security concept of 'API gateway authentication'?",
     "options": [
-      "A Implementing authentication mechanisms required by the cloud provider for accessing their public API marketplaces and service catalogs.",
-      "B Securing the communication channels and service-to-service authentication between the API gateway and its downstream backend microservices.",
+      "A Implementing the authentication mechanisms required by the cloud provider for accessing their public API marketplaces, developer portals, and service catalogs.",
+      "B Securing the encrypted communication channels and mutual service-to-service authentication between the API gateway and its downstream backend microservices.",
       "C Implementing a unified mechanism at the API gateway to rigorously authenticate the identity of every inbound API request from external consumers before routing it to internal services.",
-      "D Managing and enforcing identity and access controls for administrative users attempting to access the cloud management console via API integrations."
+      "D Managing and enforcing identity and access controls for administrative users attempting to access the cloud management console through API integrations and automation tooling."
     ],
     "correct": 2,
     "explanation": "API gateway authentication centrally verifies API consumer identity (API keys, OAuth tokens, JWT) before requests reach backend services, providing a consistent authentication enforcement point for all APIs regardless of individual service implementation."
@@ -1364,9 +1364,9 @@ const QUESTIONS_CCSP_C5 = [
     "question": "Which of the following BEST describes the concept of 'cloud security baselines' vs. 'cloud security standards'?",
     "options": [
       "A Security baselines specify the minimal secure configuration settings for distinct cloud resource types, whereas security standards outline overarching organizational security mandates spanning multiple domains.",
-      "B Baselines represent desirable best practices for future adoption; standards are legally binding or non-negotiable mandatory requirements.",
-      "C Security standards establish fundamental minimum security criteria; baselines detail advanced, optimal configurations exceeding basic compliance.",
-      "D Both terms describe interchangeable concepts, referring to the same set of security controls and guidelines within an organization's framework."
+      "B Baselines represent merely desirable best practices intended for future adoption, while standards constitute legally binding or otherwise non-negotiable mandatory organizational requirements.",
+      "C Security standards establish only the fundamental minimum security criteria, whereas baselines detail the advanced, optimal configurations that exceed basic compliance expectations.",
+      "D Both terms describe essentially interchangeable concepts, referring to the very same set of security controls and guidelines within an organization's overall governance framework."
     ],
     "correct": 0,
     "explanation": "Security baselines specify the minimum required secure configurations for specific cloud resource types (EC2 instances, S3 buckets, RDS databases), while security standards provide the broader organizational requirements that baselines are designed to meet."
@@ -1392,9 +1392,9 @@ const QUESTIONS_CCSP_C5 = [
     "question": "Which of the following BEST describes the concept of a 'cloud security program' and its key components?",
     "options": [
       "A An overarching, integrated organizational initiative that orchestrates governance, risk management, compliance, technical safeguards, operational processes, and security culture to secure cloud environments and data.",
-      "B A structured educational and certification initiative designed to enhance the skills and knowledge of personnel specializing in cloud security domains.",
-      "C The collection of security-related features, tools, and services natively offered and managed by a specific cloud service provider.",
-      "D A formal process for evaluating, procuring, and integrating third-party security solutions and technologies specific to cloud computing environments."
+      "B A structured educational and certification initiative designed to systematically enhance the skills and knowledge of personnel specializing in the various cloud security domains.",
+      "C The complete collection of security-related features, tools, and managed services natively offered, operated, and continuously maintained by a specific cloud service provider's platform offering.",
+      "D A formal organizational process for evaluating, procuring, and integrating third-party security solutions and technologies specific to cloud computing environments and workloads."
     ],
     "correct": 0,
     "explanation": "A cloud security program is the complete organizational capability for protecting cloud environments, encompassing governance (policies, roles), risk management, compliance, technical controls (CSPM, CWPP, CIEM), operations (SOC, IR), and security culture — all aligned to business objectives."
@@ -1559,10 +1559,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 1,
     "question": "Which of the following BEST describes the security concept of 'cloud security governance framework'?",
     "options": [
-      "A A comprehensive instructional framework designed to educate and certify cloud security professionals on advanced threat mitigation strategies.",
-      "B A detailed technical specification outlining required functionalities and integration standards for cloud security tools and platforms.",
+      "A A comprehensive instructional framework designed to educate, train, and certify cloud security professionals on advanced modern threat detection and mitigation strategies.",
+      "B A detailed technical specification outlining the required functionalities, interfaces, and integration standards for enterprise cloud security tools and platforms.",
       "C A structured system of policies, defined roles, established responsibilities, formalized processes, and comprehensive controls that govern and oversee cloud security practices enterprise-wide.",
-      "D A standardized compliance checklist providing specific requirements and best practices for conducting thorough cloud security audits and assessments."
+      "D A standardized compliance checklist providing specific requirements and recommended best practices for conducting thorough cloud security audits and assessments."
     ],
     "correct": 2,
     "explanation": "A cloud security governance framework provides the organizational structure for cloud security decision-making: executive accountability, security steering committee, cloud security policies, role definitions (RACI), risk management processes, and measurement — the management system above the technical controls."
@@ -1643,10 +1643,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 2,
     "question": "Which of the following BEST describes the security implication of 'cloud provider geographic distribution' for business continuity?",
     "options": [
-      "A Streamlining and simplifying all data residency and sovereignty compliance requirements by distributing data across various geopolitical zones.",
-      "B Leading to disparate and inconsistent security standards and control implementations across different cloud provider regions, necessitating separate audits.",
+      "A Streamlining and simplifying all data residency and sovereignty compliance requirements by deliberately distributing data across various geopolitical zones and legal regimes.",
+      "B Leading to disparate and inconsistent security standards and control implementations across different cloud provider regions, thereby necessitating entirely separate regional audits.",
       "C Enhancing resilience against regional disasters and provider outages through multi-region deployments, yet requiring robust security governance for consistent control implementation across all zones.",
-      "D Unconditionally enhancing the overall security posture by introducing inherent redundancy and diverse infrastructure, thereby eliminating single points of failure."
+      "D Unconditionally enhancing the overall security posture by introducing inherent redundancy and diverse infrastructure, thereby completely eliminating all single points of failure."
     ],
     "correct": 2,
     "explanation": "Geographic distribution provides resilience against regional incidents (natural disasters, large-scale outages) but complicates governance: data sovereignty requirements per region, potential variation in available security services, latency affecting security control performance, and the need for consistent policy enforcement across all deployed regions."
@@ -1924,9 +1924,9 @@ const QUESTIONS_CCSP_C5 = [
     "question": "A cloud security analyst notices that a Lambda function is making API calls to Parameter Store to retrieve database credentials every 100ms. The MOST likely security concern and appropriate action is:",
     "options": [
       "A Potentially a compromised function executing reconnaissance or exfiltration; investigate the function's recent deployment history, analyze what it's doing with retrieved credentials, and determine if the access pattern matches legitimate function behavior.",
-      "B A potential billing concern due to excessive API calls; the most appropriate action would be to refactor the function to implement credential caching, reducing costs.",
-      "C A performance bottleneck within the function caused by frequent external calls; optimizing the function's execution frequency or credential retrieval mechanism is recommended.",
-      "D A misconfiguration in a CloudWatch event trigger causing unintended frequent invocations; the primary action involves correcting the event's trigger interval."
+      "B A potential billing and cost-management concern due to excessive Parameter Store API calls; the most appropriate action would be to refactor the function to implement in-memory credential caching with a sensible TTL, substantially reducing per-invocation costs.",
+      "C A performance bottleneck within the function caused by frequent synchronous external calls; optimizing the function's execution frequency, connection reuse, or credential retrieval mechanism is the recommended course of action.",
+      "D A misconfiguration in a CloudWatch event trigger causing unintended, excessively frequent function invocations; the primary corrective action involves reviewing and correcting the event rule's configured trigger interval."
     ],
     "correct": 0,
     "explanation": "While caching optimization is appropriate, unusually frequent credential retrieval by a cloud function warrants security investigation first — attackers who compromise a function may use it as a persistent beachhead for credential retrieval; validating the function's integrity and understanding the access pattern precedes optimization decisions."
@@ -1937,10 +1937,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 2,
     "question": "Which of the following BEST describes the security implication of 'cloud provider certification scope' for compliance purposes?",
     "options": [
-      "A Cloud provider certifications automatically transfer full compliance liability for customer data and applications directly to the cloud service provider.",
-      "B Cloud provider certifications extend comprehensive compliance coverage to all customer workloads and data deployed within their certified infrastructure automatically.",
+      "A Cloud provider certifications automatically transfer the full compliance liability for customer data, workloads, and applications directly to the certified cloud service provider.",
+      "B Cloud provider certifications automatically extend comprehensive compliance coverage to all customer workloads, applications, and data deployed within their certified infrastructure.",
       "C Provider certifications only cover the provider's infrastructure and services; customer workloads and configurations require separate compliance assessment even within a certified provider environment.",
-      "D Customer compliance requirements are entirely satisfied and considered automatic when deploying applications on infrastructure provided by a certified cloud provider."
+      "D Customer compliance requirements are entirely satisfied and considered automatically fulfilled when deploying applications on infrastructure provided by a certified cloud provider."
     ],
     "correct": 2,
     "explanation": "Provider certifications (PCI DSS Attestation of Compliance, SOC 2 Type II) cover the provider's infrastructure and services, not the customer's use of those services — a customer's PCI cardholder data environment built on a PCI-compliant provider still requires its own QSA assessment for the customer's configurations, code, and processes."
@@ -1979,10 +1979,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 3,
     "question": "A cloud security architect must design identity controls for a Zero Trust implementation. Which combination of controls MOST completely implements Zero Trust principles?",
     "options": [
-      "A Implementing a robust Virtual Private Network (VPN) for all remote access, combined with mandatory multi-factor authentication (MFA) for initial user verification at the network edge.",
-      "B Enforcing stringent password policies across all user accounts and mandating multi-factor authentication (MFA) for all interactive logins to cloud management consoles and services.",
+      "A Implementing a robust enterprise Virtual Private Network (VPN) for all remote workforce access, combined with mandatory multi-factor authentication (MFA) for initial user verification at the network edge.",
+      "B Enforcing stringent password complexity and rotation policies across all user accounts and mandating multi-factor authentication (MFA) for all interactive logins to cloud management consoles and services.",
       "C Deploying phishing-resistant MFA (FIDO2/WebAuthn), continuous session risk evaluation, comprehensive device health verification, least-privilege access with Just-in-Time (JIT) elevation, and microsegmentation for all east-west traffic.",
-      "D Prioritizing traditional network perimeter security measures, including advanced firewalls and intrusion prevention systems, with multi-factor authentication enforced for external ingress points."
+      "D Prioritizing traditional network perimeter security measures, including advanced next-generation firewalls and intrusion prevention systems, with multi-factor authentication enforced for all external ingress points."
     ],
     "correct": 2,
     "explanation": "Zero Trust requires verifying every access request continuously: phishing-resistant MFA (hardware keys/passkeys, not OTP which is phishable) authenticates identity strongly; device health verification ensures managed, compliant devices; continuous risk evaluation detects session anomalies; JIT access minimizes standing permissions; microsegmentation limits lateral movement if credentials are compromised."
@@ -2021,9 +2021,9 @@ const QUESTIONS_CCSP_C5 = [
     "level": 3,
     "question": "An organization's cloud security program is being reviewed by the board. The CISO presents a chart showing 0 reported security incidents in the past year. A board member asks if this means the security program is working perfectly. The MOST accurate response is:",
     "options": [
-      "A Zero incidents suggest that the cloud service provider has fully secured the environment, effectively transferring all security responsibilities away from the customer organization.",
-      "B A complete lack of reported incidents clearly indicates a low overall threat landscape, proving that the organization's cloud assets are not actively targeted by attackers.",
-      "C Yes, the absence of any reported security incidents conclusively demonstrates the perfect functionality and complete effectiveness of the implemented cloud security program.",
+      "A Zero incidents suggest that the cloud service provider has fully secured the entire environment, effectively transferring all remaining security responsibilities and liabilities away from the customer organization itself.",
+      "B A complete lack of reported incidents clearly indicates a low overall threat landscape, conclusively proving that the organization's cloud assets are not being actively targeted by capable attackers at this time.",
+      "C Yes, the sustained absence of any reported security incidents conclusively demonstrates the perfect functionality and complete effectiveness of every control in the implemented cloud security program.",
       "D Zero reported incidents can imply effective prevention, but also poor detection, systemic underreporting, or low threat activity; a robust assessment requires examining detection efficacy, near-misses, and results from independent penetration tests."
     ],
     "correct": 3,
@@ -2105,9 +2105,9 @@ const QUESTIONS_CCSP_C5 = [
     "level": 2,
     "question": "Which of the following BEST describes the security purpose of 'cloud security program measurement'?",
     "options": [
-      "A Evaluating the total quantity of security controls deployed across the cloud environment to assess basic coverage.",
-      "B Assessing the operational performance and efficacy of various cloud security tools and their configurations.",
-      "C Benchmarking and evaluating the inherent security capabilities offered by different cloud service providers.",
+      "A Evaluating the total quantity of security controls deployed across the cloud environment to assess the basic breadth of coverage.",
+      "B Assessing the day-to-day operational performance and efficacy of the various cloud security tools and their configurations.",
+      "C Benchmarking and comparatively evaluating the inherent security capabilities offered by different cloud service providers.",
       "D Collecting and analyzing metrics that quantify program effectiveness, guide investment decisions, and demonstrate security value to stakeholders."
     ],
     "correct": 3,
@@ -2120,9 +2120,9 @@ const QUESTIONS_CCSP_C5 = [
     "question": "Which of the following BEST describes the security concept of 'cloud provider abstraction'?",
     "options": [
       "A The layers between cloud hardware and customer workloads that provide resource pooling, isolation, and managed services — each layer adds security benefits but also potential vulnerabilities.",
-      "B The practice of obscuring the intricate underlying security configurations and operational details from cloud administrators.",
-      "C A design principle where the cloud provider completely assumes all security responsibilities, thereby eliminating customer involvement.",
-      "D Implementing generalized security policies and principles that supersede the need for specific, granular security control deployments."
+      "B The deliberate practice of obscuring the intricate underlying security configurations and operational implementation details from cloud administrators and end users.",
+      "C A design principle under which the cloud provider completely assumes all security responsibilities, thereby eliminating any need for customer involvement or oversight.",
+      "D Implementing generalized, high-level security policies and principles that supersede the need for specific, granular security control deployments across workloads."
     ],
     "correct": 0,
     "explanation": "Cloud provider abstraction layers (hypervisors, container runtimes, serverless platforms, managed databases) isolate customers from infrastructure complexity and security management; each layer provides security benefits (isolation, patch management) but also requires trust in the provider's implementation and adds potential vulnerability surface."
@@ -2147,10 +2147,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 2,
     "question": "Which of the following BEST describes the security benefit of 'cloud provider-native DDoS mitigation tiers'?",
     "options": [
-      "A All cloud workloads are inherently provisioned with a default maximum level of DDoS protection, ensuring automatic comprehensive defense.",
+      "A All cloud workloads are inherently provisioned with a default maximum level of DDoS protection, ensuring automatic and comprehensive defense without further configuration.",
       "B DDoS mitigation tiers offer different protection levels (automatic basic vs. enhanced with advanced threat intelligence) — selection should match the workload's risk profile and availability requirements.",
-      "C Implementing the highest available DDoS mitigation tiers is a mandatory security best practice for all types of cloud-hosted applications and services.",
-      "D DDoS mitigation strategies are exclusively relevant and required for workloads that are directly exposed and accessible to the public internet."
+      "C Implementing the highest available DDoS mitigation tiers is considered a mandatory security best practice for all types of cloud-hosted applications and services regardless of exposure.",
+      "D DDoS mitigation strategies are exclusively relevant and contractually required only for workloads that are directly exposed and openly accessible to the public internet."
     ],
     "correct": 1,
     "explanation": "Cloud DDoS tiers balance cost and protection: basic/standard protection defends against common volumetric attacks automatically at no extra cost; advanced/Shield Advanced tiers add application-layer protection, real-time monitoring, DDoS response team access, and cost protection for larger attack scenarios — appropriate for high-availability, high-value targets."
@@ -2161,10 +2161,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 3,
     "question": "A cloud application's security review finds that the OAuth 2.0 implementation doesn't validate the 'state' parameter on callback. What attack does this enable and what is the fix?",
     "options": [
-      "A Token replay attacks; this allows an attacker to reuse captured authorization tokens, mitigated by implementing robust token binding mechanisms.",
-      "B SQL injection vulnerabilities within the callback URL processing logic; resolved by always parameterizing all database queries and input sanitization.",
+      "A Token replay attacks; this weakness allows an attacker to capture and reuse previously issued authorization tokens against the API, and it is mitigated by implementing robust sender-constrained token binding mechanisms and short token lifetimes.",
+      "B SQL injection vulnerabilities within the callback URL processing logic; this is resolved by always parameterizing all database queries, applying strict input sanitization, and validating every value received on the callback endpoint.",
       "C Cross-Site Request Forgery (CSRF) against the OAuth flow — attackers can trick users into completing an authorization code exchange linking the user's account to the attacker's; fix by generating, storing, and validating a cryptographically random state parameter.",
-      "D Cross-Site Scripting (XSS) via injected scripts in the redirect URL; prevented by meticulously implementing context-aware output encoding for all user-supplied data."
+      "D Cross-Site Scripting (XSS) via attacker-injected scripts in the redirect URL; this is prevented by meticulously implementing context-aware output encoding and strict validation for all user-supplied data rendered by the application."
     ],
     "correct": 2,
     "explanation": "OAuth state parameter validates that the authorization response corresponds to the request initiated by the user's session — without validation, attackers craft malicious authorization responses that associate victim accounts with attacker-controlled tokens; state must be unique per authorization request, stored server-side, and verified on callback."
@@ -2176,9 +2176,9 @@ const QUESTIONS_CCSP_C5 = [
     "question": "Which of the following BEST describes the security purpose of 'cloud security knowledge bases' like MITRE ATT&CK?",
     "options": [
       "A Structured repositories of adversary tactics, techniques, and procedures (TTPs) that enable detection engineering, threat hunting, and security testing based on real attacker behavior.",
-      "B Centralized databases cataloging reported security incidents and breaches specifically impacting various cloud service providers globally.",
-      "C Comprehensive encyclopedias documenting an exhaustive list of known vulnerabilities and exposures across all cloud platforms and services.",
-      "D Educational resources and structured curricula designed to provide specialized security training for cloud professionals and architects."
+      "B Centralized industry databases cataloging publicly reported security incidents and data breaches specifically impacting the various major cloud service providers globally.",
+      "C Comprehensive encyclopedias documenting an exhaustive list of known software vulnerabilities and common exposures across all major cloud platforms and services.",
+      "D Educational resources and structured training curricula designed to provide specialized, role-based security education for cloud professionals and architects."
     ],
     "correct": 0,
     "explanation": "MITRE ATT&CK Cloud provides structured knowledge of real-world adversary TTPs organized by tactic (initial access, persistence, exfiltration) — enabling security teams to develop detection analytics for each technique, test detection coverage through simulation, and communicate threat scenarios in a standardized language."
@@ -2189,10 +2189,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 1,
     "question": "Which of the following BEST describes the concept of 'cloud security policy hierarchy'?",
     "options": [
-      "A A formalized multi-level approval process that dictates the necessary endorsements for new or updated cloud security policies.",
+      "A A formalized multi-level approval and signoff process that dictates the necessary management endorsements for new or substantially updated cloud security policies.",
       "B The layered structure where organizational security policies define intent, standards specify requirements, procedures describe implementation, and guidelines provide recommendations.",
-      "C A systematic classification and prioritization scheme for cloud security policies based on their criticality to the organization's risk posture.",
-      "D A prescribed sequence that outlines the mandatory chronological implementation steps for various cloud security policies and controls."
+      "C A systematic classification and prioritization scheme for organizing cloud security policies based on their relative criticality to the organization's risk posture.",
+      "D A prescribed sequence that outlines the mandatory chronological implementation steps for deploying various cloud security policies and technical controls."
     ],
     "correct": 1,
     "explanation": "Policy hierarchy creates a coherent governance structure: policies (management intent, 'why'), standards (specific requirements, 'what'), procedures (step-by-step instructions, 'how'), and guidelines (recommended practices, 'suggestions') — each layer supports the level above it, with policies driving standards that drive procedures."
@@ -2231,10 +2231,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 2,
     "question": "Which of the following BEST describes the security concept of 'API gateway' in cloud architectures?",
     "options": [
-      "A A comprehensive directory or catalog service designed to facilitate the discovery and documentation of available cloud APIs.",
+      "A A comprehensive directory or catalog service designed to facilitate the discovery, documentation, and versioning of all available cloud APIs across the organization.",
       "B A managed service that provides a single entry point for APIs, enforcing authentication, authorization, rate limiting, WAF policies, and providing centralized logging for all API traffic.",
-      "C A specific interface or endpoint configured to enable access to the underlying cloud provider's proprietary API services and operations.",
-      "D A dedicated hardware appliance or network device deployed to physically inspect and manage all incoming and outgoing cloud API communications."
+      "C A specific interface or endpoint configured to enable programmatic access to the underlying cloud provider's proprietary API services, operations, and resource controls.",
+      "D A dedicated hardware appliance or specialized network device deployed at the perimeter to physically inspect and manage all incoming and outgoing cloud API communications."
     ],
     "correct": 1,
     "explanation": "API gateways centralize API security enforcement: authentication (verifying API keys, JWT tokens, OAuth flows), authorization (checking permissions), rate limiting (preventing abuse), WAF integration (blocking injection attacks), and comprehensive logging — providing consistent security controls without embedding them in each individual API service."
@@ -2343,10 +2343,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 3,
     "question": "An organization's cloud security team identifies that their current security controls provide excellent visibility into IaaS and PaaS workloads but virtually no visibility into 47 SaaS applications used enterprise-wide. The MOST comprehensive approach to close this gap is:",
     "options": [
-      "A Mandating that all 47 SaaS vendors deliver comprehensive monthly security posture reports and audit logs to the organization for manual review and analysis of their security controls.",
+      "A Mandating that all 47 SaaS vendors deliver comprehensive monthly security posture reports and detailed audit logs to the organization for manual review and analysis of their respective security controls.",
       "B Deploying a CASB with API-mode integration to sanctioned SaaS applications for visibility and control, implementing SSO to all applications for identity integration, and establishing a SaaS security review process for new applications.",
-      "C Enforcing an enterprise-wide policy that immediately prohibits the use of all 47 currently utilized SaaS applications and prevents any future adoption of cloud-based software services.",
-      "D Implementing advanced endpoint detection and response (EDR) solutions across all managed devices to meticulously monitor and record user interactions and data flows with SaaS applications."
+      "C Enforcing an enterprise-wide policy that immediately prohibits the continued use of all 47 currently utilized SaaS applications and permanently prevents any future adoption of cloud-based software services.",
+      "D Implementing advanced endpoint detection and response (EDR) solutions across all managed corporate devices to meticulously monitor and record user interactions and data flows with SaaS applications."
     ],
     "correct": 1,
     "explanation": "SaaS security requires multi-layered approach: CASB API integration provides data visibility and control within sanctioned SaaS; SSO integration enables identity correlation and access governance; and a standardized review process prevents future ungoverned SaaS adoption — addressing both current blind spots and preventing recurrence."
@@ -2497,10 +2497,10 @@ const QUESTIONS_CCSP_C5 = [
     "level": 3,
     "question": "A cloud security team discovers that a sophisticated attacker has been in their environment for 90 days, reading emails from the CEO's cloud mailbox using OAuth tokens obtained through a phishing attack. The MOST critical remediation actions are:",
     "options": [
-      "A Immediately blocking all OAuth-based access to email services from every third-party application across the entire organization to contain the breach.",
-      "B Disseminating a comprehensive security awareness communication to all employees, emphasizing the dangers of phishing and the importance of vigilance.",
+      "A Immediately blocking all OAuth-based access to email services from every third-party application across the entire organization in order to rapidly contain the active breach.",
+      "B Disseminating a comprehensive security awareness communication to all employees across the organization, emphasizing the dangers of phishing and the continued importance of vigilance.",
       "C Revoking OAuth tokens/app consents, meticulously reviewing 90-day mailbox access, assessing business impact, notifying affected parties, and implementing conditional access with phishing-resistant MFA.",
-      "D Promptly initiating a mandatory password reset for the CEO's compromised account and ensuring a complete re-evaluation of all associated login credentials."
+      "D Promptly initiating a mandatory password reset for the CEO's compromised account and ensuring a complete re-evaluation of all associated login credentials and active sessions."
     ],
     "correct": 2,
     "explanation": "OAuth token compromise requires comprehensive response: revoke all tokens (password reset alone doesn't revoke OAuth tokens granted to apps), full audit of what data was accessed (90-day window requires thorough investigation), impact assessment (CEO communications may contain M&A plans, legal strategies, personnel matters), appropriate notifications, and preventive controls to stop recurrence."

@@ -468,9 +468,9 @@ const QUESTIONS_CCSP_C2 = [
     "question": "Which of the following BEST describes the concept of 'defense in depth' specifically for cloud-native APIs?",
     "options": [
       "A Implementing a comprehensive stack of complementary security controls: authentication, authorization, rate limiting, input validation, and continuous monitoring.",
-      "B Distributing API deployments across geographically diverse regions to enhance fault tolerance and availability.",
-      "C Requiring diverse authentication methods, such as multi-factor authentication, for every API call invocation.",
-      "D Integrating and managing multiple Web Application Firewall (WAF) solutions for layered API threat protection."
+      "B Distributing redundant API gateway deployments across multiple geographically diverse cloud regions to enhance fault tolerance, latency, and overall service availability.",
+      "C Requiring diverse and layered authentication methods, such as multi-factor authentication combined with client certificates, for every individual API call invocation.",
+      "D Integrating and centrally managing multiple Web Application Firewall (WAF) solutions from different vendors to deliver layered API threat protection."
     ],
     "correct": 0,
     "explanation": "Defense in depth for APIs layers complementary controls — authentication verifies identity, authorization enforces permissions, rate limiting prevents abuse, input validation blocks injection, and monitoring detects anomalies — each catching what others miss."
@@ -1042,9 +1042,9 @@ const QUESTIONS_CCSP_C2 = [
     "question": "A cloud security team is implementing a detection engineering program. The MOST important foundation is:",
     "options": [
       "A Developing a comprehensive threat model and correlating detection capabilities to specific adversary tactics, techniques, and procedures (TTPs) via frameworks such as MITRE ATT&CK.",
-      "B Providing extensive, in-depth training to all security analysts covering the full spectrum of known attack techniques and defensive countermeasures.",
-      "C Acquiring and deploying cutting-edge Security Information and Event Management (SIEM) and User and Entity Behavior Analytics (UEBA) platforms.",
-      "D Aggregating and ingesting the highest possible volume of telemetry and log data from all available cloud services and endpoints."
+      "B Providing extensive, in-depth training to all security operations analysts covering the full spectrum of currently known attack techniques, threat actor behaviors, and defensive countermeasures.",
+      "C Acquiring and deploying cutting-edge Security Information and Event Management (SIEM) and User and Entity Behavior Analytics (UEBA) platforms across the entire cloud estate.",
+      "D Aggregating and ingesting the highest possible volume of raw telemetry and log data from all available cloud services, applications, and endpoints into a central repository."
     ],
     "correct": 0,
     "explanation": "Detection engineering grounded in a threat model and ATT&CK framework systematically identifies which adversary techniques can be detected, gaps in coverage, and where to build new detections — ensuring detection investments align with actual threat exposure."
@@ -1685,10 +1685,10 @@ const QUESTIONS_CCSP_C2 = [
     "level": 2,
     "question": "Which of the following BEST describes the security advantage of using cloud provider-managed keys versus customer-managed keys for encryption?",
     "options": [
-      "A Provider-managed keys inherently meet all regulatory compliance mandates.",
-      "B Provider-managed keys utilize proprietary, superior encryption algorithms.",
+      "A Provider-managed keys inherently meet all regulatory compliance mandates without requiring any additional customer configuration or oversight.",
+      "B Provider-managed keys utilize proprietary, superior encryption algorithms that are unavailable to customers managing their own key material.",
       "C Customer-managed keys grant superior organizational control, including access revocation, while provider keys simplify operations.",
-      "D Customer-managed keys deliver enhanced encryption and decryption process performance."
+      "D Customer-managed keys deliver substantially enhanced performance for bulk encryption and decryption operations at scale."
     ],
     "correct": 2,
     "explanation": "The key distinction is control: customer-managed keys (BYOK/HYOK) allow the organization to control key lifecycle including revocation (by destroying the key, making data inaccessible even to the provider), while provider-managed keys are simpler to operate but cede this ultimate control."
@@ -1741,10 +1741,10 @@ const QUESTIONS_CCSP_C2 = [
     "level": 2,
     "question": "Which of the following BEST describes the purpose of a cloud workload protection platform (CWPP)?",
     "options": [
-      "A Delivering comprehensive network-level security and perimeter defense for cloud environments.",
+      "A Delivering comprehensive network-level security, traffic inspection, and perimeter defense capabilities for hybrid cloud environments.",
       "B Securing diverse cloud workloads (VMs, containers, serverless) via runtime monitoring, vulnerability management, and threat detection.",
-      "C Systematically auditing cloud service configurations to ensure continuous regulatory compliance.",
-      "D Centralizing the management of identity and access privileges specifically for cloud workloads."
+      "C Systematically auditing cloud service configurations against benchmarks to ensure continuous regulatory and policy compliance.",
+      "D Centralizing the lifecycle management of identity and access privileges specifically for cloud-hosted workloads and services."
     ],
     "correct": 1,
     "explanation": "CWPPs secure the workloads themselves — VMs, containers, and serverless functions — through host-based security controls, runtime threat detection, vulnerability scanning, application control, and behavioral monitoring regardless of the cloud environment they run in."
@@ -1783,10 +1783,10 @@ const QUESTIONS_CCSP_C2 = [
     "level": 2,
     "question": "Which of the following BEST describes the security benefit of using bastion hosts (jump servers) for cloud infrastructure access?",
     "options": [
-      "A Bastion hosts are designed to automatically manage and apply security patches to cloud instances.",
-      "B Bastion hosts effectively eliminate the necessity for Virtual Private Network (VPN) solutions.",
+      "A Bastion hosts are designed to automatically download, manage, and apply operating system security patches to all cloud instances.",
+      "B Bastion hosts effectively eliminate the necessity for Virtual Private Network (VPN) solutions and related remote access tooling.",
       "C Bastion hosts establish a single, hardened, and monitored access point for private cloud infrastructure, reducing attack surface.",
-      "D Bastion hosts are primarily responsible for encrypting all network traffic within the cloud environment."
+      "D Bastion hosts are primarily responsible for encrypting all network traffic flowing within and across the cloud environment."
     ],
     "correct": 2,
     "explanation": "A bastion host creates a single hardened entry point to private infrastructure — enabling centralized authentication, comprehensive session logging, IP allowlisting, and MFA enforcement — rather than exposing all management ports across multiple instances."
@@ -2120,9 +2120,9 @@ const QUESTIONS_CCSP_C2 = [
     "question": "Which of the following BEST describes the purpose of security orchestration, automation, and response (SOAR) in cloud security operations?",
     "options": [
       "A Orchestrating diverse security tools, automating repetitive operational tasks, and coordinating complex incident response workflows for improved SOC efficiency.",
-      "B Automating the systematic execution and reporting of vulnerability scanning activities across distributed cloud environments.",
-      "C Developing and deploying fully autonomous artificial intelligence systems designed to completely replace human security analysts.",
-      "D Providing a dedicated platform for automated generation and distribution of comprehensive security compliance audit reports."
+      "B Automating the systematic scheduling, execution, and reporting of vulnerability scanning activities across large, distributed cloud environments.",
+      "C Developing and deploying fully autonomous artificial intelligence systems designed to completely replace human security analysts in the SOC.",
+      "D Providing a dedicated platform for the automated generation and distribution of comprehensive security compliance audit reports to stakeholders."
     ],
     "correct": 0,
     "explanation": "SOAR platforms integrate security tools (SIEM, threat intel, ticketing), automate repetitive analyst tasks (alert triage, enrichment), and orchestrate multi-step response playbooks — enabling analysts to handle higher alert volumes while reducing response times."
@@ -2371,10 +2371,10 @@ const QUESTIONS_CCSP_C2 = [
     "level": 3,
     "question": "An organization discovers that a cloud provider is storing customer data in a jurisdiction with laws that could compel disclosure to government agencies without customer notification. The MOST appropriate remediation is:",
     "options": [
-      "A Solely requiring the cloud provider to sign a contractual commitment stipulating they will not disclose data to government agencies, without considering legal enforceability.",
-      "B Formally accepting the identified legal and privacy risk, acknowledging that cloud providers are legally obligated to comply with the local laws of their operational jurisdiction.",
+      "A Solely requiring the cloud provider to sign a contractual commitment stipulating that they will never disclose customer data to government agencies, without evaluating whether such terms are legally enforceable in that jurisdiction.",
+      "B Formally accepting and documenting the identified legal and privacy risk, acknowledging that all cloud providers are ultimately legally obligated to comply with the local laws of the jurisdictions in which they operate.",
       "C Migrating data to a different cloud provider that operates in jurisdictions aligned with the organization's legal requirements, or implementing cryptographic controls (e.g., BYOK) that render data unreadable to the provider.",
-      "D Implementing data encryption utilizing provider-managed keys, which would still allow the cloud provider to access and potentially disclose the plaintext data if compelled."
+      "D Implementing data-at-rest encryption utilizing provider-managed keys, an approach which would still allow the cloud provider to access and potentially disclose the plaintext data if legally compelled to do so."
     ],
     "correct": 2,
     "explanation": "Jurisdictional data sovereignty risk requires either relocating data to compliant jurisdictions or implementing cryptographic controls (customer-managed keys outside the jurisdiction) that ensure the provider cannot access the plaintext even when compelled — contractual obligations do not override national laws."
@@ -2386,9 +2386,9 @@ const QUESTIONS_CCSP_C2 = [
     "question": "Which of the following BEST describes the concept of data portability in cloud security?",
     "options": [
       "A The ability to export and migrate data from one cloud provider to another without significant transformation or loss",
-      "B The ability to access cloud data from mobile devices",
-      "C The process of archiving old data to reduce storage costs",
-      "D Encrypting data so it can be safely transmitted between systems"
+      "B The ability to access and synchronize cloud-hosted data seamlessly from mobile devices and remote locations",
+      "C The process of archiving old, infrequently accessed data into cheaper storage tiers to reduce ongoing costs",
+      "D Encrypting data in transit so it can be safely and reliably transmitted between disparate cloud systems"
     ],
     "correct": 0,
     "explanation": "Data portability ensures an organization is not locked into a single cloud provider — the ability to export data in standard, usable formats is critical for business continuity, competitive leverage in negotiations, and compliance with regulations like GDPR's portability rights."
@@ -2399,9 +2399,9 @@ const QUESTIONS_CCSP_C2 = [
     "level": 2,
     "question": "Which of the following BEST describes the purpose of a cloud security framework?",
     "options": [
-      "A A compliance checklist specific to a single regulation",
-      "B A budget template for cloud security spending",
-      "C A specific set of technical configurations for cloud security tools",
+      "A A compliance checklist developed for a single specific regulation that organizations apply across all of their cloud environments",
+      "B A standardized budget planning template used to forecast and allocate organizational spending on cloud security initiatives",
+      "C A specific, prescriptive set of low-level technical configurations to be applied uniformly to cloud security tooling",
       "D A structured set of guidelines, standards, and best practices that provide a systematic approach to achieving cloud security objectives"
     ],
     "correct": 3,
@@ -2413,9 +2413,9 @@ const QUESTIONS_CCSP_C2 = [
     "level": 1,
     "question": "Which of the following BEST describes the role of the Cloud Security Alliance (CSA) in cloud security?",
     "options": [
-      "A A government organization that certifies cloud providers",
-      "B A cloud provider industry association",
-      "C A regulatory body that enforces cloud security compliance",
+      "A A government-sponsored organization that formally evaluates, accredits, and certifies cloud service providers",
+      "B An industry trade association representing the commercial interests of the major cloud service providers",
+      "C An international regulatory body with authority to enforce cloud security compliance obligations on providers",
       "D An organization that develops cloud security best practices, guidance, and certifications including the CCSP exam"
     ],
     "correct": 3,
@@ -2428,9 +2428,9 @@ const QUESTIONS_CCSP_C2 = [
     "question": "An organization's cloud security program lacks executive support, resulting in inadequate funding and authority to enforce security requirements. The MOST effective approach to address this is:",
     "options": [
       "A Building a business case that demonstrates cloud security ROI through risk quantification, compliance cost avoidance, and business enablement value",
-      "B Implementing technical controls that work without budget",
-      "C Documenting all security risks and waiting for an incident to create urgency",
-      "D Hiring more security staff"
+      "B Implementing as many technical security controls as possible that can operate without requiring any additional budget or executive approval",
+      "C Documenting all identified security risks in the risk register and waiting for a significant incident to create organizational urgency",
+      "D Hiring additional experienced security staff to expand the team's operational capacity and demonstrate organizational commitment"
     ],
     "correct": 0,
     "explanation": "Executive support requires speaking the language of business risk and value — quantifying risk (potential breach costs, regulatory fines), demonstrating compliance cost avoidance, and showing how security enables business objectives, translating technical security concerns into business terms executives understand."
@@ -2441,10 +2441,10 @@ const QUESTIONS_CCSP_C2 = [
     "level": 2,
     "question": "Which of the following BEST describes the purpose of cloud security metrics for executive reporting?",
     "options": [
-      "A Providing technical security teams with detailed vulnerability data",
-      "B Satisfying audit requirements for security documentation",
+      "A Providing technical security teams with detailed vulnerability data and remediation tracking across all cloud assets",
+      "B Satisfying internal and external audit requirements for comprehensive security program documentation and evidence",
       "C Communicating the security program's effectiveness and risk posture to business leadership in meaningful, actionable terms",
-      "D Demonstrating that the security team is working hard"
+      "D Demonstrating to organizational leadership that the security team is consistently working hard and remaining productive"
     ],
     "correct": 2,
     "explanation": "Executive metrics translate technical security data into business-relevant measures — risk reduction trends, compliance posture, incident frequency and cost, and program maturity — enabling informed governance decisions about risk tolerance and investment without technical detail overload."
@@ -2456,9 +2456,9 @@ const QUESTIONS_CCSP_C2 = [
     "question": "Which of the following BEST describes the security benefit of using infrastructure-as-code (IaC) scanning tools?",
     "options": [
       "A IaC scanning identifies security misconfigurations and policy violations in infrastructure templates before deployment",
-      "B IaC scanning automatically fixes security misconfigurations in templates",
-      "C IaC scanning encrypts infrastructure templates",
-      "D IaC scanning monitors deployed infrastructure for configuration changes"
+      "B IaC scanning automatically detects and fixes every security misconfiguration found in infrastructure templates",
+      "C IaC scanning encrypts infrastructure templates so sensitive configuration values cannot be read in transit",
+      "D IaC scanning continuously monitors already-deployed infrastructure for unauthorized configuration changes"
     ],
     "correct": 0,
     "explanation": "IaC security scanners (Checkov, tfsec, Snyk IaC) analyze Terraform, CloudFormation, and other templates for security misconfigurations (public S3 buckets, permissive security groups, disabled encryption) before deployment — catching issues when they're cheapest to fix."
@@ -2469,10 +2469,10 @@ const QUESTIONS_CCSP_C2 = [
     "level": 2,
     "question": "An organization wants to ensure all cloud resources have required security tags (owner, environment, data classification). Which control MOST effectively enforces this?",
     "options": [
-      "A Sending reminder emails to cloud administrators",
+      "A Sending automated weekly reminder emails to all cloud administrators about tagging",
       "B Using cloud policies/SCPs that prevent creation of resources without required tags",
-      "C Training developers on the importance of tagging",
-      "D Monthly audits of tag compliance"
+      "C Training developers and engineers on the operational importance of resource tagging",
+      "D Conducting monthly manual audits of resource tag compliance across all accounts"
     ],
     "correct": 1,
     "explanation": "Preventive policy controls (AWS Config rules with auto-remediation, Azure Policy, GCP Organization Policies) that block resource creation without required tags are far more effective than detective controls — stopping non-compliant resources from existing rather than finding them after the fact."
@@ -2483,10 +2483,10 @@ const QUESTIONS_CCSP_C2 = [
     "level": 2,
     "question": "Which of the following BEST describes the security concept of 'just-in-time' access in cloud environments?",
     "options": [
-      "A Granting permanent privileged access to cloud resources when users are hired",
-      "B Providing access to cloud resources as quickly as possible to reduce delays",
+      "A Granting permanent privileged access to critical cloud resources to users at the time they are hired",
+      "B Providing requested access to cloud resources as quickly as operationally possible to reduce business delays",
       "C Provisioning temporary elevated access only when needed, for a limited time, with full justification and audit trail",
-      "D Granting access to cloud resources just before a scheduled deployment"
+      "D Granting deployment-related access to cloud resources just before each scheduled production deployment window"
     ],
     "correct": 2,
     "explanation": "Just-in-time (JIT) access eliminates standing privileged access — users request elevated permissions when needed, receive time-limited access with automatic expiration, and every grant is logged with justification — dramatically reducing the attack surface from compromised accounts."
@@ -2497,10 +2497,10 @@ const QUESTIONS_CCSP_C2 = [
     "level": 1,
     "question": "Which of the following BEST describes the purpose of a software supply chain security program?",
     "options": [
-      "A Tracking the physical location of software development teams",
+      "A Tracking the physical locations and movements of distributed software development teams and their contracted outsourcing partners worldwide",
       "B Ensuring the security of all components, tools, and processes that contribute to software production — from development tools to third-party dependencies",
-      "C Managing procurement contracts for software licenses",
-      "D Managing software version control systems"
+      "C Managing procurement contracts, licensing agreements, and vendor relationships for all commercially acquired software products used by the organization",
+      "D Managing and administering the software version control systems and repositories used by development teams across the organization"
     ],
     "correct": 1,
     "explanation": "Software supply chain security addresses the full pipeline of software creation — securing development environments, verifying integrity of third-party components, scanning for malicious code, and ensuring that software delivered to customers hasn't been tampered with — addressing attacks like SolarWinds/XZ Utils."
@@ -2512,9 +2512,9 @@ const QUESTIONS_CCSP_C2 = [
     "question": "Which of the following BEST describes the OWASP API Security Top 10's most critical risk?",
     "options": [
       "A Broken Object Level Authorization (BOLA) — accessing other users' resources by manipulating object IDs",
-      "B Injection attacks through API parameters",
-      "C Lack of HTTPS on API endpoints",
-      "D Excessive API rate limiting causing denial of service"
+      "B Injection attacks delivered through unsanitized API request parameters and payload fields",
+      "C Lack of HTTPS transport encryption on externally exposed API endpoints handling sensitive data",
+      "D Excessive API rate limiting that inadvertently causes denial of service for legitimate consumers"
     ],
     "correct": 0,
     "explanation": "BOLA (formerly IDOR — Insecure Direct Object Reference) tops the OWASP API Security list because APIs frequently expose object identifiers and fail to verify authorization — attackers simply change an ID parameter to access data belonging to other users, a pervasive and easily exploitable flaw."
@@ -2637,9 +2637,9 @@ const QUESTIONS_CCSP_C2 = [
     "level": 3,
     "question": "A cloud organization's production environment is configured with overly broad IAM permissions that have accumulated over time ('permission creep'). The MOST systematic approach to remediation is:",
     "options": [
-      "A Instantly revoking all existing IAM permissions and mandating a complete re-request process for all required access.",
-      "B Implementing periodic annual access reviews to manually verify and adjust user and service account permissions.",
-      "C Thoroughly documenting all currently assigned IAM permissions and formally accepting the associated security risks.",
+      "A Instantly revoking all existing IAM permissions across the environment and mandating a complete re-request and approval process for all required access.",
+      "B Implementing periodic annual access reviews in which managers manually verify and adjust user and service account permissions across the environment.",
+      "C Thoroughly documenting all currently assigned IAM permissions in a central register and formally accepting the associated security risks.",
       "D Utilizing cloud IAM Access Analyzer or equivalent tools to identify unused permissions, then systematically right-sizing roles to least privilege."
     ],
     "correct": 3,
@@ -2666,9 +2666,9 @@ const QUESTIONS_CCSP_C2 = [
     "question": "Which of the following BEST describes the security concept of 'cloud security posture management' versus traditional vulnerability management?",
     "options": [
       "A CSPM focuses on configuration risks and compliance posture of cloud services, while vulnerability management focuses on software flaws in running systems",
-      "B Vulnerability management is more comprehensive than CSPM",
-      "C They are identical concepts applied in different environments",
-      "D CSPM is only relevant for SaaS applications"
+      "B Vulnerability management is broader and more comprehensive than CSPM, fully encompassing all of the configuration checks that CSPM performs",
+      "C They are essentially identical concepts and processes, simply applied in different environments and marketed under different product names",
+      "D CSPM is only relevant for SaaS applications, whereas vulnerability management applies exclusively to IaaS and on-premises infrastructure"
     ],
     "correct": 0,
     "explanation": "CSPM continuously monitors cloud service configurations for misconfigurations and compliance gaps (exposed S3 buckets, overly permissive IAM, disabled logging) — a configuration-centric approach complementing vulnerability management's software-flaw focus, both required for comprehensive cloud risk management."
@@ -2680,9 +2680,9 @@ const QUESTIONS_CCSP_C2 = [
     "question": "An organization is required to retain customer transaction logs for 7 years under financial regulations. Which cloud storage approach BEST satisfies both compliance and security requirements?",
     "options": [
       "A WORM (Write Once Read Many) storage with customer-managed encryption and access controls restricted to authorized personnel",
-      "B Standard cloud object storage with encryption",
-      "C Exporting logs to an on-premises archive system",
-      "D Regular database backups to cold storage"
+      "B Standard cloud object storage with provider-managed encryption and default lifecycle management policies applied",
+      "C Exporting all transaction logs to an on-premises archive system managed by the database administration team",
+      "D Scheduling regular database backups to cold storage with retention configured for the full seven-year period"
     ],
     "correct": 0,
     "explanation": "WORM storage prevents modification or deletion of log records (satisfying immutability requirements), customer-managed encryption protects confidentiality, and access restrictions limit who can read the logs — together satisfying financial regulation requirements for tamper-evident audit trails."
@@ -2693,9 +2693,9 @@ const QUESTIONS_CCSP_C2 = [
     "level": 2,
     "question": "Which of the following BEST describes the security advantage of using cloud provider-native secrets management over storing secrets in environment variables?",
     "options": [
-      "A Native secrets managers are slower and add latency to applications",
-      "B Environment variables are encrypted by default in cloud environments",
-      "C Environment variables are more convenient and equally secure",
+      "A Native secrets managers are significantly slower than environment variables and add unacceptable latency to application startup and runtime secret retrieval operations",
+      "B Environment variables are automatically encrypted by default in all major cloud environments, providing protection equivalent to dedicated secrets managers",
+      "C Environment variables are more convenient for developers and are equally secure in practice when access to the underlying compute instances is properly restricted",
       "D Native secrets managers provide automatic credential rotation, audit logging, fine-grained access control, and encryption, while environment variables provide none of these"
     ],
     "correct": 3,
@@ -2707,10 +2707,10 @@ const QUESTIONS_CCSP_C2 = [
     "level": 3,
     "question": "A security review discovers that a cloud application's authentication tokens do not expire and are stored in localStorage. The MOST critical security improvements are:",
     "options": [
-      "A Requiring users to re-authenticate every 24 hours",
-      "B Encrypting tokens before storing in localStorage",
+      "A Requiring all users to fully re-authenticate with their credentials every 24 hours regardless of session activity, device, or network location",
+      "B Encrypting the authentication tokens client-side before storing them in localStorage so their contents cannot be read directly by scripts",
       "C Implementing short token lifetimes with refresh tokens, storing tokens in httpOnly cookies to prevent JavaScript access, and implementing token revocation",
-      "D Implementing HTTPS for all token transmissions"
+      "D Enforcing HTTPS with strong TLS configurations for all token transmissions between the client application and the backend API services"
     ],
     "correct": 2,
     "explanation": "Non-expiring tokens in localStorage are vulnerable to XSS theft (JavaScript can read localStorage) and provide indefinite access after compromise; httpOnly cookies prevent JS access, short-lived tokens limit exposure windows, and refresh token rotation with revocation capability addresses all these risks."
@@ -2722,9 +2722,9 @@ const QUESTIONS_CCSP_C2 = [
     "question": "Which of the following BEST describes the purpose of a cloud security awareness program?",
     "options": [
       "A Educating cloud users about security risks, responsibilities, and best practices to reduce human-factor risks",
-      "B Teaching developers to write secure code",
-      "C Training all employees to become cloud security experts",
-      "D Satisfying compliance training requirements"
+      "B Teaching application developers to write secure, defect-free code through dedicated training",
+      "C Training every employee in the organization to become a fully qualified cloud security expert",
+      "D Satisfying mandatory annual compliance training requirements imposed by industry regulators"
     ],
     "correct": 0,
     "explanation": "Security awareness programs reduce human-factor risks — phishing susceptibility, misconfiguration from lack of knowledge, poor password practices, accidental data exposure — by ensuring all cloud users understand risks, their responsibilities, and how to make secure decisions."
@@ -2735,9 +2735,9 @@ const QUESTIONS_CCSP_C2 = [
     "level": 2,
     "question": "Which of the following BEST describes the security benefit of network microsegmentation in cloud environments compared to traditional VLANs?",
     "options": [
-      "A Microsegmentation provides faster network performance",
-      "B Microsegmentation provides stronger encryption than VLAN tagging",
-      "C Microsegmentation is easier to implement than VLANs",
+      "A Microsegmentation provides measurably faster network performance and lower latency than traditional VLAN-based architectures under heavy load",
+      "B Microsegmentation provides stronger cryptographic encryption of east-west traffic than VLAN tagging can offer at the switching layer",
+      "C Microsegmentation is significantly easier and cheaper to implement than VLANs because it requires no changes to physical network hardware",
       "D Microsegmentation applies granular identity-aware policies at the workload level, enabling zero-trust controls that VLAN-based segmentation cannot achieve"
     ],
     "correct": 3,
@@ -2750,9 +2750,9 @@ const QUESTIONS_CCSP_C2 = [
     "question": "Which of the following BEST describes the security risk of insufficient logging in cloud applications?",
     "options": [
       "A Insufficient logging prevents detection of attacks, complicates incident response, and may violate compliance requirements for audit trails",
-      "B Insufficient logging makes it harder to troubleshoot application bugs",
-      "C Insufficient logging increases storage costs",
-      "D Insufficient logging slows down application performance"
+      "B Insufficient logging makes it considerably harder for engineering teams to troubleshoot application bugs and performance regressions",
+      "C Insufficient logging increases long-term storage costs by forcing teams to retain unstructured diagnostic data instead of curated events",
+      "D Insufficient logging slows down overall application performance because missing log buffers force synchronous write operations"
     ],
     "correct": 0,
     "explanation": "Without comprehensive logging, security incidents go undetected (no alerts), incident response is blind (no timeline reconstruction), forensic investigation is impossible (no evidence), and compliance requirements are violated — making logging a foundational security control, not just an operational nicety."
@@ -2763,9 +2763,9 @@ const QUESTIONS_CCSP_C2 = [
     "level": 3,
     "question": "An organization's board requests evidence that the cloud security program is effectively managing risk. The MOST appropriate evidence is:",
     "options": [
-      "A A list of all security tools deployed",
-      "B The number of security certifications the team holds",
-      "C A count of security incidents handled in the past year",
+      "A A comprehensive inventory list of all security tools and platforms currently deployed across the organization's cloud environments",
+      "B The total number of professional security certifications and accreditations held by members of the cloud security engineering team",
+      "C A detailed count of all security incidents detected, triaged, and successfully handled by the team in the past year",
       "D A risk-quantified dashboard showing threat trends, control effectiveness, residual risk levels, and comparison to risk appetite thresholds"
     ],
     "correct": 3,
@@ -2777,10 +2777,10 @@ const QUESTIONS_CCSP_C2 = [
     "level": 1,
     "question": "Which of the following BEST describes the concept of 'data minimization' in cloud security and privacy?",
     "options": [
-      "A Compressing data to reduce storage costs",
-      "B Reducing data replication across cloud regions",
+      "A Compressing and deduplicating stored data to reduce overall cloud storage consumption and costs",
+      "B Reducing the replication of data across multiple cloud regions to limit jurisdictional exposure",
       "C Collecting, retaining, and processing only the data that is strictly necessary for the specified purpose",
-      "D Minimizing the number of people who have access to data"
+      "D Minimizing the total number of people who have standing access to sensitive data repositories"
     ],
     "correct": 2,
     "explanation": "Data minimization (a GDPR and privacy-by-design principle) reduces risk by limiting collection and retention to what is necessary — less data means smaller breach impact, lower compliance burden, reduced storage costs, and simpler data lifecycle management."
@@ -2792,9 +2792,9 @@ const QUESTIONS_CCSP_C2 = [
     "question": "Which of the following BEST describes the security purpose of using separate cloud accounts or subscriptions for different environments (development, staging, production)?",
     "options": [
       "A Providing strong blast radius containment — compromise or misconfiguration in one environment cannot affect others, with separate identity boundaries and security policies per environment",
-      "B Meeting cloud provider requirements for enterprise customers",
-      "C Simplifying management by organizing resources logically",
-      "D Reducing cloud costs by optimizing resource allocation"
+      "B Meeting cloud provider contractual onboarding requirements for enterprise customers, which mandate maintaining separate billing accounts for every deployed environment and workload type",
+      "C Simplifying day-to-day management and billing by organizing resources logically into clearly delineated groups that mirror the stages of the software delivery lifecycle",
+      "D Reducing overall cloud spend by optimizing resource allocation, enabling unused development and staging capacity to be reclaimed independently of production workloads"
     ],
     "correct": 0,
     "explanation": "Account/subscription separation creates hard boundaries between environments — a compromised dev account cannot access production data, a misconfigured staging environment doesn't expose customer data, and each environment has independent security controls, IAM policies, and audit trails with no cross-environment trust."
