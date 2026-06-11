@@ -2049,14 +2049,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // Blurring the input on pointerdown dismisses the mobile keyboard, which reflows
+  // the page and moves the button mid-tap — so press and release land on different
+  // elements and the browser never fires 'click' (first tap appears dead).
+  // setPointerCapture pins the rest of the gesture to the button regardless of how
+  // the layout shifts, and we trigger the unlock on pointerup instead of click.
+  lockBtn.addEventListener('pointerdown', (e) => {
+    lockInput.blur();
+    try { lockBtn.setPointerCapture(e.pointerId); } catch (err) { /* unsupported */ }
+  });
+  lockBtn.addEventListener('pointerup', () => attemptUnlock(lockInput.value.trim()));
+  // Keyboard activation (Tab + Enter/Space) fires 'click' without pointer events.
+  // After a pointerup-triggered attempt, the in-flight `unlocking` flag makes this
+  // duplicate call a no-op, so both paths are safe.
   lockBtn.addEventListener('click', () => attemptUnlock(lockInput.value.trim()));
-  // pointerdown: blur the input immediately so the mobile keyboard starts dismissing
-  // BEFORE the viewport reflows and before the click event fires. Without this, the
-  // keyboard-dismiss reflow can move the button between pointerdown and click, causing
-  // the click to land outside the button's new position on some mobile browsers.
-  // Using pointerdown (not touchstart) keeps mouse behaviour identical — a single
-  // 'click' fires after pointerup regardless of input type.
-  lockBtn.addEventListener('pointerdown', () => { lockInput.blur(); });
   // Enter key: call attemptUnlock directly — NOT via lockBtn.click() — so it fires even
   // while the button is temporarily disabled during the auto-unlock PBKDF2 check.
   lockInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); attemptUnlock(lockInput.value.trim()); } });
