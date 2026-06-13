@@ -148,7 +148,21 @@ const CERT_DATA = {
            acroLabel:'CPENT certification abbreviations — Penetration Testing Professional',
            glsLabel:'Key terms and concepts for the CPENT examination',
            domains: 5,
-           bannerSub:'Master penetration testing across all 5 CPENT domains' }
+           bannerSub:'Master penetration testing across all 5 CPENT domains' },
+  cczt:  { name:'CCZT', fullName:'Certificate of Competence in Zero Trust', org:'CSA', icon:'🚧', color:'#34495e', accentDark:'#2c3e50',
+           getQ:()=>[...QUESTIONS_CCZT,
+             ...(typeof QUESTIONS_CCZT_C1!=='undefined'?QUESTIONS_CCZT_C1:[]),
+             ...(typeof QUESTIONS_CCZT_C2!=='undefined'?QUESTIONS_CCZT_C2:[]),
+             ...(typeof QUESTIONS_CCZT_C3!=='undefined'?QUESTIONS_CCZT_C3:[]),
+             ...(typeof QUESTIONS_CCZT_C4!=='undefined'?QUESTIONS_CCZT_C4:[]),
+             ...(typeof QUESTIONS_CCZT_C5!=='undefined'?QUESTIONS_CCZT_C5:[])],
+           getDN:()=>(typeof DOMAIN_NAMES_CCZT!=='undefined'?DOMAIN_NAMES_CCZT:{}),
+           getAcr:()=>(typeof ACRONYMS_CCZT!=='undefined'?ACRONYMS_CCZT:[]),
+           getGls:()=>(typeof GLOSSARY_CCZT!=='undefined'?GLOSSARY_CCZT:[]),
+           acroLabel:'CCZT certification abbreviations — Zero Trust architecture and strategy',
+           glsLabel:'Key terms and concepts for the CCZT examination',
+           domains: 5,
+           bannerSub:'Master Zero Trust across all 5 CCZT knowledge domains' }
 };
 
 // Difficulty level display names (levels 1–3)
@@ -531,7 +545,7 @@ async function loadState() {
       };
     }
     // Ensure all known certs have a certData entry
-    ['ccsp','cism','cisa','cissp','crisc','issap','secx','chfi','ecih','cpent'].forEach(k => {
+    ['ccsp','cism','cisa','cissp','crisc','issap','secx','chfi','ecih','cpent','cczt'].forEach(k => {
       if (!STATE.certData[k]) STATE.certData[k] = { questionStats:{}, bookmarks:[], sessions:[] };
     });
     if (!STATE.bookmarks)     STATE.bookmarks = [];
