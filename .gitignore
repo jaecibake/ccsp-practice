@@ -13,3 +13,6 @@ desktop.ini
 
 # Logs
 *.log
+
+# Separate full-stack project (own git repo)
+webapp/
