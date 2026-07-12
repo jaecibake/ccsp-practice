@@ -41,5 +41,23 @@ const ACRONYMS_CCZT = [
   { abbr:"ZTA", full:"Zero Trust Architecture" },
   { abbr:"ZTMM", full:"Zero Trust Maturity Model (CISA)" },
   { abbr:"ZTNA", full:"Zero Trust Network Access" },
+  { abbr:"CDM", full:"Continuous Diagnostics and Mitigation" },
+  { abbr:"SPA", full:"Single Packet Authorization" },
+  { abbr:"IH", full:"Initiating Host" },
+  { abbr:"AH", full:"Accepting Host" },
+  { abbr:"SWG", full:"Secure Web Gateway" },
+  { abbr:"FWaaS", full:"Firewall as a Service" },
+  { abbr:"CSPM", full:"Cloud Security Posture Management" },
+  { abbr:"CWPP", full:"Cloud Workload Protection Platform" },
+  { abbr:"CNAPP", full:"Cloud-Native Application Protection Platform" },
+  { abbr:"NAC", full:"Network Access Control" },
+  { abbr:"SDN", full:"Software-Defined Networking" },
+  { abbr:"SD-WAN", full:"Software-Defined Wide Area Network" },
+  { abbr:"OIDC", full:"OpenID Connect" },
+  { abbr:"SCIM", full:"System for Cross-domain Identity Management" },
+  { abbr:"FIDO2", full:"Fast Identity Online 2" },
+  { abbr:"JEA", full:"Just Enough Access" },
+  { abbr:"TEE", full:"Trusted Execution Environment" },
+  { abbr:"HSM", full:"Hardware Security Module" }
 ];
 ACRONYMS_CCZT.sort((a, b) => a.abbr.localeCompare(b.abbr, undefined, { sensitivity: 'base' }));
